@@ -1,4 +1,6 @@
 <?php
+// Bootstrap the Module, Composer Autoload etc.
+require_once(__DIR__ . '/app/bootstrap.php');
 
 use App\RegistrarModule;
 
@@ -6,8 +8,7 @@ if (!defined("WHMCS")) {
     die("This file cannot be accessed directly");
 }
 
-// Bootstrap the Module, Composer Autoload etc.
-require_once(__DIR__ . '/app/bootstrap.php');
+
 
 // Pass all Module Calls through to the RegistrarModule Implementation
 // to keep this file just a basic interface for whmcs.
