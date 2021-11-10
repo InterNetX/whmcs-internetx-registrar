@@ -2,15 +2,76 @@
 
 namespace App;
 
+use Throwable;
 use App\Helpers\Config;
-use App\Providers\WhmcsModuleLogProvider as Logger;
+use Domainrobot\Domainrobot;
+
+use Domainrobot\Lib\DomainrobotAuth;
 use App\Providers\WhoisProxyProvider;
 use App\Contracts\RegistrarModuleInterface;
 use WHMCS\Domains\DomainLookup\ResultsList;
+use App\Exceptions\RegistrarModuleException;
 use WHMCS\Domains\DomainLookup\SearchResult;
+use App\Providers\WhmcsModuleLogProvider as Logger;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 class RegistrarModule implements RegistrarModuleInterface {
+
+    /*
+     * wrapper for all function to provide meaningfull error Responses as handled by whmcs
+     */
+    public static function call($functionName, $params = false){
+        try {
+            return call_user_func('self::'.$functionName, $params);
+        } catch (\Throwable $th) {
+            return self::errorResponse($th->getMessage());
+        }
+
+    }
+
+    private static function errorResponse($msg){
+        return array("error" => $msg);
+    }
+
+    private static function checkRequiredParametersOrFail($requiredParams, $params){
+        // Check if param isset and not false
+        foreach ($requiredParams as $requiredParam) {
+            if (!isset($params[$requiredParam]) || !$params[$requiredParam]){
+                throw new RegistrarModuleException("Please Check your Domain Registrar Configuration. Missing Parameter: $requiredParam");
+            }
+        }
+        return true;
+    }
+
+    private static function getApi($params){
+
+        // Use Sandbox Mode (Testmode)
+        if ($params['sandboxMode'] == 'on'){
+            self::checkRequiredParametersOrFail(['sandboxServerUsername', 'sandboxServerPassword', 'sandboxServerContext'], $params);
+
+            $domainrobot = new Domainrobot([
+                "url" => "https://api.demo.autodns.com/v1",
+                "auth" => new DomainrobotAuth([
+                    "user" => $params['sandboxServerUsername'],
+                    "password" => $params['sandboxServerPassword'],
+                    "context" => $params['sandboxServerContext']
+                ])
+            ]);
+        } else {
+            self::checkRequiredParametersOrFail(['serverUsername', 'serverPassword', 'serverContext'], $params);
+            $domainrobot = new Domainrobot([
+                // server Host can be manually set but default to the production Endpoint
+                "url" => $params['serverHost'] ? $params['serverHost'] : "https://api.autodns.com/v1",
+                "auth" => new DomainrobotAuth([
+                    "user" => $params['serverUsername'],
+                    "password" => $params['serverPassword'],
+                    "context" => $params['serverContext']
+                ])
+            ]);
+        }
+
+        return $domainrobot;
+    }
 
     public static function getConfigArray(){
         $adminEmails = Capsule::table('tbladmins')->select('email')->orderBy('email', 'asc')->pluck('email')->toArray();
@@ -51,7 +112,7 @@ class RegistrarModule implements RegistrarModuleInterface {
                 'FriendlyName' => 'Server',
                 'Type' => 'text',
                 'Size' => '20',
-                "Description" => "Provide your API url. Eg. https://gateway.autodns.com",
+                "Description" => "If left empty https://api.autodns.com/v1 will be used by default. Provide your API url if you use something different."
             ),
             'nameServers' => array
             (
@@ -142,64 +203,75 @@ class RegistrarModule implements RegistrarModuleInterface {
     }
 
     public static function RegisterDomain($params){
-        return array("error" => 'müll Domain');
-        return false;
+        $api = self::getApi($params);
+        return self::errorResponse('RegisterDomain not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+
+        //Get API
+        //Parse Contacts
+        //Create Contacts
+        //Create Domain
+            // Check Premium
+                // Premium Create
+            // if normal
+                // Regular Create
+        //On Error:
+            // Delete Contacts
     }
 
     public static function TransferDomain($params){
-        return false;
+        return self::errorResponse('TransferDomain not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function RenewDomain($params){
-        return false;
+        return self::errorResponse('RenewDomain not implemented<br/><pre>'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function GetNameservers($params){
-        return false;
+        return self::errorResponse('GetNameservers not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function SaveNameservers($params){
-        return false;
+        return self::errorResponse('SaveNameservers not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function GetDNS($params){
-        return false;
+        return self::errorResponse('GetDNS not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function SaveDNS($params){
-        return false;
+        return self::errorResponse('SaveDNS not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function GetContactDetails($params){
-        return false;
+        return self::errorResponse('GetContactDetails not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function SaveContactDetails($params){
-        return false;
+        return self::errorResponse('SaveContactDetails not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function GetEPPCode($params){
-        return false;
+        return self::errorResponse('GetEPPCode not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function Sync($params){
-        return false;
+        return self::errorResponse('Sync not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function TransferSync($params){
-        return false;
+        return self::errorResponse('TransferSync not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function IDProtectToggle($params){
-        return false;
+        return self::errorResponse('IDProtectToggle not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function GetEmailForwarding($params){
-        return false;
+        return self::errorResponse('GetEmailForwarding not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function SaveEmailForwarding($params){
-        return false;
+        return self::errorResponse('SaveEmailForwarding not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     // TODO: check registrarmodule_DomainSuggestionOptions() {

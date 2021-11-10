@@ -14,73 +14,74 @@ if (!defined("WHMCS")) {
 // to keep this file just a basic interface for whmcs.
 
 function InterNetXJson_getConfigArray(){
-    return RegistrarModule::getConfigArray();
+    return RegistrarModule::call('getConfigArray');
 }
 
 function InterNetXJson_RegisterDomain($params){
-    return RegistrarModule::RegisterDomain($params);
+    return RegistrarModule::call('RegisterDomain', $params);
+    // return RegistrarModule::RegisterDomain($params);
 }
 
 function InterNetXJson_TransferDomain($params){
-    return RegistrarModule::TransferDomain($params);
+    return RegistrarModule::call('TransferDomain', $params);
 }
 
 function InterNetXJson_RenewDomain($params){
-    return RegistrarModule::RenewDomain($params);
+    return RegistrarModule::call('RenewDomain', $params);
 }
 
 function InterNetXJson_GetNameservers($params){
-    return RegistrarModule::GetNameservers($params);
+    return RegistrarModule::call('GetNameservers', $params);
 }
 
 function InterNetXJson_SaveNameservers($params){
-    return RegistrarModule::SaveNameservers($params);
+    return RegistrarModule::call('SaveNameservers', $params);
 }
 
 function InterNetXJson_GetDNS($params){
-    return RegistrarModule::GetDNS($params);
+    return RegistrarModule::call('GetDNS', $params);
 }
 
 function InterNetXJson_SaveDNS($params){
-    return RegistrarModule::SaveDNS($params);
+    return RegistrarModule::call('SaveDNS', $params);
 }
 
 function InterNetXJson_GetContactDetails($params){
-    return RegistrarModule::GetContactDetails($params);
+    return RegistrarModule::call('GetContactDetails', $params);
 }
 
 function InterNetXJson_SaveContactDetails($params){
-    return RegistrarModule::SaveContactDetails($params);
+    return RegistrarModule::call('SaveContactDetails', $params);
 }
 
 function InterNetXJson_GetEPPCode($params){
-    return RegistrarModule::GetEPPCode($params);
+    return RegistrarModule::call('GetEPPCode', $params);
 }
 
 function InterNetXJson_Sync($params){
-    return RegistrarModule::Sync($params);
+    return RegistrarModule::call('Sync', $params);
 }
 
 function InterNetXJson_TransferSync($params){
-    return RegistrarModule::TransferSync($params);
+    return RegistrarModule::call('TransferSync', $params);
 }
 
 function InterNetXJson_IDProtectToggle($params){
-    return RegistrarModule::IDProtectToggle($params);
+    return RegistrarModule::call('IDProtectToggle', $params);
 }
 
 function InterNetXJson_GetEmailForwarding($params){
-    return RegistrarModule::GetEmailForwarding($params);
+    return RegistrarModule::call('GetEmailForwarding', $params);
 }
 
 function InterNetXJson_SaveEmailForwarding($params){
-    return RegistrarModule::SaveEmailForwarding($params);
+    return RegistrarModule::call('SaveEmailForwarding', $params);
 }
 
 function InterNetXJson_CheckAvailability($params){
-    return RegistrarModule::CheckAvailability($params);
+    return RegistrarModule::call('CheckAvailability', $params);
 }
 
 function InterNetXJson_GetDomainSuggestions($params){
-    return RegistrarModule::GetDomainSuggestions($params);
+    return RegistrarModule::call('GetDomainSuggestions', $params);
 }
