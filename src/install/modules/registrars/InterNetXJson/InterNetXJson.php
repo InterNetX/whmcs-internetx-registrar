@@ -8,8 +8,6 @@ if (!defined("WHMCS")) {
     die("This file cannot be accessed directly");
 }
 
-
-
 // Pass all Module Calls through to the RegistrarModule Implementation
 // to keep this file just a basic interface for whmcs.
 
