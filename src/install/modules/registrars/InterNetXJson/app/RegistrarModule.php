@@ -2,13 +2,17 @@
 
 namespace App;
 
-use Throwable;
 use App\Helpers\Config;
 use Domainrobot\Domainrobot;
 
+use Domainrobot\Model\Domain;
+use Domainrobot\Model\Contact;
+use Domainrobot\Model\NameServer;
 use Domainrobot\Lib\DomainrobotAuth;
 use App\Providers\WhoisProxyProvider;
+use Domainrobot\Lib\DomainrobotException;
 use App\Contracts\RegistrarModuleInterface;
+use Domainrobot\Model\ContactTypeConstants;
 use WHMCS\Domains\DomainLookup\ResultsList;
 use App\Exceptions\RegistrarModuleException;
 use WHMCS\Domains\DomainLookup\SearchResult;
@@ -23,9 +27,17 @@ class RegistrarModule implements RegistrarModuleInterface {
     public static function call($functionName, $params = false){
         try {
             return call_user_func('self::'.$functionName, $params);
-        } catch (\Throwable $th) {
+        } catch (RegistrarModuleException $th) {
             return self::errorResponse($th->getMessage());
-        }
+          }
+          catch (DomainrobotException $th) {
+            //TODO: Move output to Module log
+            return self::errorResponse("[".$th->getStatusCode()."] ". json_encode($th->getError(), JSON_PRETTY_PRINT));
+          }
+          catch (\Throwable $th) {
+            return self::errorResponse($th->getMessage());
+          }
+
 
     }
 
@@ -202,20 +214,90 @@ class RegistrarModule implements RegistrarModuleInterface {
         return $configArray;
     }
 
-    public static function RegisterDomain($params){
-        $api = self::getApi($params);
-        return self::errorResponse('RegisterDomain not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+    private static function whmcs2domainrobotContact($prefix, $params){
 
+        $contact = new Contact();
+        // CompanyName is set
+        if ($params[$prefix . 'companyname']){
+            $contact->setType(ContactTypeConstants::ORG);
+            $contact->setOrganization($params[$prefix . 'companyname']);
+        } else {
+            $contact->setType(ContactTypeConstants::PERSON);
+        }
+
+        $contact->setCity($params[$prefix.'city']);
+        $contact->setCountry($params[$prefix.'country']);
+        $contact->setState($params[$prefix.'state']);
+        $contact->setAddress([
+            $params[$prefix.'address1'],
+            $params[$prefix.'address2']
+        ]);
+        $contact->setPcode($params[$prefix.'postcode']);
+        $contact->setFname($params[$prefix.'firstname']);
+        $contact->setLname($params[$prefix.'lastname']);
+        $contact->setEmail($params[$prefix.'email']);
+        $contact->setPhone($params[$prefix.'phonenumber']);
+        // $contact->setExtensions(new ContactExtensions([
+        //     'it' => new ContactItExtensions([
+        //         'entityType' => 1 // Italian and foreign natural persons
+        //     ])
+        // ]));
+        return $contact;
+    }
+
+    private static function parseContacts($params){
+
+        // WHMCS Params include 2 Contacts. Registrant and Admin.
+        // Registrant params are without prefix e.g. $params['firstname'] while admin params are prefixed with admin e.g. $params['adminfirstname'];
+        // We will parse both and return the DomainRobot\Contact type
+        $contacts = [
+            'registrant' => self::whmcs2domainrobotContact('', $params),
+            'admin'      => self::whmcs2domainrobotContact('admin', $params)
+        ];
+        return $contacts;
+    }
+
+    public static function RegisterDomain($params){
+        // return self::errorResponse('RegisterDomain not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
         //Get API
+        $domainrobot = self::getApi($params);
+
         //Parse Contacts
-        //Create Contacts
+        $contacts = self::parseContacts($params);
+
+        //Create Registrant and AdminContact
+        $contacts['admin']      = $domainrobot->contact->create($contacts['admin']);
+        $contacts['registrant'] = $domainrobot->contact->create($contacts['registrant']);
+        // return self::errorResponse('Contacts' . print_r($contacts, true));
+
         //Create Domain
-            // Check Premium
-                // Premium Create
-            // if normal
-                // Regular Create
-        //On Error:
-            // Delete Contacts
+        $domain = new Domain();
+        $domain->setName($params['domain_punycode']);
+        $domain->setNameServers([
+            new NameServer([
+                "name" => "ns1.example.com"
+            ]),
+            new NameServer([
+                "name" => "ns2.example.com"
+            ])
+        ]);
+        $domain->setOwnerc($contacts['registrant']);
+        $domain->setAdminc($params['adminContact'] == 'on' ? $contacts['registrant'] : $contacts['admin'] );
+        $domain->setTechc($contacts['admin']);
+        $domain->setZonec($contacts['admin']);
+
+        //$domain->setIgnoreWhois(true);
+        // TODO: Extension
+        // $contact->setExtensions(new ContactExtensions([
+        //     'it' => new ContactItExtensions([
+        //         'entityType' => 1 // Italian and foreign natural persons
+        //     ])
+        // ]));
+
+        //TODO: Premiums
+
+
+        $objectJob = $domainrobot->domain->create($domain);
     }
 
     public static function TransferDomain($params){
