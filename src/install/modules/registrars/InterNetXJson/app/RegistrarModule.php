@@ -215,7 +215,7 @@ class RegistrarModule implements RegistrarModuleInterface {
         //Create Registrant and AdminContact
         $contacts['admin']      = $domainrobot->contact->create($contacts['admin']);
         $contacts['registrant'] = $domainrobot->contact->create($contacts['registrant']);
-        // return WhmcsBridge::errorResponse('Register Domain <pre>' . print_r($contacts, true) . '</pre>');
+        // return WhmcsBridge::errorResponse('Register Domain  Contacts<pre>' . print_r($contacts, true) . '</pre>');
 
         //Create Domain
         $domain = new Domain();
@@ -226,7 +226,6 @@ class RegistrarModule implements RegistrarModuleInterface {
         $domain->setTechc($contacts['admin']);
         $domain->setZonec($contacts['admin']);
         // return WhmcsBridge::errorResponse('Register Domain <pre>' . print_r($domain, true) . '</pre>');
-
 
         // Check for Premium Domain
         // TODO: $api -> Premium
@@ -246,10 +245,6 @@ class RegistrarModule implements RegistrarModuleInterface {
         // Add zone
         $zone = WhmcsBridge::parseDomainZone($params);
         $createdZone = $domainrobot->zone->create($zone);
-        // return WhmcsBridge::errorResponse('Zone <pre>' . print_r($createdZone, true) . '</pre>');
-        // $domain->setZone($zone);
-        // return WhmcsBridge::errorResponse('Register Domain <pre>' . print_r($domain, true) . '</pre>');
-
         // TODO: Check if needed
         //$domain->setIgnoreWhois(true);
         $objectJob = $domainrobot->domain->create($domain);

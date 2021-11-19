@@ -48,7 +48,6 @@ class WhmcsBridge
             'action' => NameserverActionConstants::COMPLETE,
             'nameServers' => self::parseNameservers($params),
             'wwwInclude' => true,
-
         ]);
         return $zone;
     }
