@@ -258,8 +258,43 @@ class RegistrarModule implements RegistrarModuleInterface {
         return $contacts;
     }
 
+    private static function parseNameservers($params){
+
+        // WHMCS Params include up to 6 Nameservers in Domain related Requests. $params['ns1'..'ns6']
+        // We will parse them and return an Array of DomainRobot\Nameserver (s)
+        $ns = array();
+        for ($i = 1; $i < 6; $i++) {
+            // Skip if ns$i is empty or notset
+            if (!isset($params["ns$i"]) || $params["ns$i"] == ''){
+                continue;
+            }
+
+            // We support passing IP Adresses (e.g. for glue records)
+            // So ns1 might be something like:
+            // "ns1.domainshop.test 127.0.0.1 2001:0db8:3c4d:0015:0000:0000:1a2f:1a2b"
+
+            $details = explode(" ", preg_replace('/\s+/', ' ', $params["ns$i"]));
+
+            // Either way the first element will be the nameserver name
+            $name = array_shift($details);
+            $nameserverObject = new NameServer([]);
+            $nameserverObject->name = $name;
+            // Add ip Adresses if applicable
+            if (count($details)){
+                $nameserverObject->ipAddresses = $details;
+            }
+            // Push to result Array
+            $ns[] = $nameserverObject;
+        }
+        return $ns;
+    }
+
+    private static function parseDomain($params){
+        return $params['domain_punycode'];
+    }
+
     public static function RegisterDomain($params){
-        // return self::errorResponse('RegisterDomain not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
+        //return self::errorResponse('RegisterDomain not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
         //Get API
         $domainrobot = self::getApi($params);
 
@@ -269,19 +304,11 @@ class RegistrarModule implements RegistrarModuleInterface {
         //Create Registrant and AdminContact
         $contacts['admin']      = $domainrobot->contact->create($contacts['admin']);
         $contacts['registrant'] = $domainrobot->contact->create($contacts['registrant']);
-        // return self::errorResponse('Contacts' . print_r($contacts, true));
 
         //Create Domain
         $domain = new Domain();
-        $domain->setName($params['domain_punycode']);
-        $domain->setNameServers([
-            new NameServer([
-                "name" => "ns1.example.com"
-            ]),
-            new NameServer([
-                "name" => "ns2.example.com"
-            ])
-        ]);
+        $domain->setName(self::parseDomain($params));
+        $domain->setNameServers(self::parseNameservers($params));
         $domain->setOwnerc($contacts['registrant']);
         $domain->setAdminc($params['adminContact'] == 'on' ? $contacts['registrant'] : $contacts['admin'] );
         $domain->setTechc($contacts['admin']);
