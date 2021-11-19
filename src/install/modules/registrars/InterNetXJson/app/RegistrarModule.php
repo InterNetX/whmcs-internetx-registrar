@@ -64,20 +64,21 @@ class RegistrarModule implements RegistrarModuleInterface {
             $domainrobot = new Domainrobot([
                 "url" => "https://api.demo.autodns.com/v1",
                 "auth" => new DomainrobotAuth([
-                    "user" => $params['sandboxServerUsername'],
+                    "user"     => $params['sandboxServerUsername'],
                     "password" => $params['sandboxServerPassword'],
-                    "context" => $params['sandboxServerContext']
+                    "context"  => $params['sandboxServerContext']
                 ])
             ]);
+        // Live Mode
         } else {
             self::checkRequiredParametersOrFail(['serverUsername', 'serverPassword', 'serverContext'], $params);
             $domainrobot = new Domainrobot([
                 // server Host can be manually set but default to the production Endpoint
                 "url" => $params['serverHost'] ? $params['serverHost'] : "https://api.autodns.com/v1",
                 "auth" => new DomainrobotAuth([
-                    "user" => $params['serverUsername'],
+                    "user"     => $params['serverUsername'],
                     "password" => $params['serverPassword'],
-                    "context" => $params['serverContext']
+                    "context"  => $params['serverContext']
                 ])
             ]);
         }
@@ -453,6 +454,7 @@ class RegistrarModule implements RegistrarModuleInterface {
 
                 } else { //END: if Premium Stuff Enabled Check
                     // Important!! Otherwise Premium Domains will be shown as available for the normal TLD price
+                    // Although we do not have everything needed enabled
                     $searchResult->setStatus(SearchResult::STATUS_UNKNOWN);
                 }
             } //END: if ($details['premium'])
