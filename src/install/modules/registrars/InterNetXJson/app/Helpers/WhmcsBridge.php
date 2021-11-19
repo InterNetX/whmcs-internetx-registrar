@@ -2,6 +2,9 @@
 
 namespace App\Helpers;
 
+use Domainrobot\Model\Soa;
+use Domainrobot\Model\Zone;
+use Domainrobot\Model\MainIp;
 use Domainrobot\Model\Contact;
 use Domainrobot\Model\NameServer;
 use App\Helpers\DomainRobotExtension;
@@ -11,6 +14,7 @@ use Domainrobot\Model\ContactItExtensions;
 use Domainrobot\Model\ContactTypeConstants;
 use App\Exceptions\RegistrarModuleException;
 use Domainrobot\Model\ContactGeneralExtensions;
+use Domainrobot\Model\NameserverActionConstants;
 use Domainrobot\Model\ContactIdentificationExtensions;
 
 class WhmcsBridge
@@ -27,6 +31,26 @@ class WhmcsBridge
 
     public static function errorResponse($msg){
         return array("error" => $msg);
+    }
+
+    public static function parseDomainZone($params){
+        $mainip = $params['domainIP'];
+        $mx = $params['domainMX'];
+        $zone = new Zone([
+            'origin' => self::parseDomain($params),
+            'soa' => new Soa([
+                'email' => 'do-not-reply@' . self::parseDomain($params),
+            ]),
+            'main' => new MainIp([
+                'address' => $mainip,
+                'ttl' => 86000,
+            ]),
+            'action' => NameserverActionConstants::COMPLETE,
+            'nameServers' => self::parseNameservers($params),
+            'wwwInclude' => true,
+
+        ]);
+        return $zone;
     }
 
     public static function whmcs2domainrobotContact($prefix, $params){

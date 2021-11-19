@@ -243,9 +243,17 @@ class RegistrarModule implements RegistrarModuleInterface {
 
         }
 
+        // Add zone
+        $zone = WhmcsBridge::parseDomainZone($params);
+        $createdZone = $domainrobot->zone->create($zone);
+        // return WhmcsBridge::errorResponse('Zone <pre>' . print_r($createdZone, true) . '</pre>');
+        // $domain->setZone($zone);
+        // return WhmcsBridge::errorResponse('Register Domain <pre>' . print_r($domain, true) . '</pre>');
+
         // TODO: Check if needed
         //$domain->setIgnoreWhois(true);
         $objectJob = $domainrobot->domain->create($domain);
+
     }
 
     public static function TransferDomain($params){
