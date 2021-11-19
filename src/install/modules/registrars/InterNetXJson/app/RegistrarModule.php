@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Helpers\Config;
+use App\Helpers\WhmcsBridge;
 use Domainrobot\Domainrobot;
 
 use Domainrobot\Model\Domain;
@@ -11,6 +12,7 @@ use Domainrobot\Model\NameServer;
 use Domainrobot\Lib\DomainrobotAuth;
 use App\Providers\WhoisProxyProvider;
 use Domainrobot\Lib\DomainrobotException;
+use Domainrobot\Model\ContactItExtensions;
 use App\Contracts\RegistrarModuleInterface;
 use Domainrobot\Model\ContactTypeConstants;
 use WHMCS\Domains\DomainLookup\ResultsList;
@@ -28,38 +30,24 @@ class RegistrarModule implements RegistrarModuleInterface {
         try {
             return call_user_func('self::'.$functionName, $params);
         } catch (RegistrarModuleException $th) {
-            return self::errorResponse($th->getMessage());
+            return WhmcsBridge::errorResponse($th->getMessage());
           }
           catch (DomainrobotException $th) {
             //TODO: Move output to Module log
-            return self::errorResponse("[".$th->getStatusCode()."] ". json_encode($th->getError(), JSON_PRETTY_PRINT));
+            return WhmcsBridge::errorResponse("[".$th->getStatusCode()."] ". json_encode($th->getError(), JSON_PRETTY_PRINT));
           }
           catch (\Throwable $th) {
-            return self::errorResponse($th->getMessage());
+            return WhmcsBridge::errorResponse($th->getMessage());
           }
 
 
-    }
-
-    private static function errorResponse($msg){
-        return array("error" => $msg);
-    }
-
-    private static function checkRequiredParametersOrFail($requiredParams, $params){
-        // Check if param isset and not false
-        foreach ($requiredParams as $requiredParam) {
-            if (!isset($params[$requiredParam]) || !$params[$requiredParam]){
-                throw new RegistrarModuleException("Please Check your Domain Registrar Configuration. Missing Parameter: $requiredParam");
-            }
-        }
-        return true;
     }
 
     private static function getApi($params){
 
         // Use Sandbox Mode (Testmode)
         if ($params['sandboxMode'] == 'on'){
-            self::checkRequiredParametersOrFail(['sandboxServerUsername', 'sandboxServerPassword', 'sandboxServerContext'], $params);
+            WhmcsBridge::checkRequiredParametersOrFail(['sandboxServerUsername', 'sandboxServerPassword', 'sandboxServerContext'], $params);
 
             $domainrobot = new Domainrobot([
                 "url" => "https://api.demo.autodns.com/v1",
@@ -71,7 +59,7 @@ class RegistrarModule implements RegistrarModuleInterface {
             ]);
         // Live Mode
         } else {
-            self::checkRequiredParametersOrFail(['serverUsername', 'serverPassword', 'serverContext'], $params);
+            WhmcsBridge::checkRequiredParametersOrFail(['serverUsername', 'serverPassword', 'serverContext'], $params);
             $domainrobot = new Domainrobot([
                 // server Host can be manually set but default to the production Endpoint
                 "url" => $params['serverHost'] ? $params['serverHost'] : "https://api.autodns.com/v1",
@@ -215,173 +203,105 @@ class RegistrarModule implements RegistrarModuleInterface {
         return $configArray;
     }
 
-    private static function whmcs2domainrobotContact($prefix, $params){
-
-        $contact = new Contact();
-        // CompanyName is set
-        if ($params[$prefix . 'companyname']){
-            $contact->setType(ContactTypeConstants::ORG);
-            $contact->setOrganization($params[$prefix . 'companyname']);
-        } else {
-            $contact->setType(ContactTypeConstants::PERSON);
-        }
-
-        $contact->setCity($params[$prefix.'city']);
-        $contact->setCountry($params[$prefix.'country']);
-        $contact->setState($params[$prefix.'state']);
-        $contact->setAddress([
-            $params[$prefix.'address1'],
-            $params[$prefix.'address2']
-        ]);
-        $contact->setPcode($params[$prefix.'postcode']);
-        $contact->setFname($params[$prefix.'firstname']);
-        $contact->setLname($params[$prefix.'lastname']);
-        $contact->setEmail($params[$prefix.'email']);
-        $contact->setPhone($params[$prefix.'phonenumber']);
-        // $contact->setExtensions(new ContactExtensions([
-        //     'it' => new ContactItExtensions([
-        //         'entityType' => 1 // Italian and foreign natural persons
-        //     ])
-        // ]));
-        return $contact;
-    }
-
-    private static function parseContacts($params){
-
-        // WHMCS Params include 2 Contacts. Registrant and Admin.
-        // Registrant params are without prefix e.g. $params['firstname'] while admin params are prefixed with admin e.g. $params['adminfirstname'];
-        // We will parse both and return the DomainRobot\Contact type
-        $contacts = [
-            'registrant' => self::whmcs2domainrobotContact('', $params),
-            'admin'      => self::whmcs2domainrobotContact('admin', $params)
-        ];
-        return $contacts;
-    }
-
-    private static function parseNameservers($params){
-
-        // WHMCS Params include up to 6 Nameservers in Domain related Requests. $params['ns1'..'ns6']
-        // We will parse them and return an Array of DomainRobot\Nameserver (s)
-        $ns = array();
-        for ($i = 1; $i < 6; $i++) {
-            // Skip if ns$i is empty or notset
-            if (!isset($params["ns$i"]) || $params["ns$i"] == ''){
-                continue;
-            }
-
-            // We support passing IP Adresses (e.g. for glue records)
-            // So ns1 might be something like:
-            // "ns1.domainshop.test 127.0.0.1 2001:0db8:3c4d:0015:0000:0000:1a2f:1a2b"
-
-            $details = explode(" ", preg_replace('/\s+/', ' ', $params["ns$i"]));
-
-            // Either way the first element will be the nameserver name
-            $name = array_shift($details);
-            $nameserverObject = new NameServer([]);
-            $nameserverObject->name = $name;
-            // Add ip Adresses if applicable
-            if (count($details)){
-                $nameserverObject->ipAddresses = $details;
-            }
-            // Push to result Array
-            $ns[] = $nameserverObject;
-        }
-        return $ns;
-    }
-
-    private static function parseDomain($params){
-        return $params['domain_punycode'];
-    }
-
     public static function RegisterDomain($params){
-        //return self::errorResponse('RegisterDomain not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
+        // return WhmcsBridge::errorResponse('RegisterDomain not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
         //Get API
         $domainrobot = self::getApi($params);
 
         //Parse Contacts
-        $contacts = self::parseContacts($params);
+        $contacts = WhmcsBridge::parseContacts($params);
 
+        // return WhmcsBridge::errorResponse('Register Domain <pre>' . print_r($contacts, true) . '</pre>');
         //Create Registrant and AdminContact
         $contacts['admin']      = $domainrobot->contact->create($contacts['admin']);
         $contacts['registrant'] = $domainrobot->contact->create($contacts['registrant']);
+        // return WhmcsBridge::errorResponse('Register Domain <pre>' . print_r($contacts, true) . '</pre>');
 
         //Create Domain
         $domain = new Domain();
-        $domain->setName(self::parseDomain($params));
-        $domain->setNameServers(self::parseNameservers($params));
+        $domain->setName(WhmcsBridge::parseDomain($params));
+        $domain->setNameServers(WhmcsBridge::parseNameservers($params));
         $domain->setOwnerc($contacts['registrant']);
         $domain->setAdminc($params['adminContact'] == 'on' ? $contacts['registrant'] : $contacts['admin'] );
         $domain->setTechc($contacts['admin']);
         $domain->setZonec($contacts['admin']);
+        // return WhmcsBridge::errorResponse('Register Domain <pre>' . print_r($domain, true) . '</pre>');
 
+
+        // Check for Premium Domain
+        // TODO: $api -> Premium
+        // Waiting for Marius (GET /domainpremium/{name}) route to be added to official SDK
+        $isPremiumDomain = false;
+        $premiumDomainPriceClass = 'TEST-000';
+        if ($isPremiumDomain){
+            if (WhmcsBridge::isPremiumDomainSetupOk($params)){
+                $domain->setPriceClass($premiumDomainPriceClass);
+            } else {
+                // Bail out on error here
+                return WhmcsBridge::errorResponse('Cannot register premium domain. Please make sure that your Premium Domains addon module is active and configured correctly.');
+            }
+
+        }
+
+        // TODO: Check if needed
         //$domain->setIgnoreWhois(true);
-        // TODO: Extension
-        // $contact->setExtensions(new ContactExtensions([
-        //     'it' => new ContactItExtensions([
-        //         'entityType' => 1 // Italian and foreign natural persons
-        //     ])
-        // ]));
-
-        //TODO: Premiums
-
-
         $objectJob = $domainrobot->domain->create($domain);
     }
 
     public static function TransferDomain($params){
-        return self::errorResponse('TransferDomain not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        return WhmcsBridge::errorResponse('TransferDomain not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function RenewDomain($params){
-        return self::errorResponse('RenewDomain not implemented<br/><pre>'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        return WhmcsBridge::errorResponse('RenewDomain not implemented<br/><pre>'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function GetNameservers($params){
-        return self::errorResponse('GetNameservers not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        return WhmcsBridge::errorResponse('GetNameservers not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function SaveNameservers($params){
-        return self::errorResponse('SaveNameservers not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        return WhmcsBridge::errorResponse('SaveNameservers not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function GetDNS($params){
-        return self::errorResponse('GetDNS not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        return WhmcsBridge::errorResponse('GetDNS not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function SaveDNS($params){
-        return self::errorResponse('SaveDNS not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        return WhmcsBridge::errorResponse('SaveDNS not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function GetContactDetails($params){
-        return self::errorResponse('GetContactDetails not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        return WhmcsBridge::errorResponse('GetContactDetails not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function SaveContactDetails($params){
-        return self::errorResponse('SaveContactDetails not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        return WhmcsBridge::errorResponse('SaveContactDetails not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function GetEPPCode($params){
-        return self::errorResponse('GetEPPCode not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        return WhmcsBridge::errorResponse('GetEPPCode not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function Sync($params){
-        return self::errorResponse('Sync not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        return WhmcsBridge::errorResponse('Sync not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function TransferSync($params){
-        return self::errorResponse('TransferSync not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        return WhmcsBridge::errorResponse('TransferSync not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function IDProtectToggle($params){
-        return self::errorResponse('IDProtectToggle not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        return WhmcsBridge::errorResponse('IDProtectToggle not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function GetEmailForwarding($params){
-        return self::errorResponse('GetEmailForwarding not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        return WhmcsBridge::errorResponse('GetEmailForwarding not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function SaveEmailForwarding($params){
-        return self::errorResponse('SaveEmailForwarding not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        return WhmcsBridge::errorResponse('SaveEmailForwarding not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     // TODO: check registrarmodule_DomainSuggestionOptions() {
@@ -443,14 +363,10 @@ class RegistrarModule implements RegistrarModuleInterface {
 
             // Handle Premium Domains
             if ($details['premium']) {
-                //check if premium domains addon and Lookup Provider are set
-                $lookupProvider       = Capsule::table('tblconfiguration')->select('value')->where('setting', '=', 'domainLookupRegistrar')->first();
-                $isAddonActive        = Capsule::table('tbladdonmodules')->select('value')->where('module', '=', 'InterNetX')->exists();
-                // TODO:Can probably be read directly from $params (premiumdomainsEnabled or similar)
-                $isPremiumDomainsOn = Capsule::table('tblconfiguration')->where('setting', '=', 'PremiumDomains')->value('value');
+                //check if premium domain Class Pricing is configured
                 $isPremiumClassExists = Capsule::table('mod_InterNetXtblpremiumclasses')->select('id')->where('class_name', '=', $details['premiumClass'])->exists();
 
-                if($lookupProvider->value == Config::moduleName() && $isAddonActive && $isPremiumDomainsOn == '1' && $isPremiumClassExists){
+                if($isPremiumClassExists && WhmcsBridge::isPremiumDomainSetupOk($params)){
                     $className = $details['premiumClass'];
                     $premiumclassID = Capsule::table('mod_InterNetXtblpremiumclasses')->select('id')->where('class_name', '=', $className)->first();
                     $domainPricing = Capsule::select('SELECT * FROM mod_InterNetXtblpremiumpricing WHERE relid='.$premiumclassID->id.' AND currency=1');
