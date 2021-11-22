@@ -33,22 +33,78 @@ class WhmcsBridge
         return array("error" => $msg);
     }
 
+    public static function containsRegistrarNameServer(Array $nsArray){
+        foreach ($nsArray as $ns) {
+            if (strpos($ns['name'], Config::registrarNameserver()) !== FALSE){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static function parseDomainZone($params){
+        return self::domainZoneFromTemplate($params);
+    }
+
+    public static function replaceInTemplate($t, $replaceMap, $replaceMapCache = null){
+
+        // If Patterns Cache is empty, compile the replace Pattern from $replaceMap
+        // For the regular Expression that replace partial Matches
+        // Only include scalar replace values (preg_replace will throw a notice if not)
+        if (is_null($replaceMapCache)){
+            $replaceMapCache = [];
+            foreach ($replaceMap as $pKey => $pValue) {
+                if (is_scalar($pValue)){
+                    $replaceMapCache['#' . preg_quote($pKey) . '#'] = $pValue ;
+                }
+
+            }
+        }
+
+        // Recursively loop throu key values pairs
+        foreach ($t as $key => $value) {
+            if (is_array($value)){
+                $t[$key] = self::replaceInTemplate($value, $replaceMap, $replaceMapCache);
+            } elseif(is_string($value)) {
+                // If full match (e.g. $t[$key] == "{{domain}}")
+                // Replace value with match value
+                // This is important to replace e.g. "{{nameservers}}" with the full object
+                if (in_array($value, array_keys($replaceMap))){
+                    $t[$key] = $replaceMap[$value];
+                } else {
+                    // Replace Partial Matches
+                    // replaceMap can contain arrays
+                    // This will throw a Notice "Array to string conversion"
+                     $t[$key] = preg_replace(array_keys($replaceMapCache), $replaceMapCache, $value);
+                }
+
+
+            }
+        }
+        return $t;
+    }
+
+    public static function domainZoneFromTemplate($params, $templateFileName = 'zone.json'){
+        // Load the Zone Template
+        $template = file_get_contents(Config::templateDir(). $templateFileName);
+        $template = json_decode($template, true);
+
         $mainip = $params['domainIP'];
         $mx = $params['domainMX'];
-        $zone = new Zone([
-            'origin' => self::parseDomain($params),
-            'soa' => new Soa([
-                'email' => 'do-not-reply@' . self::parseDomain($params),
-            ]),
-            'main' => new MainIp([
-                'address' => $mainip,
-                'ttl' => 86000,
-            ]),
-            'action' => NameserverActionConstants::COMPLETE,
-            'nameServers' => self::parseNameservers($params),
-            'wwwInclude' => true,
+        $nameservers = self::parseNameservers($params);
+        $action = self::containsRegistrarNameServer($nameservers) ? NameserverActionConstants::COMPLETE : NameserverActionConstants::NONE;
+
+        $template = self::replaceInTemplate($template, [
+            '{{domain}}' => self::parseDomain($params),
+            '{{nameservers}}' => $nameservers,
+            '{{ip}}' => $mainip,
+            '{{mx}}' => $mx,
+            '{{nameserver_action}}' => $action
         ]);
+
+
+        $zone = new Zone($template);
+        // throw new RegistrarModuleException(print_r($zone, true));
         return $zone;
     }
 

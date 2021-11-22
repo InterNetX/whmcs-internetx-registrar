@@ -1,0 +1,27 @@
+{
+    "origin": "{{domain}}",
+    "soa": {
+        "refresh": 3600,
+        "retry": 7200,
+        "expire": 604800,
+        "ttl": 600,
+        "email": "do-not-reply@{{domain}}"
+    },
+    "dnssec": false,
+    "allowTransfer": false,
+    "nameServers": "{{nameservers}}",
+    "main": {
+        "address": "{{ip}}",
+        "ttl": 86000
+    },
+    "wwwInclude": true,
+    "action": "{{nameserver_action}}",
+    "resourceRecords": [
+        {
+            "name": "subdomainexample",
+            "ttl": 600,
+            "type": "A",
+            "value": "1.3.5.7"
+        }
+    ]
+}

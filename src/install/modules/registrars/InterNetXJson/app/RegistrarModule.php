@@ -216,11 +216,11 @@ class RegistrarModule implements RegistrarModuleInterface {
         $contacts['admin']      = $domainrobot->contact->create($contacts['admin']);
         $contacts['registrant'] = $domainrobot->contact->create($contacts['registrant']);
         // return WhmcsBridge::errorResponse('Register Domain  Contacts<pre>' . print_r($contacts, true) . '</pre>');
-
+        $nameservers = WhmcsBridge::parseNameservers($params);
         //Create Domain
         $domain = new Domain();
         $domain->setName(WhmcsBridge::parseDomain($params));
-        $domain->setNameServers(WhmcsBridge::parseNameservers($params));
+        $domain->setNameServers($nameservers);
         $domain->setOwnerc($contacts['registrant']);
         $domain->setAdminc($params['adminContact'] == 'on' ? $contacts['registrant'] : $contacts['admin'] );
         $domain->setTechc($contacts['admin']);
@@ -242,9 +242,12 @@ class RegistrarModule implements RegistrarModuleInterface {
 
         }
 
-        // Add zone
-        $zone = WhmcsBridge::parseDomainZone($params);
-        $createdZone = $domainrobot->zone->create($zone);
+        // Add zone if nameservers are ours
+        if (WhmcsBridge::containsRegistrarNameServer($nameservers)){
+            $zone = WhmcsBridge::parseDomainZone($params);
+            $createdZone = $domainrobot->zone->create($zone);
+        }
+
         // TODO: Check if needed
         //$domain->setIgnoreWhois(true);
         $objectJob = $domainrobot->domain->create($domain);
