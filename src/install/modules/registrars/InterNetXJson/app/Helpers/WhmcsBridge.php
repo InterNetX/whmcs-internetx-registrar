@@ -97,8 +97,8 @@ class WhmcsBridge
         $template = self::replaceInTemplate($template, [
             '{{domain}}' => self::parseDomain($params),
             '{{nameservers}}' => $nameservers,
-            '{{ip}}' => $mainip,
-            '{{mx}}' => $mx,
+            '{{config_ip}}' => $mainip,
+            '{{config_mx}}' => $mx,
             '{{nameserver_action}}' => $action
         ]);
 

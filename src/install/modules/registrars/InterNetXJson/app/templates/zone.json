@@ -11,17 +11,23 @@
     "allowTransfer": false,
     "nameServers": "{{nameservers}}",
     "main": {
-        "address": "{{ip}}",
-        "ttl": 86000
+        "address": "{{config_ip}}",
+        "ttl": 86400
     },
     "wwwInclude": true,
     "action": "{{nameserver_action}}",
     "resourceRecords": [
         {
-            "name": "subdomainexample",
-            "ttl": 600,
+            "name": "{{config_mx}}",
+            "ttl": 86400,
             "type": "A",
-            "value": "1.3.5.7"
+            "value": "{{config_ip}}"
+        },
+        {
+            "name": "",
+            "ttl": 86400,
+            "type": "MX",
+            "value": "{{config_mx}}.{{domain}}."
         }
     ]
 }

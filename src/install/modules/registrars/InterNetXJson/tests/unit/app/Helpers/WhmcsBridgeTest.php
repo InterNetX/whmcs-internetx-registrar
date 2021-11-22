@@ -154,8 +154,8 @@ final class WhmcsBridgeTest extends TestCase
             'domainIP' => '127.0.0.1',
             'domainMX' => 'mail',
             'domain_punycode' => 'example.com',
-            'ns1' => 'a.ns14.net',
-            'ns2' => 'b.ns14.net',
+            'ns1' => 'demo.autodns2.de',
+            'ns2' => 'demo.autodns2.de',
 
         ]);
         $this->assertEquals(NameserverActionConstants::COMPLETE, $result['action']);

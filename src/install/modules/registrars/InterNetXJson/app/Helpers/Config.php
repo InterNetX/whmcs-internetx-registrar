@@ -5,7 +5,7 @@ namespace App\Helpers;
 class Config {
     private static $moduleName = 'InterNetXJson';
     private static $premiumAddonName = 'InterNetX';
-    private static $registrarNameserver = 'ns14.net';
+    private static $registrarNameserver = 'demo.autodns2.de';
     private static $templateDir = __DIR__ .'/../templates/';
 
     public static function moduleName(){
