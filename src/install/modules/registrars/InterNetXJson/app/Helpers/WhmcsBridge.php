@@ -108,6 +108,15 @@ class WhmcsBridge
         return $zone;
     }
 
+    public static function getFirstConfigNameserver($params){
+        if ($params['sandboxMode'] == "on") {
+            $zoneNs = explode("\n", trim($params['sandboxNameServers']));
+        } else {
+            $zoneNs = explode("\n", trim($params['nameServers']));
+        }
+        return trim($zoneNs[0]);
+    }
+
     public static function whmcs2domainrobotContact($prefix, $params){
 
         $contact = new Contact();

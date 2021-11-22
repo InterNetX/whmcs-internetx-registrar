@@ -203,10 +203,12 @@ class RegistrarModule implements RegistrarModuleInterface {
         return $configArray;
     }
 
-    public static function RegisterDomain($params){
+    private static function prepareDomain($params, $domainrobot = false) {
         // return WhmcsBridge::errorResponse('RegisterDomain not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
         //Get API
-        $domainrobot = self::getApi($params);
+        if (!$domainrobot){
+            $domainrobot = self::getApi($params);
+        }
 
         //Parse Contacts
         $contacts = WhmcsBridge::parseContacts($params);
@@ -225,6 +227,7 @@ class RegistrarModule implements RegistrarModuleInterface {
         $domain->setAdminc($params['adminContact'] == 'on' ? $contacts['registrant'] : $contacts['admin'] );
         $domain->setTechc($contacts['admin']);
         $domain->setZonec($contacts['admin']);
+        $domain->setPrivacy($params['idprotection']);
         // return WhmcsBridge::errorResponse('Register Domain <pre>' . print_r($domain, true) . '</pre>');
 
         // Check for Premium Domain
@@ -239,7 +242,6 @@ class RegistrarModule implements RegistrarModuleInterface {
                 // Bail out on error here
                 return WhmcsBridge::errorResponse('Cannot register premium domain. Please make sure that your Premium Domains addon module is active and configured correctly.');
             }
-
         }
 
         // Add zone if nameservers are ours
@@ -247,15 +249,26 @@ class RegistrarModule implements RegistrarModuleInterface {
             $zone = WhmcsBridge::parseDomainZone($params);
             $createdZone = $domainrobot->zone->create($zone);
         }
-
-        // TODO: Check if needed
-        //$domain->setIgnoreWhois(true);
-        $objectJob = $domainrobot->domain->create($domain);
+        return $domain;
 
     }
 
+    public static function RegisterDomain($params){
+        // return WhmcsBridge::errorResponse('RegisterDomain not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
+        //Get API
+        $domainrobot = self::getApi($params);
+        $domain = self::prepareDomain($params, $domainrobot);
+        // TODO: Check if needed
+        //$domain->setIgnoreWhois(true);
+        $objectJob = $domainrobot->domain->create($domain);
+    }
+
     public static function TransferDomain($params){
-        return WhmcsBridge::errorResponse('TransferDomain not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        $domainrobot = self::getApi($params);
+        $domain = self::prepareDomain($params, $domainrobot);
+        $domain->setAuthinfo($params['eppcode']);
+        $domain->setConfirmOwnerConsent(1);
+        $objectJob = $domainrobot->domain->transfer($domain);
     }
 
     public static function RenewDomain($params){
@@ -263,15 +276,43 @@ class RegistrarModule implements RegistrarModuleInterface {
     }
 
     public static function GetNameservers($params){
-        return WhmcsBridge::errorResponse('GetNameservers not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+
+        $domainrobot = self::getApi($params);
+        $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
+
+        if (isset($domain['nameServers']) && is_array($domain['nameServers'])){
+            $result = [];
+            foreach ($domain['nameServers'] as $key => $ns) {
+                $result['ns'.($key+1)] = $ns['name'];
+            }
+            return $result;
+        }
     }
 
     public static function SaveNameservers($params){
-        return WhmcsBridge::errorResponse('SaveNameservers not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        $domainrobot = self::getApi($params);
+        $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
+        $domain->setNameServers(WhmcsBridge::parseNameservers($params));
+        $domainrobot->domain->update($domain);
     }
 
     public static function GetDNS($params){
-        return WhmcsBridge::errorResponse('GetDNS not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        // return WhmcsBridge::errorResponse('GetDNS not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
+        $domainrobot = self::getApi($params);
+        $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
+        $zone = $domainrobot->zone->info(WhmcsBridge::parseDomain($params), $domain['nameServers'][0]['name']);
+
+        $hostRecords = array();
+        foreach ($zone['resourceRecords'] as $record) {
+            $hostRecords[] = array(
+                "hostname" => $record['name'],    // eg. www
+                "type"     => $record['type'],    // eg. A
+                "address"  => $record['value'],   // eg. 10.0.0.1
+                "priority" => $record['pref'],    // eg. 10 (N/A for non-MX records)
+            );
+        }
+        return $hostRecords;
+
     }
 
     public static function SaveDNS($params){
