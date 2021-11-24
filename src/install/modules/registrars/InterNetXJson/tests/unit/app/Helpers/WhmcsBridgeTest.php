@@ -140,10 +140,7 @@ final class WhmcsBridgeTest extends TestCase
             'ns2' => 'ns2.example.com'
         ]);
         $this->assertInstanceOf(DomainRobot\Model\Zone::class, $result);
-        $this->assertInstanceOf(DomainRobot\Model\Soa::class, $result['soa']);
         $this->assertInstanceOf(DomainRobot\Model\MainIp::class, $result['main']);
-        $this->assertEquals('example.com', $result['origin']);
-        $this->assertEquals('do-not-reply@example.com', $result['soa']['email']);
         $this->assertEquals('127.0.0.1', $result['main']['address']);
     }
 

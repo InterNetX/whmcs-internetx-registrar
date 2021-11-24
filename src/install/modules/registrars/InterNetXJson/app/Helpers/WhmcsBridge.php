@@ -16,6 +16,7 @@ use App\Exceptions\RegistrarModuleException;
 use Domainrobot\Model\ContactGeneralExtensions;
 use Domainrobot\Model\NameserverActionConstants;
 use Domainrobot\Model\ContactIdentificationExtensions;
+use Domainrobot\Model\ResourceRecord;
 
 class WhmcsBridge
 {
@@ -114,6 +115,30 @@ class WhmcsBridge
             $zoneNs = explode("\n", trim($params['nameServers']));
         }
         return trim($zoneNs[0]);
+    }
+
+    public static function whmcs2domainrobotResourceRecords($params){
+        $dnsRecords = $params['dnsrecords'];
+        $records = [];
+        $notSuported = array("MXE", "URL", "FRAME");
+        foreach ($dnsRecords as $k => $r) {
+            // Skip unusable Entries
+            if (empty($r['hostname']) && empty($r['address']))
+                continue;
+
+                // Notify of unsupported Types
+            if (in_array($r['type'], $notSuported)){
+                throw new RegistrarModuleException("Record \"{$r['type']}\" is not supported");
+            }
+
+            $records[] = new ResourceRecord([
+                "name" => $r['hostname'],
+                "type" => $r['type'],
+                "value" => $r['address'],
+                "pref" => $r['priority'] == "N/A" ? "" : $r['priority'],
+            ]);
+        }
+        return $records;
     }
 
     public static function whmcs2domainrobotContact($prefix, $params){

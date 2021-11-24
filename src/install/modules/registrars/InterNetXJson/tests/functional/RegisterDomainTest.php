@@ -86,7 +86,7 @@ final class RegisterDomainTest extends TestCase
 
         // Try to Register
         $rm = RegistrarModule::call('RegisterDomain', $params);
-        print_r($rm);
+        $this->assertInstanceOf(Domainrobot\Model\ObjectJob::class, $rm);
     }
 
     public function testItCanRegisterADomainWithForeignNameservers(): void
@@ -164,7 +164,7 @@ final class RegisterDomainTest extends TestCase
 
         // Try to Register
         $rm = RegistrarModule::call('RegisterDomain', $params);
-        print_r($rm);
+        $this->assertInstanceOf(Domainrobot\Model\ObjectJob::class, $rm);
     }
 
 }

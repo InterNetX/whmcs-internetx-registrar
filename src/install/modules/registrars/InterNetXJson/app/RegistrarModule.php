@@ -306,6 +306,7 @@ class RegistrarModule implements RegistrarModuleInterface {
         $domainrobot->domain->update($domain);
     }
 
+
     public static function GetDNS($params){
         // return WhmcsBridge::errorResponse('GetDNS not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
         $domainrobot = self::getApi($params);
@@ -313,6 +314,29 @@ class RegistrarModule implements RegistrarModuleInterface {
         $zone = $domainrobot->zone->info(WhmcsBridge::parseDomain($params), $domain['nameServers'][0]['name']);
 
         $hostRecords = array();
+        // Include mainIP as Resource Record
+        // If it exists
+        if ($main = $zone->getMain()){
+            if($mainIP = $main->getAddress()){
+                $hostRecords[] = array(
+                    "hostname" => '',    // eg. www
+                    "type"     => 'A',    // eg. A
+                    "address"  => $mainIP,   // eg. 10.0.0.1
+                    "priority" => 'N/A',    // eg. 10 (N/A for non-MX records)
+                );
+                // Also add www. Entry it wwwInclude is set
+                if ($zone->getWwwInclude()){
+                    $hostRecords[] = array(
+                        "hostname" => 'www',    // eg. www
+                        "type"     => 'A',    // eg. A
+                        "address"  => $mainIP,   // eg. 10.0.0.1
+                        "priority" => 'N/A',    // eg. 10 (N/A for non-MX records)
+                    );
+                }
+            }
+        }
+
+        // Include all "real ResourceRecords"
         foreach ($zone['resourceRecords'] as $record) {
             $hostRecords[] = array(
                 "hostname" => $record['name'],    // eg. www
@@ -321,12 +345,42 @@ class RegistrarModule implements RegistrarModuleInterface {
                 "priority" => $record['pref'],    // eg. 10 (N/A for non-MX records)
             );
         }
+
         return $hostRecords;
 
     }
 
     public static function SaveDNS($params){
-        return WhmcsBridge::errorResponse('SaveDNS not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        // return WhmcsBridge::errorResponse('SaveDNS not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
+        $domainrobot = self::getApi($params);
+
+        // Get Current Zone From API
+        $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
+        $zone = $domainrobot->zone->info(WhmcsBridge::parseDomain($params), $domain['nameServers'][0]['name']);
+        $newResourceRecords = WhmcsBridge::whmcs2domainrobotResourceRecords($params);
+        $zone->setResourceRecords($newResourceRecords);
+
+        // If our custom form was used to set the A Entry. Use it.
+        // Else set MainIP to null
+        if (isset($_REQUEST['zone']['main']['value'])){
+            $mainIP = $_REQUEST['zone']['main']['value'];
+            $currentMain = $zone->getMain();
+            $currentMain->setAddress($mainIP);
+            $zone->setMain($currentMain);
+        } else {
+            $zone->setMain(null);
+        }
+
+        // If our custom form was used to use www_include use it
+        // Else set wwwInclude to False
+        if (isset($_REQUEST['zone']['www_include'])){
+            $www_include = (int) $_REQUEST['zone']['www_include'];
+            $zone->setWwwInclude($www_include);
+        } else {
+            $zone->setWwwInclude(false);
+        }
+        $domainrobot->zone->update($zone);
+
     }
 
     public static function GetContactDetails($params){
