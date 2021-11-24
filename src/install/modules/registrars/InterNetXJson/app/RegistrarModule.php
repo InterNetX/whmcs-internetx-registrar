@@ -204,8 +204,8 @@ class RegistrarModule implements RegistrarModuleInterface {
     }
 
     private static function prepareDomain($params, $domainrobot = false) {
-        // return WhmcsBridge::errorResponse('RegisterDomain not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
-        //Get API
+
+        // Get API if not provided ny parameter
         if (!$domainrobot){
             $domainrobot = self::getApi($params);
         }
@@ -213,11 +213,13 @@ class RegistrarModule implements RegistrarModuleInterface {
         //Parse Contacts
         $contacts = WhmcsBridge::parseContacts($params);
 
-        // return WhmcsBridge::errorResponse('Register Domain <pre>' . print_r($contacts, true) . '</pre>');
         //Create Registrant and AdminContact
         $contacts['admin']      = $domainrobot->contact->create($contacts['admin']);
         $contacts['registrant'] = $domainrobot->contact->create($contacts['registrant']);
-        // return WhmcsBridge::errorResponse('Register Domain  Contacts<pre>' . print_r($contacts, true) . '</pre>');
+        // Keep only the 'id' everything else is not needed for the requests
+        $contacts['admin']      = ['id' => $contacts['admin']['id']];
+        $contacts['registrant'] = ['id' => $contacts['registrant']['id']];
+
         $nameservers = WhmcsBridge::parseNameservers($params);
         //Create Domain
         $domain = new Domain();
@@ -228,7 +230,6 @@ class RegistrarModule implements RegistrarModuleInterface {
         $domain->setTechc($contacts['admin']);
         $domain->setZonec($contacts['admin']);
         $domain->setPrivacy($params['idprotection']);
-        // return WhmcsBridge::errorResponse('Register Domain <pre>' . print_r($domain, true) . '</pre>');
 
         // Check for Premium Domain
         // TODO: $api -> Premium
@@ -243,14 +244,21 @@ class RegistrarModule implements RegistrarModuleInterface {
                 return WhmcsBridge::errorResponse('Cannot register premium domain. Please make sure that your Premium Domains addon module is active and configured correctly.');
             }
         }
-
         // Add zone if nameservers are ours
         if (WhmcsBridge::containsRegistrarNameServer($nameservers)){
             $zone = WhmcsBridge::parseDomainZone($params);
-            $createdZone = $domainrobot->zone->create($zone);
+            // Initially i had to manually create the zone before the registration
+            // This works now directly with the registration request, by using nameser->action = 'AUTO'
+            // $createdZone = $domainrobot->zone->create($zone);
+            $domain->setZone($zone);
         }
         return $domain;
 
+    }
+
+    private static function getDomainInfo($params){
+        $domainrobot = self::getApi($params);
+        return $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
     }
 
     public static function RegisterDomain($params){
@@ -258,9 +266,11 @@ class RegistrarModule implements RegistrarModuleInterface {
         //Get API
         $domainrobot = self::getApi($params);
         $domain = self::prepareDomain($params, $domainrobot);
+
         // TODO: Check if needed
         //$domain->setIgnoreWhois(true);
         $objectJob = $domainrobot->domain->create($domain);
+        return $objectJob;
     }
 
     public static function TransferDomain($params){

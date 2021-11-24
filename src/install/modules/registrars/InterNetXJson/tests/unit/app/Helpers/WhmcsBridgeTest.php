@@ -158,7 +158,7 @@ final class WhmcsBridgeTest extends TestCase
             'ns2' => 'demo.autodns2.de',
 
         ]);
-        $this->assertEquals(NameserverActionConstants::COMPLETE, $result['action']);
+        $this->assertEquals(NameserverActionConstants::AUTO, $result['action']);
     }
 
     public function testparseDomainReturnsCorrectActionForForeignNameServers(): void

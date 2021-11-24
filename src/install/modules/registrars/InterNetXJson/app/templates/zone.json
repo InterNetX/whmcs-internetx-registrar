@@ -1,21 +1,10 @@
 {
-    "origin": "{{domain}}",
-    "soa": {
-        "refresh": 3600,
-        "retry": 7200,
-        "expire": 604800,
-        "ttl": 600,
-        "email": "do-not-reply@{{domain}}"
-    },
-    "dnssec": false,
-    "allowTransfer": false,
-    "nameServers": "{{nameservers}}",
+    "action": "{{nameserver_action}}",
     "main": {
         "address": "{{config_ip}}",
         "ttl": 86400
     },
     "wwwInclude": true,
-    "action": "{{nameserver_action}}",
     "resourceRecords": [
         {
             "name": "{{config_mx}}",

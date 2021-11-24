@@ -50,7 +50,7 @@ class WhmcsBridge
 
         // If Patterns Cache is empty, compile the replace Pattern from $replaceMap
         // For the regular Expression that replace partial Matches
-        // Only include scalar replace values (preg_replace will throw a notice if not)
+        // Only include scalar replace values (preg_replace will throw a notice if you provide someting other than []string)
         if (is_null($replaceMapCache)){
             $replaceMapCache = [];
             foreach ($replaceMap as $pKey => $pValue) {
@@ -61,20 +61,19 @@ class WhmcsBridge
             }
         }
 
-        // Recursively loop throu key values pairs
+        // Recursively loop through key values pairs
         foreach ($t as $key => $value) {
             if (is_array($value)){
+                // Recurse on arrays
                 $t[$key] = self::replaceInTemplate($value, $replaceMap, $replaceMapCache);
-            } elseif(is_string($value)) {
+            } elseif (is_string($value)) {
                 // If full match (e.g. $t[$key] == "{{domain}}")
                 // Replace value with match value
                 // This is important to replace e.g. "{{nameservers}}" with the full object
                 if (in_array($value, array_keys($replaceMap))){
                     $t[$key] = $replaceMap[$value];
                 } else {
-                    // Replace Partial Matches
-                    // replaceMap can contain arrays
-                    // This will throw a Notice "Array to string conversion"
+                    // Replace Partial Matches using the precompiled replaceMapCache
                      $t[$key] = preg_replace(array_keys($replaceMapCache), $replaceMapCache, $value);
                 }
 
@@ -85,6 +84,7 @@ class WhmcsBridge
     }
 
     public static function domainZoneFromTemplate($params, $templateFileName = 'zone.json'){
+
         // Load the Zone Template
         $template = file_get_contents(Config::templateDir(). $templateFileName);
         $template = json_decode($template, true);
@@ -92,16 +92,15 @@ class WhmcsBridge
         $mainip = $params['domainIP'];
         $mx = $params['domainMX'];
         $nameservers = self::parseNameservers($params);
-        $action = self::containsRegistrarNameServer($nameservers) ? NameserverActionConstants::COMPLETE : NameserverActionConstants::NONE;
+        $action = self::containsRegistrarNameServer($nameservers) ? NameserverActionConstants::AUTO : NameserverActionConstants::NONE;
 
         $template = self::replaceInTemplate($template, [
             '{{domain}}' => self::parseDomain($params),
             '{{nameservers}}' => $nameservers,
             '{{config_ip}}' => $mainip,
-            '{{config_mx}}' => $mx,
+            '{{config_mx}}' => $mx ? $mx : 'mail',
             '{{nameserver_action}}' => $action
         ]);
-
 
         $zone = new Zone($template);
         // throw new RegistrarModuleException(print_r($zone, true));

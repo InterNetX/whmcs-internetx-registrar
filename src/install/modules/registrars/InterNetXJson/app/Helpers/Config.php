@@ -3,10 +3,10 @@
 namespace App\Helpers;
 
 class Config {
-    private static $moduleName = 'InterNetXJson';
-    private static $premiumAddonName = 'InterNetX';
+    private static $moduleName          = 'InterNetXJson';
+    private static $premiumAddonName    = 'InterNetX';
     private static $registrarNameserver = 'demo.autodns2.de';
-    private static $templateDir = __DIR__ .'/../templates/';
+    private static $templateDir         = __DIR__ .'/../templates/';
 
     public static function moduleName(){
         return self::$moduleName;
