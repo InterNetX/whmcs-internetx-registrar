@@ -30,7 +30,7 @@ class RegistrarModule implements RegistrarModuleInterface {
      */
     public static function call($functionName, $params = false){
         try {
-            WhmcsBridge::saveParamsLog($functionName, $params);
+            // WhmcsBridge::saveParamsLog($functionName, $params);
             return call_user_func('self::'.$functionName, $params);
         } catch (RegistrarModuleException $th) {
             return WhmcsBridge::errorResponse($th->getMessage());
