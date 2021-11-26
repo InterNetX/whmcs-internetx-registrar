@@ -28,6 +28,7 @@ class RegistrarModule implements RegistrarModuleInterface {
      */
     public static function call($functionName, $params = false){
         try {
+            WhmcsBridge::saveParamsLog($functionName, $params);
             return call_user_func('self::'.$functionName, $params);
         } catch (RegistrarModuleException $th) {
             return WhmcsBridge::errorResponse($th->getMessage());
@@ -282,7 +283,23 @@ class RegistrarModule implements RegistrarModuleInterface {
     }
 
     public static function RenewDomain($params){
-        return WhmcsBridge::errorResponse('RenewDomain not implemented<br/><pre>'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        // By Default, Accounts automatically renew Domains
+        // but some Accounts have this disabled
+        // So we HAVE TO manually renew every domain
+        // if the Setting "autdelete" is 'on'
+        // AutoDelete means "This is an Account with Auto Delete activated" as opposed to
+        // "An Account that automatically renews domains"
+
+        // We need to manually renew the domain
+        if (isset($params['autodelete']) && $params['autodelete'] == 'on'){
+            $domainrobot = self::getApi($params);
+            $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
+            $domain->setRemoveCancelation(true);
+             $domainrobot->domain->renew($domain);
+        }
+
+        return true;
+
     }
 
     public static function GetNameservers($params){
@@ -324,7 +341,7 @@ class RegistrarModule implements RegistrarModuleInterface {
                     "address"  => $mainIP,   // eg. 10.0.0.1
                     "priority" => 'N/A',    // eg. 10 (N/A for non-MX records)
                 );
-                // Also add www. Entry it wwwInclude is set
+                // Also add www-Entry if wwwInclude is set
                 if ($zone->getWwwInclude()){
                     $hostRecords[] = array(
                         "hostname" => 'www',    // eg. www
@@ -384,7 +401,48 @@ class RegistrarModule implements RegistrarModuleInterface {
     }
 
     public static function GetContactDetails($params){
-        return WhmcsBridge::errorResponse('GetContactDetails not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        // return WhmcsBridge::errorResponse('GetContactDetails not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        $domainrobot = self::getApi($params);
+        // Get Domain Info
+        $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
+        // Extract the Contacts
+        $contacts = array(
+            'Registrant' => $domain["ownerc"],
+            'Admin'      => $domain["adminc"],
+            'Tech'       => $domain["techc"],
+            'Zone'       => $domain["zonec"],
+        );
+        // Remove Doubles
+        $contacts = array_unique($contacts);
+        // return $contacts;
+        $whmcsContacts = [];
+        foreach ($contacts as $key => $contact) {
+            // Get full information from API and update Array value
+            $contactDetails = $domainrobot->contact->info($contact['id']);
+
+            // API returns an array of addresses up to n long
+            // We just want to show two fields
+            // so we combine everything > 2
+            if (count($contactDetails["address"]) > 2){
+                $contactDetails["address"] =[
+                    $contactDetails["address"][0],
+                    implode(', ', array_slice($contactDetails["address"], 1))
+                ];
+            }
+
+            $whmcsContacts[$key]['First Name']   = $contactDetails["fname"];
+            $whmcsContacts[$key]['Last Name']    = $contactDetails["lname"];
+            $whmcsContacts[$key]['Company Name'] = $contactDetails["organization"];
+            $whmcsContacts[$key]['City']         = $contactDetails["city"];
+            $whmcsContacts[$key]['Address 1']      = $contactDetails["address"][0];
+            $whmcsContacts[$key]['Address 2']      = $contactDetails["address"][1];
+            $whmcsContacts[$key]['State']        = $contactDetails["state"];
+            $whmcsContacts[$key]['Postcode']     = $contactDetails["pcode"];
+            $whmcsContacts[$key]['Country']      = $contactDetails["country"];
+            $whmcsContacts[$key]['Phone Number'] = $contactDetails["phone"];
+            $whmcsContacts[$key]['Email']        = $contactDetails["email"];
+        }
+        return $whmcsContacts;
     }
 
     public static function SaveContactDetails($params){

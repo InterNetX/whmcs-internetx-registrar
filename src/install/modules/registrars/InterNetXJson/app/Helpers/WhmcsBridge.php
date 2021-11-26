@@ -30,6 +30,12 @@ class WhmcsBridge
         return true;
     }
 
+    public static function saveParamsLog($functionName, $params){
+        $fn = "$functionName.log";
+        file_put_contents(__DIR__."/log/$fn", var_export($params, true)."\n\n", FILE_APPEND);
+        return true;
+    }
+
     public static function errorResponse($msg){
         return array("error" => $msg);
     }
