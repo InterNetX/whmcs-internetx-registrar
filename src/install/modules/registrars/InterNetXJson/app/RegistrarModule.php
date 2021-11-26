@@ -19,6 +19,8 @@ use WHMCS\Domains\DomainLookup\ResultsList;
 use App\Exceptions\RegistrarModuleException;
 use WHMCS\Domains\DomainLookup\SearchResult;
 use App\Providers\WhmcsModuleLogProvider as Logger;
+use DateTime;
+use Domainrobot\Model\RegistryStatusConstants;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 class RegistrarModule implements RegistrarModuleInterface {
@@ -493,19 +495,102 @@ class RegistrarModule implements RegistrarModuleInterface {
     }
 
     public static function GetEPPCode($params){
-        return WhmcsBridge::errorResponse('GetEPPCode not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        $domainrobot = self::getApi($params);
+
+        // Get Domaininfo
+        $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
+
+        // SET Domain Status to Active if not already
+        if ($domain->getRegistryStatus() != RegistryStatusConstants::ACTIVE){
+            $domain->setRegistryStatus(RegistryStatusConstants::ACTIVE);
+            $domainrobot->domain->update($domain);
+        }
+        // .de & .eu -> authinfo1Create
+        if (strpos($params['tld'], 'de') !== false || strpos($params['tld'], 'eu') !== false) {
+            $domainrobot->domain->createAuthinfo1($domain);
+        }
+
+        $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
+        return [
+            'eppcode' => $domain->getAuthinfo()
+        ];
     }
 
     public static function Sync($params){
-        return WhmcsBridge::errorResponse('Sync not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        $domainrobot = self::getApi($params);
+        // Get Domaininfo
+        try {
+            $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
+            $expiryDate =  new DateTime($domain->getPayable());
+            $returnData =  [
+                // Expiry = Payable
+                'expirydate' => $expiryDate->format('Y-m-d')
+            ];
+            // Expired
+            if ($expiryDate < new DateTime()){
+                $returnData['active'] = false;
+                $returnData['cancelled'] = true;
+            } else {
+            // Active
+                $returnData['active'] = true;
+            }
+            return $returnData;
+
+        } catch (DomainrobotException $th) {
+            $error = $th->getError();
+            switch ($error['status']['code']) {
+                case 'EF01012':
+                    return ['expired' => true];
+                    break;
+
+                case 'E0105':
+                    return ['cancelled' => true];
+                    break;
+
+                default:
+                    return WhmcsBridge::errorResponse($error);
+                    break;
+            }
+
+            return ['cancelled' => true];
+        }
+        // return WhmcsBridge::errorResponse('Sync not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
     public static function TransferSync($params){
-        return WhmcsBridge::errorResponse('TransferSync not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        $domainrobot = self::getApi($params);
+        // Get Domaininfo
+        try {
+            $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
+            $expiryDate =  new DateTime($domain->getPayable());
+
+            $returnData =  [
+                // Expiry = Payable
+                'active' => true,
+                'expirydate' => $expiryDate->format('Y-m-d')
+            ];
+            return $returnData;
+
+        } catch (DomainrobotException $th) {
+            $error = $th->getError();
+            return WhmcsBridge::errorResponse($error);
+        }
     }
 
     public static function IDProtectToggle($params){
-        return WhmcsBridge::errorResponse('IDProtectToggle not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+        // return WhmcsBridge::errorResponse('GetEmailForwarding not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
+        $domainrobot = self::getApi($params);
+        $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
+
+        //On
+        if ($params['protectenable'] == 1) {
+            $domain->setPrivacy(true);
+            $domainrobot->domain->update($domain);
+        //off
+        } else {
+            $domain->setPrivacy(false);
+            $domainrobot->domain->update($domain);
+        }
     }
 
     public static function GetEmailForwarding($params){

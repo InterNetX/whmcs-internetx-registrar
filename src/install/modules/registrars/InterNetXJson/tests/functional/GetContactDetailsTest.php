@@ -5,13 +5,13 @@ declare(strict_types=1);
 use App\RegistrarModule;
 use PHPUnit\Framework\TestCase;
 
-final class UpdateContactsText extends TestCase
+final class GetContactDetailsTest extends TestCase
 {
     private static function getTestDomainSld(){
         return "whmcs-module-" . uniqid();
     }
 
-    public function testItCanUpdateContacts(): void
+    public function testItCanReceiveContacts(): void
     {
         $sld = 'adw81281238283';
         $tld = 'com';
@@ -80,32 +80,13 @@ final class UpdateContactsText extends TestCase
           'ns3' => '',
           'ns4' => '',
           'ns5' => '',
-          'additionalfields' => [],
-          'contactdetails' =>
-          array (
-            'Registrant' =>
-            array (
-              'First Name' => 'FirstName',
-              'Last Name' => 'Kunde',
-              'Company Name' => '',
-              'City' => 'Munster',
-              'Address 1' => 'Kirchstr. 24',
-              'Address 2' => 'Oben bei Paul',
-              'State' => 'Nordrhein-Westfalen',
-              'Postcode' => '48155',
-              'Country' => 'DE',
-              'Phone Country Code' => '49',
-              'Phone Number' => '+49.1127027754',
-              'Email' => 'paulporzky+testkunde@gmail.com',
-              'phone-normalised' => true,
-            ),
-          ),
+          'additionalfields' => []
         );
 
 
         // Try to Register
-        $rm = RegistrarModule::call('SaveContactDetails', $params);
-        print_r($rm);
+        $rm = RegistrarModule::call('GetContactDetails', $params);
+        $this->assertArrayHasKey('Registrant', $rm);
         // $this->assertInstanceOf(Domainrobot\Model\ObjectJob::class, $rm);
     }
 
