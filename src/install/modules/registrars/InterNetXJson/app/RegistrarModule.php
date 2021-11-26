@@ -244,7 +244,7 @@ class RegistrarModule implements RegistrarModuleInterface {
                 $domain->setPriceClass($premiumDomainPriceClass);
             } else {
                 // Bail out on error here
-                return WhmcsBridge::errorResponse('Cannot register premium domain. Please make sure that your Premium Domains addon module is active and configured correctly.');
+                throw new RegistrarModuleException('Cannot register premium domain. Please make sure that your Premium Domains addon module is active and configured correctly.');
             }
         }
         // Add zone if nameservers are ours
