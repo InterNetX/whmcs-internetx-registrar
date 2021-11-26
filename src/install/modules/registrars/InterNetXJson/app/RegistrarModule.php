@@ -434,8 +434,8 @@ class RegistrarModule implements RegistrarModuleInterface {
             $whmcsContacts[$key]['Last Name']    = $contactDetails["lname"];
             $whmcsContacts[$key]['Company Name'] = $contactDetails["organization"];
             $whmcsContacts[$key]['City']         = $contactDetails["city"];
-            $whmcsContacts[$key]['Address 1']      = $contactDetails["address"][0];
-            $whmcsContacts[$key]['Address 2']      = $contactDetails["address"][1];
+            $whmcsContacts[$key]['Address 1']    = $contactDetails["address"][0];
+            $whmcsContacts[$key]['Address 2']    = $contactDetails["address"][1];
             $whmcsContacts[$key]['State']        = $contactDetails["state"];
             $whmcsContacts[$key]['Postcode']     = $contactDetails["pcode"];
             $whmcsContacts[$key]['Country']      = $contactDetails["country"];
@@ -446,7 +446,50 @@ class RegistrarModule implements RegistrarModuleInterface {
     }
 
     public static function SaveContactDetails($params){
-        return WhmcsBridge::errorResponse('SaveContactDetails not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+
+        WhmcsBridge::checkRequiredParametersOrFail(['contactdetails'], $params);
+
+        $domainrobot = self::getApi($params);
+        // Get Domain Info
+        $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
+        // Extract the Contacts
+        $contacts = array(
+            'Registrant' => $domain["ownerc"],
+            'Admin'      => $domain["adminc"],
+            'Tech'       => $domain["techc"],
+            'Zone'       => $domain["zonec"],
+        );
+
+        $whmcsContacts = $params['contactdetails'];
+
+
+        foreach ($whmcsContacts as $key => $contact) {
+            // Only Update if it exists
+            if (!isset($contacts[$key])){
+                echo "Skipping $key\n";
+                continue;
+            }
+            $liveContact = $domainrobot->contact->info($contacts[$key]['id']);
+            // $liveContact["fname"] = ($whmcsContacts[$key]['First Name']);
+            // $liveContact["lname"] = ($whmcsContacts[$key]['Last Name']);
+            $liveContact["organization"] = ($whmcsContacts[$key]['Company Name']);
+            $liveContact["city"] = ($whmcsContacts[$key]['City']);
+
+            // Make Adresses Array
+            $addresses = [$whmcsContacts[$key]['Address 1']];
+            if ($whmcsContacts[$key]['Address 2']){
+                $addresses[] = $whmcsContacts[$key]['Address 2'];
+            }
+            $liveContact["address"] =  $addresses;
+            $liveContact["state"] = ($whmcsContacts[$key]['State']);
+            $liveContact["pcode"] = ($whmcsContacts[$key]['Postcode']);
+            $liveContact["country"] = ($whmcsContacts[$key]['Country']);
+            $liveContact["phone"] = ($whmcsContacts[$key]['Phone Number']);
+            $liveContact["email"] = ($whmcsContacts[$key]['Email']);
+
+            // Update the contact
+            $r = $domainrobot->contact->update($liveContact);
+        }
     }
 
     public static function GetEPPCode($params){
