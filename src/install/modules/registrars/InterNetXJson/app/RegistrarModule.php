@@ -30,7 +30,7 @@ class RegistrarModule implements RegistrarModuleInterface {
      */
     public static function call($functionName, $params = false){
         try {
-            // WhmcsBridge::saveParamsLog($functionName, $params);
+            WhmcsBridge::saveParamsLog($functionName, $params);
             return call_user_func('self::'.$functionName, $params);
         } catch (RegistrarModuleException $th) {
             return WhmcsBridge::errorResponse($th->getMessage());
@@ -558,6 +558,27 @@ class RegistrarModule implements RegistrarModuleInterface {
     }
 
     public static function TransferSync($params){
+        // Correct Return Values
+        // Per Option
+        // 1= Transfer has been completed
+        // return array(
+        //         'completed' => true, // Return as true upon successful completion of the transfer
+        //         'expirydate' => (string)$result->expiration, // The expiry date of the domain
+        //     );
+        // 2) Transfer has Actually failed (As in we got a failed reason)
+        // return array(
+        //     'failed' => true,
+        //     'reason' => $status
+        // );
+        // 3) Not sure what happened. No Error no Completion details
+        // Can Resync later
+        // return array(
+        //     'completed' => false,
+        //     'failed' => false
+        // );
+        // 4) Real Error (errorResponse()...)
+
+
         $domainrobot = self::getApi($params);
         // Get Domaininfo
         try {
@@ -566,7 +587,7 @@ class RegistrarModule implements RegistrarModuleInterface {
 
             $returnData =  [
                 // Expiry = Payable
-                'active' => true,
+                'completed' => true,
                 'expirydate' => $expiryDate->format('Y-m-d')
             ];
             return $returnData;
