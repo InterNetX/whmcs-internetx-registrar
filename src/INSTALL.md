@@ -7,7 +7,10 @@ the folder "install" includes the directories you need to copy to your WHMCS ins
 They have the same structure you will already find in your WHMCS folder
 
 ### The Registrar Module itself
-`install/registrars/InterNetXJson` needs to be copied to `{your-whmcs-folder}/registrars/InterNetXJson`
+`install/modules/registrars/InterNetXJson` needs to be copied to `{your-whmcs-folder}/modules/registrars/InterNetXJson`
+
+### Additional Language Files
+`install/lang/overrides` needs to be copied to `{your-whmcs-folder}/lang/overrided`. If these files already exist, you can copy the additional translations from our files to the existing files.
 
 ### Additional Domain Fields
 Some TLDs (like .it) require additional Domain Fields (e.g. Legal agreements, VAT).
@@ -29,3 +32,8 @@ Some of the TLDs we allow you to register, ask you to accept Terms provided as P
 Please copy the folder `install/resources/domains/TLDfiles` to `{your-whmcs-folder}/resources/domains/TLDfiles`
 Also please Copy the TLDFiles from this directory to /resources/domains/TLDFiles. These Are Documents that get linked. E.g. to "accept the following terms"
 
+### Premium Domains Addon
+To sell premium domains, you need to install our premium domains addon alongside the registrar module.
+
+`install/modules/addons/InterNetX` needs to be copied to `{your-whmcs-folder}/modules/addons/InterNetX`
+Activate it in the Addon Modules settings of WHMCS and enable premium domains on the Domainpricing page.
