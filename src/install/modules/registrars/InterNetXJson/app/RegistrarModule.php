@@ -2,15 +2,20 @@
 
 namespace App;
 
+use DateTime;
+use Exception;
 use App\Helpers\Config;
+
 use App\Helpers\WhmcsBridge;
 use Domainrobot\Domainrobot;
-
 use Domainrobot\Model\Domain;
 use Domainrobot\Model\Contact;
 use Domainrobot\Model\NameServer;
 use Domainrobot\Lib\DomainrobotAuth;
 use App\Providers\WhoisProxyProvider;
+use Domainrobot\Model\TransferAnswer;
+use App\Providers\LegacyApi\LegacyApi;
+use App\Providers\LegacyApi\InterNetXExtension;
 use Domainrobot\Lib\DomainrobotException;
 use Domainrobot\Model\ContactItExtensions;
 use App\Contracts\RegistrarModuleInterface;
@@ -18,9 +23,10 @@ use Domainrobot\Model\ContactTypeConstants;
 use WHMCS\Domains\DomainLookup\ResultsList;
 use App\Exceptions\RegistrarModuleException;
 use WHMCS\Domains\DomainLookup\SearchResult;
-use App\Providers\WhmcsModuleLogProvider as Logger;
-use DateTime;
 use Domainrobot\Model\RegistryStatusConstants;
+
+use function PHPUnit\Framework\throwException;
+use App\Providers\WhmcsModuleLogProvider as Logger;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 class RegistrarModule implements RegistrarModuleInterface {
@@ -206,6 +212,15 @@ class RegistrarModule implements RegistrarModuleInterface {
         return $configArray;
     }
 
+    public static function AdminCustomButtonArray()
+    {
+        $buttonArray = array(
+            "Transfer Out ACK" => "transferOutAck",
+            "Transfer Out NACK" => "transferOutNack",
+        );
+        return $buttonArray;
+    }
+
     private static function prepareDomain($params, $domainrobot = false) {
 
         // Get API if not provided ny parameter
@@ -292,16 +307,28 @@ class RegistrarModule implements RegistrarModuleInterface {
         // AutoDelete means "This is an Account with Auto Delete activated" as opposed to
         // "An Account that automatically renews domains"
 
-        // We need to manually renew the domain
+        $doSendTheRenewRequest = false;
+
+        // We need to manually renew the domain because the setting indiciates an account with autodelete on
         if (isset($params['autodelete']) && $params['autodelete'] == 'on'){
+            $doSendTheRenewRequest = true;
+        } else {
+            // Autodelete is off so we normally don't have to send a renew request
+            // Still the admin panel has the "renew" button that allows manual invocation of
+            // this function. So we check for this and send out the renew anyway
+            if (strpos($_SERVER['PHP_SELF'], 'clientsdomains.php') !== false)
+            {
+                $doSendTheRenewRequest = true;
+            }
+        }
+
+        if ($doSendTheRenewRequest){
             $domainrobot = self::getApi($params);
             $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
             $domain->setRemoveCancelation(true);
-             $domainrobot->domain->renew($domain);
+            $domainrobot->domain->renew($domain);
         }
-
         return true;
-
     }
 
     public static function GetNameservers($params){
@@ -734,4 +761,264 @@ class RegistrarModule implements RegistrarModuleInterface {
         if ($params['debug']) Logger::log('Method checkAvailability', print_r($_REQUEST, true), 'sld: ' . $sld . "\nTLDS: " . implode(', ', $tlds )."\n". print_r($checkResult, true));
         return $results;
     }
+
+
+    /**
+     * FUNCTION InterNetX_AdminCustomButtonArray
+     * Transfer out domain ACK
+     * @param type $params
+     * @return string
+     */
+    private static function TransferOutRequest($params, $doTransfer = false )
+    {
+        $domainrobot = self::getApi($params);
+        $answer = $doTransfer ? TransferAnswer::ACK : TransferAnswer::NACK;
+        // The reason. Possible values are : 1 = Evidence of fraud / 2 = Current UDRP action / 3 = Court order / 4 = Identity dispute / 5 = No payment for previous registration period / 6 = Express written objection to the transfer from the transfer contact.
+        // Set to "null" for ACK and to  "7" for NACK (The former Task used 7)
+        $reason = $doTransfer ? null : 7;
+        $objectJob = $domainrobot->transferOut->answer(WhmcsBridge::parseDomain($params), $answer, $reason);
+        return $objectJob;
+    }
+
+
+    public static function TransferOutNack($params){
+        return self::TransferOutRequest($params, false);
+    }
+
+    public static function TransferOutAck($params){
+        return self::TransferOutRequest($params, true);
+    }
+
+    public static function ClientAreaCustomButtonArray($params)
+    {
+        return array(
+            //TODO: use LANG
+            // Lang::trans('Domain Redirect') => 'DomainForwarding',
+            // Lang::trans('Owner Change') => 'ChangeOwner',
+            'Domain Redirect' => 'DomainForwarding',
+            'Owner Change' => 'ChangeOwner',
+        );
+    }
+
+    private static function requireOldApi(){
+        require_once(__DIR__.'/OldApi/class.InterNetX_API.php');
+    }
+
+    /**
+     * FUNCTION InterNetX_domainForwarding
+     * Manage domain forwarding in client area
+     * @param array $params
+     * @return array $return
+     */
+    public static function DomainForwarding($params)
+    {
+
+        try {
+
+
+            $API = new LegacyApi($params['serverHost'], $params['serverUsername'], $params['serverPassword'], $params['serverContext'], $params['sandboxServerUsername'], $params['sandboxServerPassword'], $params['sandboxServerContext'], $params['debug'], $params['sandboxMode']);
+            $API->setReplyTo($params['replyTo']);
+            if (isset($params['original']))
+                $params = $params['original'];
+
+            $domain = WhmcsBridge::parseDomain($params);
+
+            $errors = array();
+
+
+            if (!empty($_POST)) {
+
+                $domainForwarding = $_POST['domainForwarding'];
+                foreach ($domainForwarding as $k => $df) {
+
+                    $id = $df['id'];
+                    $source = $df['source'];
+                    $sourceDomain = "{$source}.{$domain}";
+                    $target = $df['target'];
+
+                    //delete
+                    if (empty($df['source']) || empty($target)) {
+                        $API->redirectDelete($id, "domain");
+                        if ($API->hasError())
+                            $errors[] = $API->getErrors();
+                        //update
+                    }else if ($sourceDomain == $id) {
+                        $API->updateDomainRedirect($df['source'], $target, $df['mode'], $df['title']);
+                        if ($API->hasError())
+                            $errors[] = $API->getErrors();
+
+                        //delete and create new
+                    }else {
+                        $API->redirectDelete($id, "domain");
+                        $API->createDomainRedirect($df['source'], $target, $df['mode'], $df['title']);
+                        if ($API->hasError())
+                            $errors[] = $API->getErrors();
+                    }
+                }
+
+                //adding new
+                $newDomainForwarding = $_POST['newDomainForwarding'];
+                if (!empty($newDomainForwarding['source']) && !empty($newDomainForwarding['target'])) {
+                    $source = $newDomainForwarding['source'] . ".{$domain}";
+                    $API->createDomainRedirect($newDomainForwarding['source'], $newDomainForwarding['target'], $newDomainForwarding['mode'], $newDomainForwarding['title']);
+                    if ($API->hasError())
+                        $errors[] = $API->getErrors();
+                }
+            }
+            $result = $API->redirectInfo($domain);
+
+            if ($API->hasError())
+                $errors[] = $API->getErrors();
+
+            $redirects = array();
+            foreach ($result->result->data->redirect as $key => $rd) {
+                if ($rd->mode == "single")
+                    continue;
+                $surce = str_replace("." . $domain, "", (string) $rd->source);
+                $redirects[] = array(
+                    "id" => $rd->source,
+                    "source" => (string) $rd->source,
+                    "target" => (string) $rd->target,
+                    "mode" => (string) $rd->mode,
+                    "title" => $rd->title,
+                );
+            }
+        } catch (Exception $ex) {
+
+            $errrors[] = $ex->getMessage();
+        }
+
+        if (!empty($errors))
+            $call['errors'] = $errors;
+
+        $call['redirects'] = $redirects;
+        $call['domain'] = $params['sld'] . '.' . $params['tld'];
+        $call['domainId'] = $params['domainid'];
+
+
+        return array(
+            'templatefile' => 'domainForwarding',
+            'breadcrumb' => ' > <a href="#">Domain Forwarding</a>',
+            'vars' => $call
+        );
+    }
+
+    /**
+     * FUNCTION InterNetX_changeOwner
+     * Change owner domain in client area
+     * @param array $params
+     * @return array $return
+     */
+    public static function ChangeOwner($params)
+    {
+       try
+       {
+           $countryData = json_decode(file_get_contents(ROOTDIR . DS . 'resources' . DS . 'country' . DS. 'dist.countries.json'),true);
+           $API = new LegacyApi($params['serverHost'], $params['serverUsername'], $params['serverPassword'], $params['serverContext'], $params['sandboxServerUsername'], $params['sandboxServerPassword'], $params['sandboxServerContext'], $params['debug'], $params['sandboxMode']);
+           $API->setReplyTo($params['replyTo']);
+           if (isset($params['original']))
+               $params = $params['original'];
+
+
+           $domain = WhmcsBridge::parseDomain($params);
+           $errors = array();
+           $info = $API->domainInfo($domain);
+           if ($API->hasError())
+               $errors[] = $API->getErrors();
+           $fields = (array) Capsule::table('tbldomainsadditionalfields')->join('tbldomains', 'tbldomains.id', '=', 'tbldomainsadditionalfields.domainid')
+                           ->select('tbldomainsadditionalfields.*')->where('tbldomains.domain', '=', $domain)->orderBy('id', 'asc')->get();
+           foreach ($fields as $field) {
+               $params['additionalfields'][$field->name] = $field->value;
+           }
+
+           $extensions = InterNetXExtension::assing($params['tld'], $params['additionalfields']);
+
+           if (!empty($_POST)) {
+               foreach ($_POST['domainContacts'] as $key => $val) {
+                   if (empty($val)) {
+                       $contact[$key] = (string) $info->result->data->domain->$key;
+                   } else {
+                       $details = (array) Capsule::table('tblcontacts')->where('id', '=', $val)->where('userid', '=', (int) $_SESSION['uid'])->first();
+
+                       $type = ($key == "ownerc") ? null : "admin";
+
+                       if (!empty($details['address1']) && !empty($details['address2']))
+                           $address = $details['address1'] . " " . $details['address2'];
+                       else
+                           $address = $details['address1'];
+
+                       $user = array(
+                           'id' => $contact,
+                           'type' => ($details['companyname'] == "") ? "PERSON" : "ORG",
+                           'firstName' => $details['firstname'],
+                           'lastName' => $details['lastname'],
+                           'organization' => $details['companyname'],
+                           'address' => $address,
+                           'city' => $details['city'],
+                           'state' => $details['state'],
+                           'postCode' => $details['postcode'],
+                           'country' => $details['country'],
+                           'countryName' => $countryData[$details['country']]['name'],
+                           'phone' => InterNetX_FormatPhone($details['fullphonenumber']),
+                           //'fax' => InterNetX_FormatPhone($details['fullphonenumber']),
+                           'email' => $details['email'],
+                       );
+
+                       if ($key != "ownerc" && ($params['tld'] == "de" || $params['tld'] == "es"))
+                           $user['type'] = "PERSON";
+
+                       $result = $API->contactCreate($user, $extensions);
+                       if ($API->hasError()) {
+                           $errors[] = $API->getErrors();
+                       } else {
+                           $contact[$key] = (string) $result->result->status->object->value;
+                       }
+                   }
+               }
+
+               $client = internetx_getClientDetails($params['domainid']);
+               $domainContacts = $_POST['domainContacts'];
+               $autoinfo = (string) $info->result->data->domain->authinfo;
+               $change = $API->domainOwnerChange($domain, $contact, $autoinfo, $client['email']);
+               if ($API->hasError())
+                   $errors[] = $API->getErrors();
+               else
+                   $infoMsg = (string) $change->result->status->text;
+           }else {
+
+               $domainContacts = array(
+                   "ownerc" => (string) $info->result->data->domain->ownerc,
+                   "adminc" => (string) $info->result->data->domain->adminc,
+                   "techc" => (string) $info->result->data->domain->techc,
+                   "zonec" => (string) $info->result->data->domain->zonec,
+               );
+           }
+       } catch (Exception $ex) {
+           $errrors[] = $ex->getMessage();
+       }
+
+       if (!empty($errors))
+           $call['errors'] = $errors;
+
+       if ($infoMsg)
+           $call['info'] = $infoMsg;
+
+       $call['domain'] = $params['sld'] . '.' . $params['tld'];
+       $call['domainContacts'] = $domainContacts;
+       $call['domainId'] = $params['domainid'];
+       $call['contacts2'] = "<option value=''>Do not change Contact</option>";
+       $query = Capsule::table('tblcontacts')->where('userid', '=', (int) $_SESSION['uid'])->get();
+       foreach ($query as $row) {
+           $call['contacts2'] .= "<option value='" . $row->id . "'>" . $row->firstname . ' ' . $row->lastname . '</option>';
+       }
+
+       //$call['contacts2'] .= '<option value="---addnew---">Add new Contact..</option>';
+       return array(
+           'templatefile' => 'changeOwner',
+           'breadcrumb' => ' > <a href="#">Change Owner</a>',
+           'vars' => $call
+       );
+    }
+
+
 }

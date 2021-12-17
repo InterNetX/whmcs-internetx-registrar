@@ -96,7 +96,12 @@ class Certificate implements ModelInterface, ArrayAccess
         'domain' => 'string',
         'hasCsr' => 'bool',
         'idn' => 'string',
-        'multiyear' => 'bool'
+        'multiyear' => 'bool',
+        'reissueRequired' => 'bool',
+        'reissueStatus' => 'string',
+        'vmcLogo' => 'string',
+        'vmcTrademarkRegistrationNumber' => 'string',
+        'vmcTrademarkCountryOrRegion' => '\Domainrobot\Model\VmcTrademarkCountryOrRegion'
     ];
 
     /**
@@ -144,7 +149,12 @@ class Certificate implements ModelInterface, ArrayAccess
         'domain' => null,
         'hasCsr' => null,
         'idn' => null,
-        'multiyear' => null
+        'multiyear' => null,
+        'reissueRequired' => null,
+        'reissueStatus' => null,
+        'vmcLogo' => null,
+        'vmcTrademarkRegistrationNumber' => null,
+        'vmcTrademarkCountryOrRegion' => null
     ];
 
     /**
@@ -213,7 +223,12 @@ class Certificate implements ModelInterface, ArrayAccess
         'domain' => 'domain',
         'hasCsr' => 'hasCsr',
         'idn' => 'idn',
-        'multiyear' => 'multiyear'
+        'multiyear' => 'multiyear',
+        'reissueRequired' => 'reissueRequired',
+        'reissueStatus' => 'reissueStatus',
+        'vmcLogo' => 'vmcLogo',
+        'vmcTrademarkRegistrationNumber' => 'vmcTrademarkRegistrationNumber',
+        'vmcTrademarkCountryOrRegion' => 'vmcTrademarkCountryOrRegion'
     ];
 
     /**
@@ -261,7 +276,12 @@ class Certificate implements ModelInterface, ArrayAccess
         'domain' => 'setDomain',
         'hasCsr' => 'setHasCsr',
         'idn' => 'setIdn',
-        'multiyear' => 'setMultiyear'
+        'multiyear' => 'setMultiyear',
+        'reissueRequired' => 'setReissueRequired',
+        'reissueStatus' => 'setReissueStatus',
+        'vmcLogo' => 'setVmcLogo',
+        'vmcTrademarkRegistrationNumber' => 'setVmcTrademarkRegistrationNumber',
+        'vmcTrademarkCountryOrRegion' => 'setVmcTrademarkCountryOrRegion'
     ];
 
     /**
@@ -309,7 +329,12 @@ class Certificate implements ModelInterface, ArrayAccess
         'domain' => 'getDomain',
         'hasCsr' => 'getHasCsr',
         'idn' => 'getIdn',
-        'multiyear' => 'getMultiyear'
+        'multiyear' => 'getMultiyear',
+        'reissueRequired' => 'getReissueRequired',
+        'reissueStatus' => 'getReissueStatus',
+        'vmcLogo' => 'getVmcLogo',
+        'vmcTrademarkRegistrationNumber' => 'getVmcTrademarkRegistrationNumber',
+        'vmcTrademarkCountryOrRegion' => 'getVmcTrademarkCountryOrRegion'
     ];
 
     /**
@@ -412,6 +437,11 @@ class Certificate implements ModelInterface, ArrayAccess
         $this->container['hasCsr'] = isset($data['hasCsr']) ? $this->createData($data['hasCsr'], 'hasCsr')  : null;
         $this->container['idn'] = isset($data['idn']) ? $this->createData($data['idn'], 'idn')  : null;
         $this->container['multiyear'] = isset($data['multiyear']) ? $this->createData($data['multiyear'], 'multiyear')  : null;
+        $this->container['reissueRequired'] = isset($data['reissueRequired']) ? $this->createData($data['reissueRequired'], 'reissueRequired')  : null;
+        $this->container['reissueStatus'] = isset($data['reissueStatus']) ? $this->createData($data['reissueStatus'], 'reissueStatus')  : null;
+        $this->container['vmcLogo'] = isset($data['vmcLogo']) ? $this->createData($data['vmcLogo'], 'vmcLogo')  : null;
+        $this->container['vmcTrademarkRegistrationNumber'] = isset($data['vmcTrademarkRegistrationNumber']) ? $this->createData($data['vmcTrademarkRegistrationNumber'], 'vmcTrademarkRegistrationNumber')  : null;
+        $this->container['vmcTrademarkCountryOrRegion'] = isset($data['vmcTrademarkCountryOrRegion']) ? $this->createData($data['vmcTrademarkCountryOrRegion'], 'vmcTrademarkCountryOrRegion')  : null;
     }
 
     /**
@@ -1467,6 +1497,126 @@ class Certificate implements ModelInterface, ArrayAccess
     public function setMultiyear($multiyear)
     {
         $this->container['multiyear'] = $multiyear;
+
+        return $this;
+    }
+
+    /**
+     * Gets reissueRequired
+     *
+     * @return bool
+     */
+    public function getReissueRequired()
+    {
+        return $this->container['reissueRequired'];
+    }
+
+    /**
+     * Sets reissueRequired
+     *
+     * @param bool $reissueRequired Defines whether a reissue is required for this certificate
+     *
+     * @return $this
+     */
+    public function setReissueRequired($reissueRequired)
+    {
+        $this->container['reissueRequired'] = $reissueRequired;
+
+        return $this;
+    }
+
+    /**
+     * Gets reissueStatus
+     *
+     * @return string
+     */
+    public function getReissueStatus()
+    {
+        return $this->container['reissueStatus'];
+    }
+
+    /**
+     * Sets reissueStatus
+     *
+     * @param string $reissueStatus Describes the status of a reissue for this certificate
+     *
+     * @return $this
+     */
+    public function setReissueStatus($reissueStatus)
+    {
+        $this->container['reissueStatus'] = $reissueStatus;
+
+        return $this;
+    }
+
+    /**
+     * Gets vmcLogo
+     *
+     * @return string
+     */
+    public function getVmcLogo()
+    {
+        return $this->container['vmcLogo'];
+    }
+
+    /**
+     * Sets vmcLogo
+     *
+     * @param string $vmcLogo The gzipped and base64 encoded SVG logo
+     *
+     * @return $this
+     */
+    public function setVmcLogo($vmcLogo)
+    {
+        $this->container['vmcLogo'] = $vmcLogo;
+
+        return $this;
+    }
+
+    /**
+     * Gets vmcTrademarkRegistrationNumber
+     *
+     * @return string
+     */
+    public function getVmcTrademarkRegistrationNumber()
+    {
+        return $this->container['vmcTrademarkRegistrationNumber'];
+    }
+
+    /**
+     * Sets vmcTrademarkRegistrationNumber
+     *
+     * @param string $vmcTrademarkRegistrationNumber The trademark registration number
+     *
+     * @return $this
+     */
+    public function setVmcTrademarkRegistrationNumber($vmcTrademarkRegistrationNumber)
+    {
+        $this->container['vmcTrademarkRegistrationNumber'] = $vmcTrademarkRegistrationNumber;
+
+        return $this;
+    }
+
+    /**
+     * Gets vmcTrademarkCountryOrRegion
+     *
+     * @return \Domainrobot\Model\VmcTrademarkCountryOrRegion
+     */
+    public function getVmcTrademarkCountryOrRegion()
+    {
+        return $this->container['vmcTrademarkCountryOrRegion'];
+    }
+
+    /**
+     * Sets vmcTrademarkCountryOrRegion
+     *
+     * @param \Domainrobot\Model\VmcTrademarkCountryOrRegion $vmcTrademarkCountryOrRegion Two-letter code for the country or region where the logo is trademarked
+     *
+     * @return $this
+     */
+    public function setVmcTrademarkCountryOrRegion($vmcTrademarkCountryOrRegion)
+    {
+        $this->container['vmcTrademarkCountryOrRegion'] = $vmcTrademarkCountryOrRegion;
 
         return $this;
     }

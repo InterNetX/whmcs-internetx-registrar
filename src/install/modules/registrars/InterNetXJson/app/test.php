@@ -3,6 +3,7 @@
 namespace App;
 
 use Domainrobot\Domainrobot;
+use Domainrobot\Service\DomainrobotService;
 use Domainrobot\Model\Query;
 use Domainrobot\Lib\DomainrobotAuth;
 use Domainrobot\Lib\DomainrobotException;
@@ -20,28 +21,36 @@ try {
         ])
     ]);
 
-    $query =
-    new \Domainrobot\Model\Query([
-          "view" => [
-            "children" => 1,
-            "offset" => 0,
-            "limit" => 10,
-            "from" => "2021-08-31T22:00:00.000Z",
-            "to" => "2021-11-30T22:59:59.999Z"
-          ],
-          "orders" => [
-            [
-              "key" => "created",
-              "type" => "DESC"
-            ]
-          ]
-            ]);
-    print_r(json_encode($query->toArray(), JSON_PRETTY_PRINT));
-    $r = $domainrobot->job->historyList($query);
+  // History Query
+  // $query =
+  // new \Domainrobot\Model\Query([
+  //       "view" => [
+  //         "children" => 1,
+  //         "offset" => 0,
+  //         "limit" => 10,
+  //         "from" => "2021-08-31T22:00:00.000Z",
+  //         "to" => "2021-11-30T22:59:59.999Z"
+  //       ],
+  //       "orders" => [
+  //         [
+  //           "key" => "created",
+  //           "type" => "DESC"
+  //         ]
+  //       ]
+  //         ]);
+  // print_r(json_encode($query->toArray(), JSON_PRETTY_PRINT));
+  // $r = $domainrobot->job->historyList($query);
 
 
-
-    print_r($r);
+  // bjb.video
+  // DONUTS-BBB+
+  $customService =  new DomainrobotService($domainrobot->getDomainrobotConfig());
+  $promise = $customService->sendRequest(
+    $customService->domainrobotConfig->getUrl() ."/domainpremium/bjb.video",
+    'GET'
+  );
+  $result = $promise->wait();
+  print_r($result);
 
 } catch (RegistrarModuleException $th) {
     return print_r($th->getMessage());

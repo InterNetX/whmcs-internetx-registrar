@@ -81,7 +81,9 @@ class User implements ModelInterface, ArrayAccess
         'user' => 'string',
         'language' => 'string',
         'parent' => '\Domainrobot\Model\User',
-        'directCustomer' => 'bool'
+        'directCustomer' => 'bool',
+        'clientAccounts' => '\Domainrobot\Model\ExternalAccounting[]',
+        'tasklimits' => '\Domainrobot\Model\Limit[]'
     ];
 
     /**
@@ -114,7 +116,9 @@ class User implements ModelInterface, ArrayAccess
         'user' => null,
         'language' => null,
         'parent' => null,
-        'directCustomer' => null
+        'directCustomer' => null,
+        'clientAccounts' => null,
+        'tasklimits' => null
     ];
 
     /**
@@ -168,7 +172,9 @@ class User implements ModelInterface, ArrayAccess
         'user' => 'user',
         'language' => 'language',
         'parent' => 'parent',
-        'directCustomer' => 'directCustomer'
+        'directCustomer' => 'directCustomer',
+        'clientAccounts' => 'clientAccounts',
+        'tasklimits' => 'tasklimits'
     ];
 
     /**
@@ -201,7 +207,9 @@ class User implements ModelInterface, ArrayAccess
         'user' => 'setUser',
         'language' => 'setLanguage',
         'parent' => 'setParent',
-        'directCustomer' => 'setDirectCustomer'
+        'directCustomer' => 'setDirectCustomer',
+        'clientAccounts' => 'setClientAccounts',
+        'tasklimits' => 'setTasklimits'
     ];
 
     /**
@@ -234,7 +242,9 @@ class User implements ModelInterface, ArrayAccess
         'user' => 'getUser',
         'language' => 'getLanguage',
         'parent' => 'getParent',
-        'directCustomer' => 'getDirectCustomer'
+        'directCustomer' => 'getDirectCustomer',
+        'clientAccounts' => 'getClientAccounts',
+        'tasklimits' => 'getTasklimits'
     ];
 
     /**
@@ -322,6 +332,8 @@ class User implements ModelInterface, ArrayAccess
         $this->container['language'] = isset($data['language']) ? $this->createData($data['language'], 'language')  : null;
         $this->container['parent'] = isset($data['parent']) ? $this->createData($data['parent'], 'parent')  : null;
         $this->container['directCustomer'] = isset($data['directCustomer']) ? $this->createData($data['directCustomer'], 'directCustomer')  : null;
+        $this->container['clientAccounts'] = isset($data['clientAccounts']) ? $this->createData($data['clientAccounts'], 'clientAccounts')  : null;
+        $this->container['tasklimits'] = isset($data['tasklimits']) ? $this->createData($data['tasklimits'], 'tasklimits')  : null;
     }
 
     /**
@@ -1014,6 +1026,54 @@ class User implements ModelInterface, ArrayAccess
     public function setDirectCustomer($directCustomer)
     {
         $this->container['directCustomer'] = $directCustomer;
+
+        return $this;
+    }
+
+    /**
+     * Gets clientAccounts
+     *
+     * @return \Domainrobot\Model\ExternalAccounting[]
+     */
+    public function getClientAccounts()
+    {
+        return $this->container['clientAccounts'];
+    }
+
+    /**
+     * Sets clientAccounts
+     *
+     * @param \Domainrobot\Model\ExternalAccounting[] $clientAccounts The client accounting datas for the user.
+     *
+     * @return $this
+     */
+    public function setClientAccounts($clientAccounts)
+    {
+        $this->container['clientAccounts'] = $clientAccounts;
+
+        return $this;
+    }
+
+    /**
+     * Gets tasklimits
+     *
+     * @return \Domainrobot\Model\Limit[]
+     */
+    public function getTasklimits()
+    {
+        return $this->container['tasklimits'];
+    }
+
+    /**
+     * Sets tasklimits
+     *
+     * @param \Domainrobot\Model\Limit[] $tasklimits The task limits of the user.
+     *
+     * @return $this
+     */
+    public function setTasklimits($tasklimits)
+    {
+        $this->container['tasklimits'] = $tasklimits;
 
         return $this;
     }

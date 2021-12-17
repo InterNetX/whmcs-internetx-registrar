@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '6906c550fdeed5154880047f04a55aa92e59032f',
+    'reference' => 'cf581f8f446c688aa9f68fd60f7938df95b34e8d',
     'name' => 'internetx/whmcs-internetx-registrar',
   ),
   'versions' => 
@@ -45,12 +45,12 @@ private static $installed = array (
     ),
     'guzzlehttp/guzzle' => 
     array (
-      'pretty_version' => '7.4.0',
-      'version' => '7.4.0.0',
+      'pretty_version' => '7.4.1',
+      'version' => '7.4.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '868b3571a039f0ebc11ac8f344f4080babe2cb94',
+      'reference' => 'ee0a041b1760e6a53d2a39c8c34115adc2af2c79',
     ),
     'guzzlehttp/promises' => 
     array (
@@ -72,12 +72,12 @@ private static $installed = array (
     ),
     'internetx/php-domainrobot-sdk' => 
     array (
-      'pretty_version' => '0.9.0',
-      'version' => '0.9.0.0',
+      'pretty_version' => '0.9.3',
+      'version' => '0.9.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => '65a21b31c60371856c37b487c5117e2ca46e5207',
+      'reference' => '203950826379f6f28553bedbea8628dd924d980f',
     ),
     'internetx/whmcs-internetx-registrar' => 
     array (
@@ -86,7 +86,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '6906c550fdeed5154880047f04a55aa92e59032f',
+      'reference' => 'cf581f8f446c688aa9f68fd60f7938df95b34e8d',
     ),
     'myclabs/deep-copy' => 
     array (
@@ -103,12 +103,12 @@ private static $installed = array (
     ),
     'nikic/php-parser' => 
     array (
-      'pretty_version' => 'v4.13.1',
-      'version' => '4.13.1.0',
+      'pretty_version' => 'v4.13.2',
+      'version' => '4.13.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '63a79e8daa781cac14e5195e63ed8ae231dd10fd',
+      'reference' => '210577fe3cf7badcc5814d99455df46564f3c077',
     ),
     'phar-io/manifest' => 
     array (
@@ -157,30 +157,30 @@ private static $installed = array (
     ),
     'phpspec/prophecy' => 
     array (
-      'pretty_version' => '1.14.0',
-      'version' => '1.14.0.0',
+      'pretty_version' => 'v1.15.0',
+      'version' => '1.15.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd86dfc2e2a3cd366cee475e52c6bb3bbc371aa0e',
+      'reference' => 'bbcd7380b0ebf3961ee21409db7b38bc31d69a13',
     ),
     'phpunit/php-code-coverage' => 
     array (
-      'pretty_version' => '9.2.9',
-      'version' => '9.2.9.0',
+      'pretty_version' => '9.2.10',
+      'version' => '9.2.10.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f301eb1453c9e7a1bc912ee8b0ea9db22c60223b',
+      'reference' => 'd5850aaf931743067f4bfc1ae4cbd06468400687',
     ),
     'phpunit/php-file-iterator' => 
     array (
-      'pretty_version' => '3.0.5',
-      'version' => '3.0.5.0',
+      'pretty_version' => '3.0.6',
+      'version' => '3.0.6.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'aa4be8575f26070b100fccb67faabb28f21f66f8',
+      'reference' => 'cf1c2e7c203ac650e352f4cc675a7021e7d1b3cf',
     ),
     'phpunit/php-invoker' => 
     array (
@@ -421,12 +421,12 @@ private static $installed = array (
     ),
     'symfony/deprecation-contracts' => 
     array (
-      'pretty_version' => 'v2.4.0',
-      'version' => '2.4.0.0',
+      'pretty_version' => 'v2.5.0',
+      'version' => '2.5.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '5f38c8804a9e97d23e0c8d63341088cd8a22d627',
+      'reference' => '6f981ee24cf69ee7ce9736146d1c57c2780598a8',
     ),
     'symfony/polyfill-ctype' => 
     array (

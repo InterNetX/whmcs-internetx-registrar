@@ -57,7 +57,8 @@ class NotifyMessage implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'type' => 'string'
+        'type' => 'string',
+        'object' => '\Domainrobot\Model\ResponseObject'
     ];
 
     /**
@@ -66,7 +67,8 @@ class NotifyMessage implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'type' => null
+        'type' => null,
+        'object' => null
     ];
 
     /**
@@ -96,7 +98,8 @@ class NotifyMessage implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        'type' => 'type'
+        'type' => 'type',
+        'object' => 'object'
     ];
 
     /**
@@ -105,7 +108,8 @@ class NotifyMessage implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        'type' => 'setType'
+        'type' => 'setType',
+        'object' => 'setObject'
     ];
 
     /**
@@ -114,7 +118,8 @@ class NotifyMessage implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        'type' => 'getType'
+        'type' => 'getType',
+        'object' => 'getObject'
     ];
 
     /**
@@ -178,6 +183,7 @@ class NotifyMessage implements ModelInterface, ArrayAccess
     public function __construct(array $data = null)
     {
         $this->container['type'] = isset($data['type']) ? $this->createData($data['type'], 'type')  : null;
+        $this->container['object'] = isset($data['object']) ? $this->createData($data['object'], 'object')  : null;
     }
 
     /**
@@ -279,6 +285,30 @@ class NotifyMessage implements ModelInterface, ArrayAccess
     public function setType($type)
     {
         $this->container['type'] = $type;
+
+        return $this;
+    }
+
+    /**
+     * Gets object
+     *
+     * @return \Domainrobot\Model\ResponseObject
+     */
+    public function getObject()
+    {
+        return $this->container['object'];
+    }
+
+    /**
+     * Sets object
+     *
+     * @param \Domainrobot\Model\ResponseObject $object The additional data object, e.g. transfer or certificate authorization data
+     *
+     * @return $this
+     */
+    public function setObject($object)
+    {
+        $this->container['object'] = $object;
 
         return $this;
     }

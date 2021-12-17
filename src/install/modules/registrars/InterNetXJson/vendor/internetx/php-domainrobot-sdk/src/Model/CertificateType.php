@@ -46,6 +46,8 @@ class CertificateType
     const FQDN = 'FQDN';
     const MAIL = 'MAIL';
     const CODE = 'CODE';
+    const DOCUMENT = 'DOCUMENT';
+    const VMC = 'VMC';
     
     /**
      * Gets allowable values of the enum
@@ -57,6 +59,8 @@ class CertificateType
             self::FQDN,
             self::MAIL,
             self::CODE,
+            self::DOCUMENT,
+            self::VMC,
         ];
     }
 }

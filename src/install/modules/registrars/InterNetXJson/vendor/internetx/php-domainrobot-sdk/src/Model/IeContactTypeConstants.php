@@ -44,7 +44,6 @@ class IeContactTypeConstants
      * Possible values of this enum
      */
     const COM = 'COM';
-    const CHA = 'CHA';
     const OTH = 'OTH';
     
     /**
@@ -55,7 +54,6 @@ class IeContactTypeConstants
     {
         return [
             self::COM,
-            self::CHA,
             self::OTH,
         ];
     }

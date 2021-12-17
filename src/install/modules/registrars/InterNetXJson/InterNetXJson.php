@@ -83,3 +83,33 @@ function InterNetXJson_CheckAvailability($params){
 function InterNetXJson_GetDomainSuggestions($params){
     return RegistrarModule::call('GetDomainSuggestions', $params);
 }
+
+function InterNetXJson_AdminCustomButtonArray()
+{
+    return RegistrarModule::call('AdminCustomButtonArray');
+}
+
+function InterNetXJson_TransferOutNack($params){
+    return RegistrarModule::call('TransferOutNack', $params);
+}
+
+function InterNetXJson_TransferOutAck($params)
+{
+    return RegistrarModule::call('TransferOutAck', $params);
+}
+
+function InterNetXJson_ClientAreaCustomButtonArray($params)
+{
+    return RegistrarModule::call('ClientAreaCustomButtonArray');
+}
+
+function InterNetXJson_DomainForwarding($params)
+{
+    return RegistrarModule::call('DomainForwarding', $params);
+}
+
+function InterNetXJson_ChangeOwner($params)
+{
+    return RegistrarModule::call('ChangeOwner', $params);
+}
+
