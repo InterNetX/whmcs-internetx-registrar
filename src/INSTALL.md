@@ -10,7 +10,7 @@ They have the same structure you will already find in your WHMCS folder
 `install/modules/registrars/InterNetXJson` needs to be copied to `{your-whmcs-folder}/modules/registrars/InterNetXJson`
 
 ### Additional Language Files
-`install/lang/overrides` needs to be copied to `{your-whmcs-folder}/lang/overrided`. If these files already exist, you can copy the additional translations from our files to the existing files.
+`install/lang/overrides` needs to be copied to `{your-whmcs-folder}/lang/overrides`. If these files already exist, you can copy the additional translations from our files to the existing files.
 
 ### Additional Domain Fields
 Some TLDs (like .it) require additional Domain Fields (e.g. Legal agreements, VAT).
