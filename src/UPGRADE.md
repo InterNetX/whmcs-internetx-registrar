@@ -53,7 +53,7 @@ And make sure the MX Record in the module Config is a full hostname + ending wit
 ### Additional Domain Fields
 The additional domain fields are now defined directly within the module.
 #### Cleanup
-If it exists edit the file resources/domain/additionalfields.php and remove the following lines. They where used to include "InterNetX_additionaldomainfields.php" and are no longer necessary nor working.
+If it exists edit the file resources/domains/additionalfields.php and remove the following lines. They where used to include "InterNetX_additionaldomainfields.php" and are no longer necessary nor working.
 ```
 /**
  * InternetX REGISTRAR ADDITIONAL PARAMETERS
