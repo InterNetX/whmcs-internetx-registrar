@@ -29,7 +29,5 @@ $_LANG['Domain Redirect'] = "Domain Redirect";
 $_LANG['domainDnsIX.ns'] = "NS (Nameserver)";
 $_LANG['domainDnsIX.srv'] = "SRV (Server)";
 $_LANG['domainDnsIX.caa'] = "CAA (SSL)";
-
-
-
+$_LANG['domainDnsIX.alias'] = "ALIAS (ALIAS)";
 ////////// End of english language file.  Do not place any translation strings below this line!
