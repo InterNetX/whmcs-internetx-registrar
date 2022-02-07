@@ -29,4 +29,5 @@ $_LANG['Domain Redirect'] = "Domain Weiterleitung";
 $_LANG['domainDnsIX.ns'] = "NS (Nameserver)";
 $_LANG['domainDnsIX.srv'] = "SRV (Server)";
 $_LANG['domainDnsIX.caa'] = "CAA (SSL)";
+$_LANG['domainDnsIX.alias'] = "ALIAS (ALIAS)";
 ////////// End of german language file.  Do not place any translation strings below this line!
