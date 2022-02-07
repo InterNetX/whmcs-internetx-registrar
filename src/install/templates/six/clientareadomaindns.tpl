@@ -52,8 +52,9 @@
                         <option value="MX"{if $dnsrecord.type eq "MX"} selected="selected"{/if}>MX (Mail)</option>
                         <option value="CNAME"{if $dnsrecord.type eq "CNAME"} selected="selected"{/if}>CNAME (Alias)</option>
                         <option value="TXT"{if $dnsrecord.type eq "TXT"} selected="selected"{/if}>SPF (txt)</option>
-<option value="SRV"{if $dnsrecord.type eq "SRV"} selected="selected"{/if}>SRV (Service)</option>
-<option value="CAA"{if $dnsrecord.type eq "CAA"} selected="selected"{/if}>CAA (SSL)</option>
+                        <option value="SRV"{if $dnsrecord.type eq "SRV"} selected="selected"{/if}>SRV (Service)</option>
+                        <option value="CAA"{if $dnsrecord.type eq "CAA"} selected="selected"{/if}>CAA (SSL)</option>
+                        <option value="ALIAS"{if $dnsrecord.type eq "ALIAS"} selected="selected"{/if}>ALIAS (ALIAS)</option>
                         </select>
                     </td>
                     <td><input type="text" name="dnsrecordaddress[]" value="{$dnsrecord.address}" size="40" class="form-control" /></td>
@@ -71,8 +72,9 @@
                             <option value="MX">MX (Mail)</option>
                             <option value="CNAME">CNAME (Alias)</option>
                             <option value="TXT">SPF (txt)</option>
-<option value="SRV">SRV (Service)</option>
-<option value="CAA">CAA (SSL)</option>
+                            <option value="SRV">SRV (Service)</option>
+                            <option value="CAA">CAA (SSL)</option>
+			    <option value="ALIAS">ALIAS (ALIAS)</option>
                         </select>
                     </td>
                     <td><input type="text" name="dnsrecordaddress[]" size="40" class="form-control" /></td>
