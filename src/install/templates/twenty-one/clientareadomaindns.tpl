@@ -48,6 +48,7 @@
                                         <option value="NS"{if $dnsrecord.type eq "NS"} selected="selected"{/if}>{lang key="domainDnsIX.ns"}</option>
                                         <option value="SRV"{if $dnsrecord.type eq "SRV"} selected="selected"{/if}>{lang key="domainDnsIX.srv"}</option>
                                         <option value="CAA"{if $dnsrecord.type eq "CAA"} selected="selected"{/if}>{lang key="domainDnsIX.caa"}</option>
+					<option value="ALIAS"{if $dnsrecord.type eq "ALIAS"} selected="selected"{/if}>{lang key="domainDnsIX.alias"}</option>
                                     </select>
                                 </td>
                                 <td><input type="text" name="dnsrecordaddress[]" value="{$dnsrecord.address}" size="40" class="form-control" /></td>
@@ -68,6 +69,7 @@
                                     <option value="NS">{lang key="domainDnsIX.ns"}</option>
                                     <option value="SRV">{lang key="domainDnsIX.srv"}</option>
                                     <option value="CAA">{lang key="domainDnsIX.caa"}</option>
+				    <option value="ALIAS">{lang key="domainDnsIX.alias"}</option>
                                 </select>
                             </td>
                             <td><input type="text" name="dnsrecordaddress[]" size="40" class="form-control" /></td>
