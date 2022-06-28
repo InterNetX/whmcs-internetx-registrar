@@ -16,7 +16,7 @@ try {
         "url" => "https://api.autodns.com/v1",
         "auth" => new DomainrobotAuth([
             "user"     => '1351105859',
-            "password" => 'FbZ8ukr25q5g',
+            "password" => '****',
             "context"  => 4,
         ])
     ]);
@@ -54,7 +54,7 @@ try {
 
   try {
 
-    $domainPremium = $domainrobot->domainPremium->info('bjb.visdeo');
+    $domainPremium = $domainrobot->domainPremium->info('bjb.video');
     if (is_object($domainPremium) && $priceClass = $domainPremium->getPriceClass()){
       $premiumDomainPriceClass = $priceClass;
       $isPremiumDomain = true;
