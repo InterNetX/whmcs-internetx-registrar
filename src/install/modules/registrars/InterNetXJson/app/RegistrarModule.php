@@ -250,10 +250,24 @@ class RegistrarModule implements RegistrarModuleInterface {
         $domain->setPrivacy($params['idprotection']);
 
         // Check for Premium Domain
-        // TODO: $api -> Premium
-        // Waiting for Marius (GET /domainpremium/{name}) route to be added to official SDK
         $isPremiumDomain = false;
-        $premiumDomainPriceClass = 'TEST-000';
+        $premiumDomainPriceClass = null;
+
+        try {
+          $domainPremium = $domainrobot->domainPremium->info(WhmcsBridge::parseDomain($params));
+
+          if (is_object($domainPremium) && $priceClass = $domainPremium->getPriceClass()){
+             $premiumDomainPriceClass = $priceClass;
+             $isPremiumDomain = true;
+          }
+        } catch (DomainrobotException $th) {
+            // domainPremium->info throws an exception if the domain is not Premium
+             $isPremiumDomain = false;
+             $premiumDomainPriceClass = null;
+        }
+
+
+
         if ($isPremiumDomain){
             if (WhmcsBridge::isPremiumDomainSetupOk($params)){
                 $domain->setPriceClass($premiumDomainPriceClass);

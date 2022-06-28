@@ -13,11 +13,11 @@ require_once('bootstrap.php');
 
 try {
     $domainrobot = new Domainrobot([
-        "url" => "https://api.demo.autodns.com/v1",
+        "url" => "https://api.autodns.com/v1",
         "auth" => new DomainrobotAuth([
-            "user"     => '0000_Domainpoint_cb',
-            "password" => 'domains',
-            "context"  => 1,
+            "user"     => '1351105859',
+            "password" => 'FbZ8ukr25q5g',
+            "context"  => 4,
         ])
     ]);
 
@@ -44,13 +44,28 @@ try {
 
   // bjb.video
   // DONUTS-BBB+
-  $customService =  new DomainrobotService($domainrobot->getDomainrobotConfig());
-  $promise = $customService->sendRequest(
-    $customService->domainrobotConfig->getUrl() ."/domainpremium/bjb.video",
-    'GET'
-  );
-  $result = $promise->wait();
-  print_r($result);
+  // $customService =  new DomainrobotService($domainrobot->getDomainrobotConfig());
+  // $promise = $customService->sendRequest(
+  //   $customService->domainrobotConfig->getUrl() ."/domainpremium/bjb.video",
+  //   'GET'
+  // );
+  // $result = $promise->wait();
+  // print_r($result);
+
+  try {
+
+    $domainPremium = $domainrobot->domainPremium->info('bjb.visdeo');
+    if (is_object($domainPremium) && $priceClass = $domainPremium->getPriceClass()){
+      $premiumDomainPriceClass = $priceClass;
+      $isPremiumDomain = true;
+      echo 'is Premium';
+
+    }
+
+  } catch (DomainrobotException $th) {
+    //TODO: Move output to Module log
+    print_r('domain not found');
+  }
 
 } catch (RegistrarModuleException $th) {
     return print_r($th->getMessage());

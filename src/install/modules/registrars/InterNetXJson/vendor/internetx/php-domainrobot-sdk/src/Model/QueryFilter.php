@@ -59,6 +59,7 @@ class QueryFilter implements ModelInterface, ArrayAccess
     protected static $swaggerTypes = [
         'key' => 'string',
         'value' => 'string',
+        'values' => 'string[]',
         'operator' => '\Domainrobot\Model\Operator',
         'link' => '\Domainrobot\Model\ConditionType',
         'filters' => '\Domainrobot\Model\QueryFilter[]'
@@ -72,6 +73,7 @@ class QueryFilter implements ModelInterface, ArrayAccess
     protected static $swaggerFormats = [
         'key' => null,
         'value' => null,
+        'values' => null,
         'operator' => null,
         'link' => null,
         'filters' => null
@@ -106,6 +108,7 @@ class QueryFilter implements ModelInterface, ArrayAccess
     protected static $attributeMap = [
         'key' => 'key',
         'value' => 'value',
+        'values' => 'values',
         'operator' => 'operator',
         'link' => 'link',
         'filters' => 'filters'
@@ -119,6 +122,7 @@ class QueryFilter implements ModelInterface, ArrayAccess
     protected static $setters = [
         'key' => 'setKey',
         'value' => 'setValue',
+        'values' => 'setValues',
         'operator' => 'setOperator',
         'link' => 'setLink',
         'filters' => 'setFilters'
@@ -132,6 +136,7 @@ class QueryFilter implements ModelInterface, ArrayAccess
     protected static $getters = [
         'key' => 'getKey',
         'value' => 'getValue',
+        'values' => 'getValues',
         'operator' => 'getOperator',
         'link' => 'getLink',
         'filters' => 'getFilters'
@@ -199,6 +204,7 @@ class QueryFilter implements ModelInterface, ArrayAccess
     {
         $this->container['key'] = isset($data['key']) ? $this->createData($data['key'], 'key')  : null;
         $this->container['value'] = isset($data['value']) ? $this->createData($data['value'], 'value')  : null;
+        $this->container['values'] = isset($data['values']) ? $this->createData($data['values'], 'values')  : null;
         $this->container['operator'] = isset($data['operator']) ? $this->createData($data['operator'], 'operator')  : null;
         $this->container['link'] = isset($data['link']) ? $this->createData($data['link'], 'link')  : null;
         $this->container['filters'] = isset($data['filters']) ? $this->createData($data['filters'], 'filters')  : null;
@@ -327,6 +333,30 @@ class QueryFilter implements ModelInterface, ArrayAccess
     public function setValue($value)
     {
         $this->container['value'] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Gets values
+     *
+     * @return string[]
+     */
+    public function getValues()
+    {
+        return $this->container['values'];
+    }
+
+    /**
+     * Sets values
+     *
+     * @param string[] $values values
+     *
+     * @return $this
+     */
+    public function setValues($values)
+    {
+        $this->container['values'] = $values;
 
         return $this;
     }

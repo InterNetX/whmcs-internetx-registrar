@@ -59,7 +59,7 @@ class CertificateData implements ModelInterface, ArrayAccess
     protected static $swaggerTypes = [
         'plain' => 'string',
         'name' => 'string',
-        'san' => 'string[]',
+        'subjectAlternativeNames' => '\Domainrobot\Model\SubjectAlternativeName[]',
         'histories' => '\Domainrobot\Model\CertificateHistory[]',
         'keySize' => 'int',
         'countryCode' => 'string',
@@ -80,7 +80,8 @@ class CertificateData implements ModelInterface, ArrayAccess
         'ecCurve' => '\Domainrobot\Model\CsrHashAlgorithmConstants',
         'vmcLogo' => 'string',
         'vmcTrademarkRegistrationNumber' => 'string',
-        'vmcTrademarkCountryOrRegion' => '\Domainrobot\Model\VmcTrademarkCountryOrRegion'
+        'vmcTrademarkCountryOrRegion' => '\Domainrobot\Model\VmcTrademarkCountryOrRegion',
+        'scope' => '\Domainrobot\Model\DcvValidationScope'
     ];
 
     /**
@@ -91,7 +92,7 @@ class CertificateData implements ModelInterface, ArrayAccess
     protected static $swaggerFormats = [
         'plain' => null,
         'name' => null,
-        'san' => null,
+        'subjectAlternativeNames' => null,
         'histories' => null,
         'keySize' => 'int32',
         'countryCode' => null,
@@ -112,7 +113,8 @@ class CertificateData implements ModelInterface, ArrayAccess
         'ecCurve' => null,
         'vmcLogo' => null,
         'vmcTrademarkRegistrationNumber' => null,
-        'vmcTrademarkCountryOrRegion' => null
+        'vmcTrademarkCountryOrRegion' => null,
+        'scope' => null
     ];
 
     /**
@@ -144,7 +146,7 @@ class CertificateData implements ModelInterface, ArrayAccess
     protected static $attributeMap = [
         'plain' => 'plain',
         'name' => 'name',
-        'san' => 'san',
+        'subjectAlternativeNames' => 'subjectAlternativeNames',
         'histories' => 'histories',
         'keySize' => 'keySize',
         'countryCode' => 'countryCode',
@@ -165,7 +167,8 @@ class CertificateData implements ModelInterface, ArrayAccess
         'ecCurve' => 'ecCurve',
         'vmcLogo' => 'vmcLogo',
         'vmcTrademarkRegistrationNumber' => 'vmcTrademarkRegistrationNumber',
-        'vmcTrademarkCountryOrRegion' => 'vmcTrademarkCountryOrRegion'
+        'vmcTrademarkCountryOrRegion' => 'vmcTrademarkCountryOrRegion',
+        'scope' => 'scope'
     ];
 
     /**
@@ -176,7 +179,7 @@ class CertificateData implements ModelInterface, ArrayAccess
     protected static $setters = [
         'plain' => 'setPlain',
         'name' => 'setName',
-        'san' => 'setSan',
+        'subjectAlternativeNames' => 'setSubjectAlternativeNames',
         'histories' => 'setHistories',
         'keySize' => 'setKeySize',
         'countryCode' => 'setCountryCode',
@@ -197,7 +200,8 @@ class CertificateData implements ModelInterface, ArrayAccess
         'ecCurve' => 'setEcCurve',
         'vmcLogo' => 'setVmcLogo',
         'vmcTrademarkRegistrationNumber' => 'setVmcTrademarkRegistrationNumber',
-        'vmcTrademarkCountryOrRegion' => 'setVmcTrademarkCountryOrRegion'
+        'vmcTrademarkCountryOrRegion' => 'setVmcTrademarkCountryOrRegion',
+        'scope' => 'setScope'
     ];
 
     /**
@@ -208,7 +212,7 @@ class CertificateData implements ModelInterface, ArrayAccess
     protected static $getters = [
         'plain' => 'getPlain',
         'name' => 'getName',
-        'san' => 'getSan',
+        'subjectAlternativeNames' => 'getSubjectAlternativeNames',
         'histories' => 'getHistories',
         'keySize' => 'getKeySize',
         'countryCode' => 'getCountryCode',
@@ -229,7 +233,8 @@ class CertificateData implements ModelInterface, ArrayAccess
         'ecCurve' => 'getEcCurve',
         'vmcLogo' => 'getVmcLogo',
         'vmcTrademarkRegistrationNumber' => 'getVmcTrademarkRegistrationNumber',
-        'vmcTrademarkCountryOrRegion' => 'getVmcTrademarkCountryOrRegion'
+        'vmcTrademarkCountryOrRegion' => 'getVmcTrademarkCountryOrRegion',
+        'scope' => 'getScope'
     ];
 
     /**
@@ -294,7 +299,7 @@ class CertificateData implements ModelInterface, ArrayAccess
     {
         $this->container['plain'] = isset($data['plain']) ? $this->createData($data['plain'], 'plain')  : null;
         $this->container['name'] = isset($data['name']) ? $this->createData($data['name'], 'name')  : null;
-        $this->container['san'] = isset($data['san']) ? $this->createData($data['san'], 'san')  : null;
+        $this->container['subjectAlternativeNames'] = isset($data['subjectAlternativeNames']) ? $this->createData($data['subjectAlternativeNames'], 'subjectAlternativeNames')  : null;
         $this->container['histories'] = isset($data['histories']) ? $this->createData($data['histories'], 'histories')  : null;
         $this->container['keySize'] = isset($data['keySize']) ? $this->createData($data['keySize'], 'keySize')  : null;
         $this->container['countryCode'] = isset($data['countryCode']) ? $this->createData($data['countryCode'], 'countryCode')  : null;
@@ -316,6 +321,7 @@ class CertificateData implements ModelInterface, ArrayAccess
         $this->container['vmcLogo'] = isset($data['vmcLogo']) ? $this->createData($data['vmcLogo'], 'vmcLogo')  : null;
         $this->container['vmcTrademarkRegistrationNumber'] = isset($data['vmcTrademarkRegistrationNumber']) ? $this->createData($data['vmcTrademarkRegistrationNumber'], 'vmcTrademarkRegistrationNumber')  : null;
         $this->container['vmcTrademarkCountryOrRegion'] = isset($data['vmcTrademarkCountryOrRegion']) ? $this->createData($data['vmcTrademarkCountryOrRegion'], 'vmcTrademarkCountryOrRegion')  : null;
+        $this->container['scope'] = isset($data['scope']) ? $this->createData($data['scope'], 'scope')  : null;
     }
 
     /**
@@ -446,25 +452,25 @@ class CertificateData implements ModelInterface, ArrayAccess
     }
 
     /**
-     * Gets san
+     * Gets subjectAlternativeNames
      *
-     * @return string[]
+     * @return \Domainrobot\Model\SubjectAlternativeName[]
      */
-    public function getSan()
+    public function getSubjectAlternativeNames()
     {
-        return $this->container['san'];
+        return $this->container['subjectAlternativeNames'];
     }
 
     /**
-     * Sets san
+     * Sets subjectAlternativeNames
      *
-     * @param string[] $san The subject alternative names, listed in the csr.
+     * @param \Domainrobot\Model\SubjectAlternativeName[] $subjectAlternativeNames The subject alternative names, listed in the csr.
      *
      * @return $this
      */
-    public function setSan($san)
+    public function setSubjectAlternativeNames($subjectAlternativeNames)
     {
-        $this->container['san'] = $san;
+        $this->container['subjectAlternativeNames'] = $subjectAlternativeNames;
 
         return $this;
     }
@@ -914,7 +920,7 @@ class CertificateData implements ModelInterface, ArrayAccess
     /**
      * Sets vmcLogo
      *
-     * @param string $vmcLogo The gzipped and base64 encoded SVG logo
+     * @param string $vmcLogo The base64 encoded SVG logo
      *
      * @return $this
      */
@@ -969,6 +975,30 @@ class CertificateData implements ModelInterface, ArrayAccess
     public function setVmcTrademarkCountryOrRegion($vmcTrademarkCountryOrRegion)
     {
         $this->container['vmcTrademarkCountryOrRegion'] = $vmcTrademarkCountryOrRegion;
+
+        return $this;
+    }
+
+    /**
+     * Gets scope
+     *
+     * @return \Domainrobot\Model\DcvValidationScope
+     */
+    public function getScope()
+    {
+        return $this->container['scope'];
+    }
+
+    /**
+     * Sets scope
+     *
+     * @param \Domainrobot\Model\DcvValidationScope $scope The DCV scope to use for generating the dcv data
+     *
+     * @return $this
+     */
+    public function setScope($scope)
+    {
+        $this->container['scope'] = $scope;
 
         return $this;
     }
