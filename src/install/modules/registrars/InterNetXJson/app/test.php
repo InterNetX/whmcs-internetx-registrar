@@ -40,18 +40,6 @@ try {
   //         ]);
   // print_r(json_encode($query->toArray(), JSON_PRETTY_PRINT));
   // $r = $domainrobot->job->historyList($query);
-
-
-  // bjb.video
-  // DONUTS-BBB+
-  // $customService =  new DomainrobotService($domainrobot->getDomainrobotConfig());
-  // $promise = $customService->sendRequest(
-  //   $customService->domainrobotConfig->getUrl() ."/domainpremium/bjb.video",
-  //   'GET'
-  // );
-  // $result = $promise->wait();
-  // print_r($result);
-
   try {
 
     $domainPremium = $domainrobot->domainPremium->info('bjb.video');

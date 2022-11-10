@@ -29,33 +29,32 @@ use function PHPUnit\Framework\throwException;
 use App\Providers\WhmcsModuleLogProvider as Logger;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-class RegistrarModule implements RegistrarModuleInterface {
+class RegistrarModule implements RegistrarModuleInterface
+{
 
     /*
      * wrapper for all function to provide meaningfull error Responses as handled by whmcs
      */
-    public static function call($functionName, $params = false){
+    public static function call($functionName, $params = false)
+    {
         try {
             WhmcsBridge::saveParamsLog($functionName, $params);
-            return call_user_func('self::'.$functionName, $params);
+            return call_user_func('self::' . $functionName, $params);
         } catch (RegistrarModuleException $th) {
             return WhmcsBridge::errorResponse($th->getMessage());
-          }
-          catch (DomainrobotException $th) {
+        } catch (DomainrobotException $th) {
             //TODO: Move output to Module log
-            return WhmcsBridge::errorResponse("[".$th->getStatusCode()."] ". json_encode($th->getError(), JSON_PRETTY_PRINT));
-          }
-          catch (\Throwable $th) {
+            return WhmcsBridge::errorResponse("[" . $th->getStatusCode() . "] " . json_encode($th->getError(), JSON_PRETTY_PRINT));
+        } catch (\Throwable $th) {
             return WhmcsBridge::errorResponse($th->getMessage());
-          }
-
-
+        }
     }
 
-    private static function getApi($params){
+    private static function getApi($params)
+    {
 
         // Use Sandbox Mode (Testmode)
-        if ($params['sandboxMode'] == 'on'){
+        if ($params['sandboxMode'] == 'on') {
             WhmcsBridge::checkRequiredParametersOrFail(['sandboxServerUsername', 'sandboxServerPassword', 'sandboxServerContext'], $params);
 
             $domainrobot = new Domainrobot([
@@ -66,7 +65,7 @@ class RegistrarModule implements RegistrarModuleInterface {
                     "context"  => $params['sandboxServerContext']
                 ])
             ]);
-        // Live Mode
+            // Live Mode
         } else {
             WhmcsBridge::checkRequiredParametersOrFail(['serverUsername', 'serverPassword', 'serverContext'], $params);
             $domainrobot = new Domainrobot([
@@ -83,11 +82,11 @@ class RegistrarModule implements RegistrarModuleInterface {
         return $domainrobot;
     }
 
-    public static function getConfigArray(){
+    public static function getConfigArray()
+    {
         $adminEmails = Capsule::table('tbladmins')->select('email')->orderBy('email', 'asc')->pluck('email')->toArray();
 
-        $configArray = array
-        (
+        $configArray = array(
             "FriendlyName" => array(
                 "Type" => "System",
                 "Value" => "InterNetX Json",
@@ -96,36 +95,31 @@ class RegistrarModule implements RegistrarModuleInterface {
                 "Type" => "System",
                 "Value" => "Get your free InterNetX Reseller Account here: <a href=\"https://www.internetx.com\" target=\"_blank\">https://www.internetx.com</a>.",
             ),
-            "serverUsername" => array
-            (
+            "serverUsername" => array(
                 'FriendlyName' => 'Username',
                 "Type" => "text",
                 "Size" => "20",
                 "Description" => "Enter your username here.",
             ),
-            "serverPassword" => array
-            (
+            "serverPassword" => array(
                 'FriendlyName' => 'Password',
                 "Type" => "password",
                 "Size" => "20",
                 "Description" => "Enter your password here.",
             ),
-            "serverContext" => array
-            (
+            "serverContext" => array(
                 'FriendlyName' => 'Context',
                 "Type" => "text",
                 "Size" => "20",
                 "Description" => "Enter your context here.",
             ),
-            'serverHost' => array
-            (
+            'serverHost' => array(
                 'FriendlyName' => 'Server',
                 'Type' => 'text',
                 'Size' => '20',
                 "Description" => "If left empty https://api.autodns.com/v1 will be used by default. Provide your API url if you use something different."
             ),
-            'nameServers' => array
-            (
+            'nameServers' => array(
                 'FriendlyName' => 'Default Nameservers',
                 "Type" => "textarea",
                 "Rows" => "3",
@@ -133,29 +127,25 @@ class RegistrarModule implements RegistrarModuleInterface {
                 "Default" => "",
                 "Description" => "Provide your Default Nameservers (for Zone) Eg. ns1.demo.autodns2.de",
             ),
-            "sandboxServerUsername" => array
-            (
+            "sandboxServerUsername" => array(
                 'FriendlyName' => 'Sandbox Username',
                 "Type" => "text",
                 "Size" => "20",
                 "Description" => "Enter your sandbox username here.",
             ),
-            "sandboxServerPassword" => array
-            (
+            "sandboxServerPassword" => array(
                 'FriendlyName' => 'Sandbox Password',
                 "Type" => "password",
                 "Size" => "20",
                 "Description" => "Enter your sandbox password here.",
             ),
-            "sandboxServerContext" => array
-            (
+            "sandboxServerContext" => array(
                 'FriendlyName' => 'Sandbox Context',
                 "Type" => "text",
                 "Size" => "20",
                 "Description" => "Enter your sandbox context here.",
             ),
-            'sandboxNameServers' => array
-            (
+            'sandboxNameServers' => array(
                 'FriendlyName' => 'Sandbox Default Nameservers',
                 "Type" => "textarea",
                 "Rows" => "3",
@@ -163,46 +153,39 @@ class RegistrarModule implements RegistrarModuleInterface {
                 "Default" => "ns1.demo.autodns2.de\nns2.demo.autodns2.de",
                 "Description" => "Provide your Default Nameservers (for Zone) Eg. ns1.demo.autodns2.de",
             ),
-            'replyTo' => array
-            (
+            'replyTo' => array(
                 'FriendlyName' => 'Reply To',
                 'Type' => 'dropdown',
                 "Description" => "",
                 "Options" => implode(",", $adminEmails),
                 "Description" => "Contact address for support team in case of errors.",
             ),
-            'domainMX' => array
-            (
+            'domainMX' => array(
                 'FriendlyName' => 'MX Record',
                 "Type" => "text",
                 "Size" => "20",
                 "Description" => "MX record (mailserver). Enter the complete domain host name of the mailserver.",
             ),
-            'domainIP' => array
-            (
+            'domainIP' => array(
                 'FriendlyName' => 'IP Address',
                 "Type" => "text",
                 "Size" => "20",
                 "Description" => "IP address of the zone (A Record).",
             ),
-            'autodelete' => array
-            (
+            'autodelete' => array(
                 'FriendlyName' => 'Auto Delete',
                 'Type' => 'yesno'
             ),
-            'sandboxMode' => array
-            (
+            'sandboxMode' => array(
                 'FriendlyName' => 'Test Mode',
                 'Type' => 'yesno'
             ),
-            'debug' => array
-            (
+            'debug' => array(
                 'FriendlyName' => 'Debug Mode',
                 'Type' => 'yesno',
                 "Description" => "Logs on \"Module Log\"",
             ),
-            'adminContact' => array
-            (
+            'adminContact' => array(
                 'FriendlyName' => 'Admin Contact',
                 'Type' => 'yesno',
                 "Description" => "Specify that the owner will be OwnerC and AdminC and reseller will be Billing/TechC",
@@ -221,10 +204,11 @@ class RegistrarModule implements RegistrarModuleInterface {
         return $buttonArray;
     }
 
-    private static function prepareDomain($params, $domainrobot = false) {
+    private static function prepareDomain($params, $domainrobot = false)
+    {
 
         // Get API if not provided ny parameter
-        if (!$domainrobot){
+        if (!$domainrobot) {
             $domainrobot = self::getApi($params);
         }
 
@@ -244,7 +228,7 @@ class RegistrarModule implements RegistrarModuleInterface {
         $domain->setName(WhmcsBridge::parseDomain($params));
         $domain->setNameServers($nameservers);
         $domain->setOwnerc($contacts['registrant']);
-        $domain->setAdminc($params['adminContact'] == 'on' ? $contacts['registrant'] : $contacts['admin'] );
+        $domain->setAdminc($params['adminContact'] == 'on' ? $contacts['registrant'] : $contacts['admin']);
         $domain->setTechc($contacts['admin']);
         $domain->setZonec($contacts['admin']);
         $domain->setPrivacy($params['idprotection']);
@@ -254,22 +238,21 @@ class RegistrarModule implements RegistrarModuleInterface {
         $premiumDomainPriceClass = null;
 
         try {
-          $domainPremium = $domainrobot->domainPremium->info(WhmcsBridge::parseDomain($params));
+            $domainPremium = $domainrobot->domainPremium->info(WhmcsBridge::parseDomain($params));
 
-          if (is_object($domainPremium) && $priceClass = $domainPremium->getPriceClass()){
-             $premiumDomainPriceClass = $priceClass;
-             $isPremiumDomain = true;
-          }
+            if (is_object($domainPremium) && $priceClass = $domainPremium->getPriceClass()) {
+                $premiumDomainPriceClass = $priceClass;
+                $isPremiumDomain = true;
+            }
         } catch (DomainrobotException $th) {
             // domainPremium->info throws an exception if the domain is not Premium
-             $isPremiumDomain = false;
-             $premiumDomainPriceClass = null;
+            $isPremiumDomain = false;
+            $premiumDomainPriceClass = null;
         }
 
 
-
-        if ($isPremiumDomain){
-            if (WhmcsBridge::isPremiumDomainSetupOk($params)){
+        if ($isPremiumDomain) {
+            if (WhmcsBridge::isPremiumDomainSetupOk($params)) {
                 $domain->setPriceClass($premiumDomainPriceClass);
             } else {
                 // Bail out on error here
@@ -277,7 +260,7 @@ class RegistrarModule implements RegistrarModuleInterface {
             }
         }
         // Add zone if nameservers are ours
-        if (WhmcsBridge::containsRegistrarNameServer($nameservers)){
+        if (WhmcsBridge::containsRegistrarNameServer($nameservers)) {
             $zone = WhmcsBridge::parseDomainZone($params);
             // Initially i had to manually create the zone before the registration
             // This works now directly with the registration request, by using nameser->action = 'AUTO'
@@ -285,15 +268,16 @@ class RegistrarModule implements RegistrarModuleInterface {
             $domain->setZone($zone);
         }
         return $domain;
-
     }
 
-    private static function getDomainInfo($params){
+    private static function getDomainInfo($params)
+    {
         $domainrobot = self::getApi($params);
         return $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
     }
 
-    public static function RegisterDomain($params){
+    public static function RegisterDomain($params)
+    {
         // return WhmcsBridge::errorResponse('RegisterDomain not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
         //Get API
         $domainrobot = self::getApi($params);
@@ -305,7 +289,8 @@ class RegistrarModule implements RegistrarModuleInterface {
         return $objectJob;
     }
 
-    public static function TransferDomain($params){
+    public static function TransferDomain($params)
+    {
         $domainrobot = self::getApi($params);
         $domain = self::prepareDomain($params, $domainrobot);
         $domain->setAuthinfo($params['eppcode']);
@@ -313,7 +298,8 @@ class RegistrarModule implements RegistrarModuleInterface {
         $objectJob = $domainrobot->domain->transfer($domain);
     }
 
-    public static function RenewDomain($params){
+    public static function RenewDomain($params)
+    {
         // By Default, Accounts automatically renew Domains
         // but some Accounts have this disabled
         // So we HAVE TO manually renew every domain
@@ -324,19 +310,18 @@ class RegistrarModule implements RegistrarModuleInterface {
         $doSendTheRenewRequest = false;
 
         // We need to manually renew the domain because the setting indiciates an account with autodelete on
-        if (isset($params['autodelete']) && $params['autodelete'] == 'on'){
+        if (isset($params['autodelete']) && $params['autodelete'] == 'on') {
             $doSendTheRenewRequest = true;
         } else {
             // Autodelete is off so we normally don't have to send a renew request
             // Still the admin panel has the "renew" button that allows manual invocation of
             // this function. So we check for this and send out the renew anyway
-            if (strpos($_SERVER['PHP_SELF'], 'clientsdomains.php') !== false)
-            {
+            if (strpos($_SERVER['PHP_SELF'], 'clientsdomains.php') !== false) {
                 $doSendTheRenewRequest = true;
             }
         }
 
-        if ($doSendTheRenewRequest){
+        if ($doSendTheRenewRequest) {
             $domainrobot = self::getApi($params);
             $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
             $domain->setRemoveCancelation(true);
@@ -345,21 +330,23 @@ class RegistrarModule implements RegistrarModuleInterface {
         return true;
     }
 
-    public static function GetNameservers($params){
+    public static function GetNameservers($params)
+    {
 
         $domainrobot = self::getApi($params);
         $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
 
-        if (isset($domain['nameServers']) && is_array($domain['nameServers'])){
+        if (isset($domain['nameServers']) && is_array($domain['nameServers'])) {
             $result = [];
             foreach ($domain['nameServers'] as $key => $ns) {
-                $result['ns'.($key+1)] = $ns['name'];
+                $result['ns' . ($key + 1)] = $ns['name'];
             }
             return $result;
         }
     }
 
-    public static function SaveNameservers($params){
+    public static function SaveNameservers($params)
+    {
         $domainrobot = self::getApi($params);
         $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
         $domain->setNameServers(WhmcsBridge::parseNameservers($params));
@@ -367,7 +354,8 @@ class RegistrarModule implements RegistrarModuleInterface {
     }
 
 
-    public static function GetDNS($params){
+    public static function GetDNS($params)
+    {
         // return WhmcsBridge::errorResponse('GetDNS not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
         $domainrobot = self::getApi($params);
         $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
@@ -376,8 +364,8 @@ class RegistrarModule implements RegistrarModuleInterface {
         $hostRecords = array();
         // Include mainIP as Resource Record
         // If it exists
-        if ($main = $zone->getMain()){
-            if($mainIP = $main->getAddress()){
+        if ($main = $zone->getMain()) {
+            if ($mainIP = $main->getAddress()) {
                 $hostRecords[] = array(
                     "hostname" => '',    // eg. www
                     "type"     => 'A',    // eg. A
@@ -385,7 +373,7 @@ class RegistrarModule implements RegistrarModuleInterface {
                     "priority" => 'N/A',    // eg. 10 (N/A for non-MX records)
                 );
                 // Also add www-Entry if wwwInclude is set
-                if ($zone->getWwwInclude()){
+                if ($zone->getWwwInclude()) {
                     $hostRecords[] = array(
                         "hostname" => 'www',    // eg. www
                         "type"     => 'A',    // eg. A
@@ -407,10 +395,10 @@ class RegistrarModule implements RegistrarModuleInterface {
         }
 
         return $hostRecords;
-
     }
 
-    public static function SaveDNS($params){
+    public static function SaveDNS($params)
+    {
         // return WhmcsBridge::errorResponse('SaveDNS not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
         $domainrobot = self::getApi($params);
 
@@ -422,7 +410,7 @@ class RegistrarModule implements RegistrarModuleInterface {
 
         // If our custom form was used to set the A Entry. Use it.
         // Else set MainIP to null
-        if (isset($_REQUEST['zone']['main']['value'])){
+        if (isset($_REQUEST['zone']['main']['value'])) {
             $mainIP = $_REQUEST['zone']['main']['value'];
             $currentMain = $zone->getMain();
             $currentMain->setAddress($mainIP);
@@ -433,17 +421,17 @@ class RegistrarModule implements RegistrarModuleInterface {
 
         // If our custom form was used to use www_include use it
         // Else set wwwInclude to False
-        if (isset($_REQUEST['zone']['www_include'])){
+        if (isset($_REQUEST['zone']['www_include'])) {
             $www_include = (int) $_REQUEST['zone']['www_include'];
             $zone->setWwwInclude($www_include);
         } else {
             $zone->setWwwInclude(false);
         }
         $domainrobot->zone->update($zone);
-
     }
 
-    public static function GetContactDetails($params){
+    public static function GetContactDetails($params)
+    {
         // return WhmcsBridge::errorResponse('GetContactDetails not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
         $domainrobot = self::getApi($params);
         // Get Domain Info
@@ -466,8 +454,8 @@ class RegistrarModule implements RegistrarModuleInterface {
             // API returns an array of addresses up to n long
             // We just want to show two fields
             // so we combine everything > 2
-            if (count($contactDetails["address"]) > 2){
-                $contactDetails["address"] =[
+            if (count($contactDetails["address"]) > 2) {
+                $contactDetails["address"] = [
                     $contactDetails["address"][0],
                     implode(', ', array_slice($contactDetails["address"], 1))
                 ];
@@ -488,7 +476,8 @@ class RegistrarModule implements RegistrarModuleInterface {
         return $whmcsContacts;
     }
 
-    public static function SaveContactDetails($params){
+    public static function SaveContactDetails($params)
+    {
 
         WhmcsBridge::checkRequiredParametersOrFail(['contactdetails'], $params);
 
@@ -508,7 +497,7 @@ class RegistrarModule implements RegistrarModuleInterface {
 
         foreach ($whmcsContacts as $key => $contact) {
             // Only Update if it exists
-            if (!isset($contacts[$key])){
+            if (!isset($contacts[$key])) {
                 echo "Skipping $key\n";
                 continue;
             }
@@ -520,7 +509,7 @@ class RegistrarModule implements RegistrarModuleInterface {
 
             // Make Adresses Array
             $addresses = [$whmcsContacts[$key]['Address 1']];
-            if ($whmcsContacts[$key]['Address 2']){
+            if ($whmcsContacts[$key]['Address 2']) {
                 $addresses[] = $whmcsContacts[$key]['Address 2'];
             }
             $liveContact["address"] =  $addresses;
@@ -535,14 +524,15 @@ class RegistrarModule implements RegistrarModuleInterface {
         }
     }
 
-    public static function GetEPPCode($params){
+    public static function GetEPPCode($params)
+    {
         $domainrobot = self::getApi($params);
 
         // Get Domaininfo
         $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
 
         // SET Domain Status to Active if not already
-        if ($domain->getRegistryStatus() != RegistryStatusConstants::ACTIVE){
+        if ($domain->getRegistryStatus() != RegistryStatusConstants::ACTIVE) {
             $domain->setRegistryStatus(RegistryStatusConstants::ACTIVE);
             $domainrobot->domain->update($domain);
         }
@@ -557,7 +547,8 @@ class RegistrarModule implements RegistrarModuleInterface {
         ];
     }
 
-    public static function Sync($params){
+    public static function Sync($params)
+    {
         $domainrobot = self::getApi($params);
         // Get Domaininfo
         try {
@@ -568,15 +559,14 @@ class RegistrarModule implements RegistrarModuleInterface {
                 'expirydate' => $expiryDate->format('Y-m-d')
             ];
             // Expired
-            if ($expiryDate < new DateTime()){
+            if ($expiryDate < new DateTime()) {
                 $returnData['active'] = false;
                 $returnData['cancelled'] = true;
             } else {
-            // Active
+                // Active
                 $returnData['active'] = true;
             }
             return $returnData;
-
         } catch (DomainrobotException $th) {
             $error = $th->getError();
             switch ($error['status']['code']) {
@@ -598,7 +588,8 @@ class RegistrarModule implements RegistrarModuleInterface {
         // return WhmcsBridge::errorResponse('Sync not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
     }
 
-    public static function TransferSync($params){
+    public static function TransferSync($params)
+    {
         // Correct Return Values
         // Per Option
         // 1= Transfer has been completed
@@ -632,14 +623,14 @@ class RegistrarModule implements RegistrarModuleInterface {
                 'expirydate' => $expiryDate->format('Y-m-d')
             ];
             return $returnData;
-
         } catch (DomainrobotException $th) {
             $error = $th->getError();
             return WhmcsBridge::errorResponse($error);
         }
     }
 
-    public static function IDProtectToggle($params){
+    public static function IDProtectToggle($params)
+    {
         // return WhmcsBridge::errorResponse('GetEmailForwarding not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
         $domainrobot = self::getApi($params);
         $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
@@ -648,24 +639,27 @@ class RegistrarModule implements RegistrarModuleInterface {
         if ($params['protectenable'] == 1) {
             $domain->setPrivacy(true);
             $domainrobot->domain->update($domain);
-        //off
+            //off
         } else {
             $domain->setPrivacy(false);
             $domainrobot->domain->update($domain);
         }
     }
 
-    public static function GetEmailForwarding($params){
-        return WhmcsBridge::errorResponse('GetEmailForwarding not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+    public static function GetEmailForwarding($params)
+    {
+        return WhmcsBridge::errorResponse('GetEmailForwarding not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
     }
 
-    public static function SaveEmailForwarding($params){
-        return WhmcsBridge::errorResponse('SaveEmailForwarding not implemented'.json_encode($params, JSON_PRETTY_PRINT).'</pre>');
+    public static function SaveEmailForwarding($params)
+    {
+        return WhmcsBridge::errorResponse('SaveEmailForwarding not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
     }
 
     // TODO: check registrarmodule_DomainSuggestionOptions() {
     // https://github.com/WHMCS/sample-registrar-module/blob/master/modules/registrars/registrarmodule/registrarmodule.php
-    public static function GetDomainSuggestions($params){
+    public static function GetDomainSuggestions($params)
+    {
 
         if ($params['isIdnDomain']) {
             $sld = empty($params['punyCodeSearchTerm']) ? strtolower($params['searchTerm']) : strtolower($params['punyCodeSearchTerm']);
@@ -678,13 +672,14 @@ class RegistrarModule implements RegistrarModuleInterface {
     }
 
 
-    public static function CheckAvailability($params){
-       return self::checkDomains($params['sld'], $params);
+    public static function CheckAvailability($params)
+    {
+        return self::checkDomains($params['sld'], $params);
     }
 
     private static function checkDomains($sld, $params, $includeUnavailableDomains = true)
     {
-        if (empty($params['tldsToInclude'])){
+        if (empty($params['tldsToInclude'])) {
             return false;
         }
         $tlds = $params['tldsToInclude'];
@@ -698,7 +693,7 @@ class RegistrarModule implements RegistrarModuleInterface {
             $sld = $domainParts[0];
             unset($domainParts[0]);
             $tld = implode('.', $domainParts);
-            $searchResult = new SearchResult($sld, '.'.$tld);
+            $searchResult = new SearchResult($sld, '.' . $tld);
 
             // Determine the appropriate status to return
             switch ($details['status']) {
@@ -725,24 +720,24 @@ class RegistrarModule implements RegistrarModuleInterface {
                 //check if premium domain Class Pricing is configured
                 $isPremiumClassExists = Capsule::table('mod_InterNetXtblpremiumclasses')->select('id')->where('class_name', '=', $details['premiumClass'])->exists();
 
-                if($isPremiumClassExists && WhmcsBridge::isPremiumDomainSetupOk($params)){
+                if ($isPremiumClassExists && WhmcsBridge::isPremiumDomainSetupOk($params)) {
                     $className = $details['premiumClass'];
                     $premiumclassID = Capsule::table('mod_InterNetXtblpremiumclasses')->select('id')->where('class_name', '=', $className)->first();
-                    $domainPricing = Capsule::select('SELECT * FROM mod_InterNetXtblpremiumpricing WHERE relid='.$premiumclassID->id.' AND currency=1');
+                    $domainPricing = Capsule::select('SELECT * FROM mod_InterNetXtblpremiumpricing WHERE relid=' . $premiumclassID->id . ' AND currency=1');
                     $searchResult->setPremiumDomain(true);
 
                     foreach ($domainPricing as $pricing) {
-                        if($pricing->type == 'domainregister'){
+                        if ($pricing->type == 'domainregister') {
                             $registerPrices = $pricing->{'1years'};
                             $currencyCodes = Capsule::table('tblcurrencies')->select('code')->where('id', '=', $pricing->currency)->first();
-                        }elseif ($pricing->type == 'domaintransfer'){
+                        } elseif ($pricing->type == 'domaintransfer') {
                             $transferPrices = $pricing->{'1years'};
-                        }elseif ($pricing->type == 'domainrenew'){
+                        } elseif ($pricing->type == 'domainrenew') {
                             $renewPrices = $pricing->{'1years'};
                         }
                     }
 
-                    if($registerPrices == '0.00') {
+                    if ($registerPrices == '0.00') {
                         $searchResult->setStatus(SearchResult::STATUS_RESERVED);
                     }
 
@@ -753,7 +748,6 @@ class RegistrarModule implements RegistrarModuleInterface {
                         'CurrencyCode' => $currencyCodes->code,
                         'skipMarkup' => true,
                     ]);
-
                 } else { //END: if Premium Stuff Enabled Check
                     // Important!! Otherwise Premium Domains will be shown as available for the normal TLD price
                     // Although we do not have everything needed enabled
@@ -762,9 +756,9 @@ class RegistrarModule implements RegistrarModuleInterface {
             } //END: if ($details['premium'])
 
             // How to handle Unavailable Domains?
-            if ($searchResult->getStatus() != SearchResult::STATUS_NOT_REGISTERED){
+            if ($searchResult->getStatus() != SearchResult::STATUS_NOT_REGISTERED) {
                 // Defaults to include them But DomainSuggestions set includeUnavailableDomains to false
-                if ($includeUnavailableDomains){
+                if ($includeUnavailableDomains) {
                     $results->append($searchResult);
                 }
             } else {
@@ -772,7 +766,7 @@ class RegistrarModule implements RegistrarModuleInterface {
             }
         }
 
-        if ($params['debug']) Logger::log('Method checkAvailability', print_r($_REQUEST, true), 'sld: ' . $sld . "\nTLDS: " . implode(', ', $tlds )."\n". print_r($checkResult, true));
+        if ($params['debug']) Logger::log('Method checkAvailability', print_r($_REQUEST, true), 'sld: ' . $sld . "\nTLDS: " . implode(', ', $tlds) . "\n" . print_r($checkResult, true));
         return $results;
     }
 
@@ -783,7 +777,7 @@ class RegistrarModule implements RegistrarModuleInterface {
      * @param type $params
      * @return string
      */
-    private static function TransferOutRequest($params, $doTransfer = false )
+    private static function TransferOutRequest($params, $doTransfer = false)
     {
         $domainrobot = self::getApi($params);
         $answer = $doTransfer ? TransferAnswer::ACK : TransferAnswer::NACK;
@@ -795,11 +789,13 @@ class RegistrarModule implements RegistrarModuleInterface {
     }
 
 
-    public static function TransferOutNack($params){
+    public static function TransferOutNack($params)
+    {
         return self::TransferOutRequest($params, false);
     }
 
-    public static function TransferOutAck($params){
+    public static function TransferOutAck($params)
+    {
         return self::TransferOutRequest($params, true);
     }
 
@@ -814,8 +810,9 @@ class RegistrarModule implements RegistrarModuleInterface {
         );
     }
 
-    private static function requireOldApi(){
-        require_once(__DIR__.'/OldApi/class.InterNetX_API.php');
+    private static function requireOldApi()
+    {
+        require_once(__DIR__ . '/OldApi/class.InterNetX_API.php');
     }
 
     /**
@@ -856,13 +853,13 @@ class RegistrarModule implements RegistrarModuleInterface {
                         if ($API->hasError())
                             $errors[] = $API->getErrors();
                         //update
-                    }else if ($sourceDomain == $id) {
+                    } else if ($sourceDomain == $id) {
                         $API->updateDomainRedirect($df['source'], $target, $df['mode'], $df['title']);
                         if ($API->hasError())
                             $errors[] = $API->getErrors();
 
                         //delete and create new
-                    }else {
+                    } else {
                         $API->redirectDelete($id, "domain");
                         $API->createDomainRedirect($df['source'], $target, $df['mode'], $df['title']);
                         if ($API->hasError())
@@ -925,114 +922,111 @@ class RegistrarModule implements RegistrarModuleInterface {
      */
     public static function ChangeOwner($params)
     {
-       try
-       {
-           $countryData = json_decode(file_get_contents(ROOTDIR . DS . 'resources' . DS . 'country' . DS. 'dist.countries.json'),true);
-           $API = new LegacyApi($params['serverHost'], $params['serverUsername'], $params['serverPassword'], $params['serverContext'], $params['sandboxServerUsername'], $params['sandboxServerPassword'], $params['sandboxServerContext'], $params['debug'], $params['sandboxMode']);
-           $API->setReplyTo($params['replyTo']);
-           if (isset($params['original']))
-               $params = $params['original'];
+        try {
+            $countryData = json_decode(file_get_contents(ROOTDIR . DS . 'resources' . DS . 'country' . DS . 'dist.countries.json'), true);
+            $API = new LegacyApi($params['serverHost'], $params['serverUsername'], $params['serverPassword'], $params['serverContext'], $params['sandboxServerUsername'], $params['sandboxServerPassword'], $params['sandboxServerContext'], $params['debug'], $params['sandboxMode']);
+            $API->setReplyTo($params['replyTo']);
+            if (isset($params['original']))
+                $params = $params['original'];
 
 
-           $domain = WhmcsBridge::parseDomain($params);
-           $errors = array();
-           $info = $API->domainInfo($domain);
-           if ($API->hasError())
-               $errors[] = $API->getErrors();
-           $fields = (array) Capsule::table('tbldomainsadditionalfields')->join('tbldomains', 'tbldomains.id', '=', 'tbldomainsadditionalfields.domainid')
-                           ->select('tbldomainsadditionalfields.*')->where('tbldomains.domain', '=', $domain)->orderBy('id', 'asc')->get();
-           foreach ($fields as $field) {
-               $params['additionalfields'][$field->name] = $field->value;
-           }
+            $domain = WhmcsBridge::parseDomain($params);
+            $errors = array();
+            $info = $API->domainInfo($domain);
+            if ($API->hasError())
+                $errors[] = $API->getErrors();
+            $fields = (array) Capsule::table('tbldomainsadditionalfields')->join('tbldomains', 'tbldomains.id', '=', 'tbldomainsadditionalfields.domainid')
+                ->select('tbldomainsadditionalfields.*')->where('tbldomains.domain', '=', $domain)->orderBy('id', 'asc')->get();
+            foreach ($fields as $field) {
+                $params['additionalfields'][$field->name] = $field->value;
+            }
 
-           $extensions = InterNetXExtension::assing($params['tld'], $params['additionalfields']);
+            $extensions = InterNetXExtension::assing($params['tld'], $params['additionalfields']);
 
-           if (!empty($_POST)) {
-               foreach ($_POST['domainContacts'] as $key => $val) {
-                   if (empty($val)) {
-                       $contact[$key] = (string) $info->result->data->domain->$key;
-                   } else {
-                       $details = (array) Capsule::table('tblcontacts')->where('id', '=', $val)->where('userid', '=', (int) $_SESSION['uid'])->first();
+            if (!empty($_POST)) {
+                foreach ($_POST['domainContacts'] as $key => $val) {
+                    if (empty($val)) {
+                        $contact[$key] = (string) $info->result->data->domain->$key;
+                    } else {
+                        $details = (array) Capsule::table('tblcontacts')->where('id', '=', $val)->where('userid', '=', (int) $_SESSION['uid'])->first();
 
-                       $type = ($key == "ownerc") ? null : "admin";
+                        $type = ($key == "ownerc") ? null : "admin";
 
-                       if (!empty($details['address1']) && !empty($details['address2']))
-                           $address = $details['address1'] . " " . $details['address2'];
-                       else
-                           $address = $details['address1'];
+                        if (!empty($details['address1']) && !empty($details['address2']))
+                            $address = $details['address1'] . " " . $details['address2'];
+                        else
+                            $address = $details['address1'];
 
-                       $user = array(
-                           'id' => $contact,
-                           'type' => ($details['companyname'] == "") ? "PERSON" : "ORG",
-                           'firstName' => $details['firstname'],
-                           'lastName' => $details['lastname'],
-                           'organization' => $details['companyname'],
-                           'address' => $address,
-                           'city' => $details['city'],
-                           'state' => $details['state'],
-                           'postCode' => $details['postcode'],
-                           'country' => $details['country'],
-                           'countryName' => $countryData[$details['country']]['name'],
-                           'phone' => InterNetX_FormatPhone($details['fullphonenumber']),
-                           //'fax' => InterNetX_FormatPhone($details['fullphonenumber']),
-                           'email' => $details['email'],
-                       );
+                        $user = array(
+                            'id' => $contact,
+                            'type' => ($details['companyname'] == "") ? "PERSON" : "ORG",
+                            'firstName' => $details['firstname'],
+                            'lastName' => $details['lastname'],
+                            'organization' => $details['companyname'],
+                            'address' => $address,
+                            'city' => $details['city'],
+                            'state' => $details['state'],
+                            'postCode' => $details['postcode'],
+                            'country' => $details['country'],
+                            'countryName' => $countryData[$details['country']]['name'],
+                            'phone' => InterNetX_FormatPhone($details['fullphonenumber']),
+                            //'fax' => InterNetX_FormatPhone($details['fullphonenumber']),
+                            'email' => $details['email'],
+                        );
 
-                       if ($key != "ownerc" && ($params['tld'] == "de" || $params['tld'] == "es"))
-                           $user['type'] = "PERSON";
+                        if ($key != "ownerc" && ($params['tld'] == "de" || $params['tld'] == "es"))
+                            $user['type'] = "PERSON";
 
-                       $result = $API->contactCreate($user, $extensions);
-                       if ($API->hasError()) {
-                           $errors[] = $API->getErrors();
-                       } else {
-                           $contact[$key] = (string) $result->result->status->object->value;
-                       }
-                   }
-               }
+                        $result = $API->contactCreate($user, $extensions);
+                        if ($API->hasError()) {
+                            $errors[] = $API->getErrors();
+                        } else {
+                            $contact[$key] = (string) $result->result->status->object->value;
+                        }
+                    }
+                }
 
-               $client = internetx_getClientDetails($params['domainid']);
-               $domainContacts = $_POST['domainContacts'];
-               $autoinfo = (string) $info->result->data->domain->authinfo;
-               $change = $API->domainOwnerChange($domain, $contact, $autoinfo, $client['email']);
-               if ($API->hasError())
-                   $errors[] = $API->getErrors();
-               else
-                   $infoMsg = (string) $change->result->status->text;
-           }else {
+                $client = internetx_getClientDetails($params['domainid']);
+                $domainContacts = $_POST['domainContacts'];
+                $autoinfo = (string) $info->result->data->domain->authinfo;
+                $change = $API->domainOwnerChange($domain, $contact, $autoinfo, $client['email']);
+                if ($API->hasError())
+                    $errors[] = $API->getErrors();
+                else
+                    $infoMsg = (string) $change->result->status->text;
+            } else {
 
-               $domainContacts = array(
-                   "ownerc" => (string) $info->result->data->domain->ownerc,
-                   "adminc" => (string) $info->result->data->domain->adminc,
-                   "techc" => (string) $info->result->data->domain->techc,
-                   "zonec" => (string) $info->result->data->domain->zonec,
-               );
-           }
-       } catch (Exception $ex) {
-           $errrors[] = $ex->getMessage();
-       }
+                $domainContacts = array(
+                    "ownerc" => (string) $info->result->data->domain->ownerc,
+                    "adminc" => (string) $info->result->data->domain->adminc,
+                    "techc" => (string) $info->result->data->domain->techc,
+                    "zonec" => (string) $info->result->data->domain->zonec,
+                );
+            }
+        } catch (Exception $ex) {
+            $errrors[] = $ex->getMessage();
+        }
 
-       if (!empty($errors))
-           $call['errors'] = $errors;
+        if (!empty($errors))
+            $call['errors'] = $errors;
 
-       if ($infoMsg)
-           $call['info'] = $infoMsg;
+        if ($infoMsg)
+            $call['info'] = $infoMsg;
 
-       $call['domain'] = $params['sld'] . '.' . $params['tld'];
-       $call['domainContacts'] = $domainContacts;
-       $call['domainId'] = $params['domainid'];
-       $call['contacts2'] = "<option value=''>Do not change Contact</option>";
-       $query = Capsule::table('tblcontacts')->where('userid', '=', (int) $_SESSION['uid'])->get();
-       foreach ($query as $row) {
-           $call['contacts2'] .= "<option value='" . $row->id . "'>" . $row->firstname . ' ' . $row->lastname . '</option>';
-       }
+        $call['domain'] = $params['sld'] . '.' . $params['tld'];
+        $call['domainContacts'] = $domainContacts;
+        $call['domainId'] = $params['domainid'];
+        $call['contacts2'] = "<option value=''>Do not change Contact</option>";
+        $query = Capsule::table('tblcontacts')->where('userid', '=', (int) $_SESSION['uid'])->get();
+        foreach ($query as $row) {
+            $call['contacts2'] .= "<option value='" . $row->id . "'>" . $row->firstname . ' ' . $row->lastname . '</option>';
+        }
 
-       //$call['contacts2'] .= '<option value="---addnew---">Add new Contact..</option>';
-       return array(
-           'templatefile' => 'changeOwner',
-           'breadcrumb' => ' > <a href="#">Change Owner</a>',
-           'vars' => $call
-       );
+        //$call['contacts2'] .= '<option value="---addnew---">Add new Contact..</option>';
+        return array(
+            'templatefile' => 'changeOwner',
+            'breadcrumb' => ' > <a href="#">Change Owner</a>',
+            'vars' => $call
+        );
     }
-
-
 }
