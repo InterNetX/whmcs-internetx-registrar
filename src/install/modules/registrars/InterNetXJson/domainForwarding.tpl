@@ -58,25 +58,28 @@
                                           <td class="textcenter"><input class="form-control" type="text" name="domainForwarding[{$key}][source]" value="{$redirect.source}"></td>
                                           <td class="textcenter">
                                                 <select name="domainForwarding[{$key}][mode]" class="domainForwarding_mode form-control" rel="{$key}">
-                                                      <option value="frame"{if $redirect.mode eq "frame"} selected="selected"{/if}>frame</option>
-                                                      <option value="http"{if $redirect.mode eq "http"} selected="selected"{/if}>http</option>
-                                                      <option value="https"{if $redirect.mode eq "https" || $redirect.mode eq ""} selected="selected"{/if}>https</option>
+                                                      <option value="HTTP"{if $redirect.mode eq "HTTP"} selected="selected"{/if}>HTTP</option>
+                                                      <option value="HTTPS"{if $redirect.mode eq "HTTPS" || $redirect.mode eq ""} selected="selected"{/if}>HTTPS</option>
+                                                      <option value="FRAME"{if $redirect.mode eq "FRAME"} selected="selected"{/if}>FRAME</option>
                                                 </select>
                                           </td>
                                           <td class="textcenter">
                                                 <input type="text" name="domainForwarding[{$key}][target]" value="{$redirect.target}" class="form-control" >
-                                                <input type="hidden" name="domainForwarding[{$key}][id]" value="{$redirect.id}" /></td>
-                                          <td class="textcenter"><div id="domainForwarding_tilte_{$key}" {if $redirect.mode != "frame"}style="display:none;" {/if}> {$LANG.internetxdomainforwardingtitle}  <input type="text" name="domainForwarding[{$key}][title]" value="{$redirect.title}" class="form-control" ></div></td>
+                                                <input type="hidden" name="domainForwarding[{$key}][id]" value="{$redirect.source}" /></td>
+                                          <td class="textcenter"><div id="domainForwarding_tilte_{$key}" {if $redirect.mode != "FRAME"}style="display:none;" {/if}> {$LANG.internetxdomainforwardingtitle}  <input type="text" name="domainForwarding[{$key}][title]" value="{$redirect.title}" class="form-control" ></div></td>
 
                                     </tr>
                               {/foreach}
                               <tr>
+                                    <th class="textcenter" colspan="4">Add New Redirect:</th>
+                              </tr>
+                              <tr>
                                     <td class="textcenter"><input type="text" name="newDomainForwarding[source]" value="{$domain}" class="form-control" ></td>
                                     <td class="textcenter">
                                           <select name="newDomainForwarding[mode]" id="newDomainForwarding_mode" class="form-control" >
-                                                <option value="frame">frame</option>
-                                                <option value="http">http</option>
-                                                <option value="https">https</option>
+                                                <option value="HTTPS">HTTPS</option>
+                                                <option value="HTTP">HTTP</option>
+                                                <option value="FRAME">FRAME</option>
                                           </select>
                                     </td>
                                     <td class="textcenter"><input type="text" name="newDomainForwarding[target]" class="form-control" ></td>

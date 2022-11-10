@@ -1,4 +1,5 @@
 <?php
+
 // Bootstrap the Module, Composer Autoload etc.
 require_once(__DIR__ . '/app/bootstrap.php');
 

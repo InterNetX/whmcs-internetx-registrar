@@ -8,14 +8,16 @@ use App\Helpers\Config;
 
 use App\Helpers\WhmcsBridge;
 use Domainrobot\Domainrobot;
+use Domainrobot\Model\Query;
 use Domainrobot\Model\Domain;
 use Domainrobot\Model\Contact;
+use Domainrobot\Model\Redirect;
 use Domainrobot\Model\NameServer;
+use Domainrobot\Model\QueryFilter;
 use Domainrobot\Lib\DomainrobotAuth;
 use App\Providers\WhoisProxyProvider;
 use Domainrobot\Model\TransferAnswer;
 use App\Providers\LegacyApi\LegacyApi;
-use App\Providers\LegacyApi\InterNetXExtension;
 use Domainrobot\Lib\DomainrobotException;
 use Domainrobot\Model\ContactItExtensions;
 use App\Contracts\RegistrarModuleInterface;
@@ -23,9 +25,10 @@ use Domainrobot\Model\ContactTypeConstants;
 use WHMCS\Domains\DomainLookup\ResultsList;
 use App\Exceptions\RegistrarModuleException;
 use WHMCS\Domains\DomainLookup\SearchResult;
-use Domainrobot\Model\RegistryStatusConstants;
 
+use Domainrobot\Model\RegistryStatusConstants;
 use function PHPUnit\Framework\throwException;
+use App\Providers\LegacyApi\InterNetXExtension;
 use App\Providers\WhmcsModuleLogProvider as Logger;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
@@ -38,7 +41,8 @@ class RegistrarModule implements RegistrarModuleInterface
     public static function call($functionName, $params = false)
     {
         try {
-            WhmcsBridge::saveParamsLog($functionName, $params);
+            //TODO: Remove from Production
+            // WhmcsBridge::saveParamsLog($functionName, $params);
             return call_user_func('self::' . $functionName, $params);
         } catch (RegistrarModuleException $th) {
             return WhmcsBridge::errorResponse($th->getMessage());
@@ -810,109 +814,237 @@ class RegistrarModule implements RegistrarModuleInterface
         );
     }
 
-    private static function requireOldApi()
-    {
-        require_once(__DIR__ . '/OldApi/class.InterNetX_API.php');
+    private static function redirectCreate($domainrobot, $source, $target, $mode, $type, $title = null){
+        $redirect = new Redirect();
+        $redirect->setSource($source);
+        $redirect->setTarget($target);
+        $redirect->setMode($mode);
+        $redirect->setType($type);
+        if ($title){
+            $redirect->setTitle($title);
+        }
+        $response = $domainrobot->redirect->create($redirect);
+        return $response;
     }
 
     /**
      * FUNCTION InterNetX_domainForwarding
      * Manage domain forwarding in client area
+     * Uses Template domainForwarding.tpl
+     * Will Delete all existing redirect and recreate them
      * @param array $params
      * @return array $return
      */
     public static function DomainForwarding($params)
     {
 
-        try {
+        $domainrobot = self::getApi($params);
+        $domain = WhmcsBridge::parseDomain($params);
 
+        if (!empty($_POST)) {
 
-            $API = new LegacyApi($params['serverHost'], $params['serverUsername'], $params['serverPassword'], $params['serverContext'], $params['sandboxServerUsername'], $params['sandboxServerPassword'], $params['sandboxServerContext'], $params['debug'], $params['sandboxMode']);
-            $API->setReplyTo($params['replyTo']);
-            if (isset($params['original']))
-                $params = $params['original'];
+            $domainForwarding = $_POST['domainForwarding'];
+            foreach ($domainForwarding as $k => $df) {
 
-            $domain = WhmcsBridge::parseDomain($params);
+                $oldSource = $df['id'];
+                $source = $df['source'];
+                $target = $df['target'];
+                $mode = $df['mode'];
+                $title = $df['title'];
 
-            $errors = array();
+                // delete when source or target are missing
+                if (empty($source) || empty($target)) {
+                    $response = $domainrobot->redirect->delete($oldSource);
 
-
-            if (!empty($_POST)) {
-
-                $domainForwarding = $_POST['domainForwarding'];
-                foreach ($domainForwarding as $k => $df) {
-
-                    $id = $df['id'];
-                    $source = $df['source'];
-                    $sourceDomain = "{$source}.{$domain}";
-                    $target = $df['target'];
-
-                    //delete
-                    if (empty($df['source']) || empty($target)) {
-                        $API->redirectDelete($id, "domain");
-                        if ($API->hasError())
-                            $errors[] = $API->getErrors();
-                        //update
-                    } else if ($sourceDomain == $id) {
-                        $API->updateDomainRedirect($df['source'], $target, $df['mode'], $df['title']);
-                        if ($API->hasError())
-                            $errors[] = $API->getErrors();
-
-                        //delete and create new
-                    } else {
-                        $API->redirectDelete($id, "domain");
-                        $API->createDomainRedirect($df['source'], $target, $df['mode'], $df['title']);
-                        if ($API->hasError())
-                            $errors[] = $API->getErrors();
-                    }
+                // Else Delete && create new
+                // Deleted Update Step that included oldSource to trigger an update
+                // if ->update function works it could be used again
+                // } else if ($source == $oldSource) {
+                } else {
+                    $response = $domainrobot->redirect->delete($oldSource);
+                    $response = self::redirectCreate(
+                        $domainrobot, $source, $target, $mode, "DOMAIN", $title
+                    );
                 }
 
-                //adding new
-                $newDomainForwarding = $_POST['newDomainForwarding'];
-                if (!empty($newDomainForwarding['source']) && !empty($newDomainForwarding['target'])) {
-                    $source = $newDomainForwarding['source'] . ".{$domain}";
-                    $API->createDomainRedirect($newDomainForwarding['source'], $newDomainForwarding['target'], $newDomainForwarding['mode'], $newDomainForwarding['title']);
-                    if ($API->hasError())
-                        $errors[] = $API->getErrors();
-                }
             }
-            $result = $API->redirectInfo($domain);
 
-            if ($API->hasError())
-                $errors[] = $API->getErrors();
-
-            $redirects = array();
-            foreach ($result->result->data->redirect as $key => $rd) {
-                if ($rd->mode == "single")
-                    continue;
-                $surce = str_replace("." . $domain, "", (string) $rd->source);
-                $redirects[] = array(
-                    "id" => $rd->source,
-                    "source" => (string) $rd->source,
-                    "target" => (string) $rd->target,
-                    "mode" => (string) $rd->mode,
-                    "title" => $rd->title,
-                );
+            //adding new
+            $newDomainForwarding = $_POST['newDomainForwarding'];
+            if (!empty($newDomainForwarding['source']) && !empty($newDomainForwarding['target'])) {
+                $response = self::redirectCreate(
+                                        $domainrobot,
+                                        $newDomainForwarding['source'],
+                                        $newDomainForwarding['target'],
+                                        $newDomainForwarding['mode'],
+                                        "DOMAIN",
+                                        $newDomainForwarding['title']
+                                    );
             }
-        } catch (Exception $ex) {
-
-            $errrors[] = $ex->getMessage();
         }
 
-        if (!empty($errors))
-            $call['errors'] = $errors;
+        // Get All Redirects for domain from Server
+        $query = new Query([
+            'filters' => [ new QueryFilter([
+                'key' => 'domain',
+                'value' => $domain,
+                'operator' => 'EQUAL'
+            ])]
+        ]);
+        $redirectsOnServer = $domainrobot->redirect->list($query);
 
-        $call['redirects'] = $redirects;
-        $call['domain'] = $params['sld'] . '.' . $params['tld'];
-        $call['domainId'] = $params['domainid'];
+        // Compile Redirects to Template Vars
+        $redirects = [];
+        foreach ($redirectsOnServer as $key => $rd) {
+            // Ignore mode single
+            if ($rd['mode'] == "single")
+                continue;
 
+            $redirects[] = array(
+                "source" => (string) $rd['source'],
+                "target" => (string) $rd['target'],
+                "mode" => (string) $rd['mode'],
+                "title" => $rd['title'],
+            );
+        }
+
+        // Prepare TEmplate Vars
+        $returnVars = [];
+        $returnVars['domain'] = $domain;
+        $returnVars['redirects'] = $redirects;
 
         return array(
             'templatefile' => 'domainForwarding',
             'breadcrumb' => ' > <a href="#">Domain Forwarding</a>',
-            'vars' => $call
+            'vars' => $returnVars
         );
     }
+
+    // /**
+    //  * FUNCTION InterNetX_changeOwner
+    //  * Change owner domain in client area
+    //  * @param array $params
+    //  * @return array $return
+    //  */
+    // public static function ChangeOwner($params)
+    // {
+    //     try {
+
+    //         $domainrobot = self::getApi($params);
+    //         $domain = WhmcsBridge::parseDomain($params);
+    //         $info = $domainrobot->domain->info($domain);
+    //         $fields = (array) Capsule::table('tbldomainsadditionalfields')->join('tbldomains', 'tbldomains.id', '=', 'tbldomainsadditionalfields.domainid')
+    //             ->select('tbldomainsadditionalfields.*')->where('tbldomains.domain', '=', $domain)->orderBy('id', 'asc')->get();
+
+    //             foreach ($fields as $field) {
+    //             $params['additionalfields'][$field->name] = $field->value;
+    //         }
+
+    //         $extensions = InterNetXExtension::assing($params['tld'], $params['additionalfields']);
+
+    //         // Params required for
+    //         // public static function whmcs2domainrobotContact($prefix, $params){
+
+    //         // $params['additionalfields']
+    //         // $params['address1']
+    //         // $params['address2']
+    //         // $params['city']
+    //         // $params['companyname']
+    //         // $params['country']
+    //         // $params['email']
+    //         // $params['firstname']
+    //         // $params['lastname']
+    //         // $params['phonenumber']
+    //         // $params['postcode']
+    //         // $params['state']
+    //         // $params['tld']
+
+    //         if (!empty($_POST)) {
+    //             foreach ($_POST['domainContacts'] as $key => $val) {
+    //                 if (empty($val)) {
+    //                     $contact[$key] = (string) $info->result->data->domain->$key;
+    //                 } else {
+    //                     $details = (array) Capsule::table('tblcontacts')->where('id', '=', $val)->where('userid', '=', (int) $_SESSION['uid'])->first();
+
+    //                     $type = ($key == "ownerc") ? null : "admin";
+
+    //                     if (!empty($details['address1']) && !empty($details['address2']))
+    //                         $address = $details['address1'] . " " . $details['address2'];
+    //                     else
+    //                         $address = $details['address1'];
+
+    //                     $user = array(
+    //                         'id' => $contact,
+    //                         'type' => ($details['companyname'] == "") ? "PERSON" : "ORG",
+    //                         'firstName' => $details['firstname'],
+    //                         'lastName' => $details['lastname'],
+    //                         'organization' => $details['companyname'],
+    //                         'address' => $address,
+    //                         'city' => $details['city'],
+    //                         'state' => $details['state'],
+    //                         'postCode' => $details['postcode'],
+    //                         'country' => $details['country'],
+    //                         'countryName' => $countryData[$details['country']]['name'],
+    //                         'phone' => InterNetX_FormatPhone($details['fullphonenumber']),
+    //                         //'fax' => InterNetX_FormatPhone($details['fullphonenumber']),
+    //                         'email' => $details['email'],
+    //                     );
+
+    //                     if ($key != "ownerc" && ($params['tld'] == "de" || $params['tld'] == "es"))
+    //                         $user['type'] = "PERSON";
+
+    //                     $result = $API->contactCreate($user, $extensions);
+    //                     if ($API->hasError()) {
+    //                         $errors[] = $API->getErrors();
+    //                     } else {
+    //                         $contact[$key] = (string) $result->result->status->object->value;
+    //                     }
+    //                 }
+    //             }
+
+    //             $client = internetx_getClientDetails($params['domainid']);
+    //             $domainContacts = $_POST['domainContacts'];
+    //             $autoinfo = (string) $info->result->data->domain->authinfo;
+    //             $change = $API->domainOwnerChange($domain, $contact, $autoinfo, $client['email']);
+    //             if ($API->hasError())
+    //                 $errors[] = $API->getErrors();
+    //             else
+    //                 $infoMsg = (string) $change->result->status->text;
+    //         } else {
+
+    //             $domainContacts = array(
+    //                 "ownerc" => (string) $info->result->data->domain->ownerc,
+    //                 "adminc" => (string) $info->result->data->domain->adminc,
+    //                 "techc" => (string) $info->result->data->domain->techc,
+    //                 "zonec" => (string) $info->result->data->domain->zonec,
+    //             );
+    //         }
+    //     } catch (Exception $ex) {
+    //         $errrors[] = $ex->getMessage();
+    //     }
+
+    //     if (!empty($errors))
+    //         $call['errors'] = $errors;
+
+    //     if ($infoMsg)
+    //         $call['info'] = $infoMsg;
+
+    //     $call['domain'] = $params['sld'] . '.' . $params['tld'];
+    //     $call['domainContacts'] = $domainContacts;
+    //     $call['domainId'] = $params['domainid'];
+    //     $call['contacts2'] = "<option value=''>Do not change Contact</option>";
+    //     $query = Capsule::table('tblcontacts')->where('userid', '=', (int) $_SESSION['uid'])->get();
+    //     foreach ($query as $row) {
+    //         $call['contacts2'] .= "<option value='" . $row->id . "'>" . $row->firstname . ' ' . $row->lastname . '</option>';
+    //     }
+
+    //     //$call['contacts2'] .= '<option value="---addnew---">Add new Contact..</option>';
+    //     return array(
+    //         'templatefile' => 'changeOwner',
+    //         'breadcrumb' => ' > <a href="#">Change Owner</a>',
+    //         'vars' => $call
+    //     );
+    // }
 
     /**
      * FUNCTION InterNetX_changeOwner
@@ -969,7 +1101,7 @@ class RegistrarModule implements RegistrarModuleInterface
                             'postCode' => $details['postcode'],
                             'country' => $details['country'],
                             'countryName' => $countryData[$details['country']]['name'],
-                            'phone' => InterNetX_FormatPhone($details['fullphonenumber']),
+                            'phone' => $details['fullphonenumber'],
                             //'fax' => InterNetX_FormatPhone($details['fullphonenumber']),
                             'email' => $details['email'],
                         );
@@ -986,7 +1118,7 @@ class RegistrarModule implements RegistrarModuleInterface
                     }
                 }
 
-                $client = internetx_getClientDetails($params['domainid']);
+                $client = ['email' => 'paulporzky@gmail.com'];
                 $domainContacts = $_POST['domainContacts'];
                 $autoinfo = (string) $info->result->data->domain->authinfo;
                 $change = $API->domainOwnerChange($domain, $contact, $autoinfo, $client['email']);

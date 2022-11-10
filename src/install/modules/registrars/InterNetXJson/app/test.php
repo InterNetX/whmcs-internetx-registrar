@@ -3,21 +3,27 @@
 namespace App;
 
 use Domainrobot\Domainrobot;
-use Domainrobot\Service\DomainrobotService;
 use Domainrobot\Model\Query;
+use Domainrobot\Model\Domain;
+use Domainrobot\Model\Redirect;
+use Domainrobot\Model\QueryView;
+use Domainrobot\Model\QueryFilter;
 use Domainrobot\Lib\DomainrobotAuth;
 use Domainrobot\Lib\DomainrobotException;
+use Domainrobot\Service\DomainrobotService;
 use App\Exceptions\RegistrarModuleException;
 
 require_once('bootstrap.php');
 
 try {
     $domainrobot = new Domainrobot([
-        "url" => "https://api.autodns.com/v1",
+
+        // "url" => "https://api.autodns.com/v1",
+        "url" => "https://api.demo.autodns.com/v1",
         "auth" => new DomainrobotAuth([
-            "user"     => '1351105859',
-            "password" => '****',
-            "context"  => 4,
+            "user"     => '0000_Domainpoint_cb',
+            "password" => 'domains',
+            "context"  => 1,
         ])
     ]);
 
@@ -41,18 +47,62 @@ try {
   // print_r(json_encode($query->toArray(), JSON_PRETTY_PRINT));
   // $r = $domainrobot->job->historyList($query);
   try {
+    $query = new Query([
+        'filters' => [ new QueryFilter([
+            'key' => 'domain',
+            'value' => 'qwdqwdqwdqwd.com',
+            'operator' => 'EQUAL'
+        ])]
+    ]);
+    // $redirectsOnServer = $domainrobot->redirect->list($query);
+    // print_r($redirectsOnServer);
+     $oneRedirect = $domainrobot->redirect->info("qwdqwdqwdqwd.com");
+     print_r($oneRedirect);
+    // $oneRedirect->setTarget('example.com');
+    // $response = $domainrobot->redirect->delete("qwdqwdqwdqwd.com");
+    // var_dump($response);
 
-    $domainPremium = $domainrobot->domainPremium->info('bjb.video');
-    if (is_object($domainPremium) && $priceClass = $domainPremium->getPriceClass()){
-      $premiumDomainPriceClass = $priceClass;
-      $isPremiumDomain = true;
-      echo 'is Premium';
 
-    }
+    // // Domainrobot\Model\Redirect
+    // $redirect = new Redirect();
+    // // Set the source domain
+    // $redirect->setSource("other.qwdqwdqwdqwd.com");
+    // // Set the target path
+    // $redirect->setTarget("example-2.com/test");
+    // // Set type DOMAIN
+    // $redirect->setType("DOMAIN");
+    // // Set mode HTTP
+    // $redirect->setMode("FRAME");
+    // $redirect->setTitle("Moin Moin");
+    // // Domainrobot\Model\Redirect
+    // //  $response = $domainrobot->redirect->create($redirect);
+    // //  var_dump($response);
+
+    $response = $domainrobot->redirect->update($oneRedirect);
+    var_dump($response);
+
+
+    $redirect = $domainrobot->redirect->info("qwdqwdqwdqwd.com");
+    $redirect->setTarget("othertarget.com");
+    $response = $domainrobot->redirect->update($redirect);
+    // => Call to undefined method Domainrobot\Model\Redirect::getId(
+
+
+
+    // print_r($object);
+
+    // $domainPremium = $domainrobot->domainPremium->info('bjb.video');
+    // if (is_object($domainPremium) && $priceClass = $domainPremium->getPriceClass()){
+    //   $premiumDomainPriceClass = $priceClass;
+    //   $isPremiumDomain = true;
+    //   echo 'is Premium';
+
+    // }
 
   } catch (DomainrobotException $th) {
     //TODO: Move output to Module log
-    print_r('domain not found');
+    print_r($th);
+
   }
 
 } catch (RegistrarModuleException $th) {
