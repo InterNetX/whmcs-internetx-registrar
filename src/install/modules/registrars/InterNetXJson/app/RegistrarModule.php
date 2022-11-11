@@ -663,6 +663,18 @@ class RegistrarModule implements RegistrarModuleInterface
     public static function GetEmailForwarding($params)
     {
         return WhmcsBridge::errorResponse('GetEmailForwarding not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
+        $domainrobot = self::getApi($params);
+        $domain = WhmcsBridge::parseDomain($params);
+        // Get All E-Mail Redirects for domain from Server
+        $query = new Query([
+            'filters' => [ new QueryFilter([
+                'key' => 'source',
+                'value' => '*'.$domain,
+                'operator' => 'LIKE'
+            ])]
+        ]);
+        $redirectsOnServer = $domainrobot->redirect->list($query);
+
     }
 
     public static function SaveEmailForwarding($params)
