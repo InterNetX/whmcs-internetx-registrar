@@ -24,8 +24,8 @@ use App\Contracts\RegistrarModuleInterface;
 use Domainrobot\Model\ContactTypeConstants;
 use WHMCS\Domains\DomainLookup\ResultsList;
 use App\Exceptions\RegistrarModuleException;
-use WHMCS\Domains\DomainLookup\SearchResult;
 
+use WHMCS\Domains\DomainLookup\SearchResult;
 use Domainrobot\Model\RegistryStatusConstants;
 use function PHPUnit\Framework\throwException;
 use App\Providers\LegacyApi\InterNetXExtension;
@@ -193,6 +193,16 @@ class RegistrarModule implements RegistrarModuleInterface
                 'FriendlyName' => 'Admin Contact',
                 'Type' => 'yesno',
                 "Description" => "Specify that the owner will be OwnerC and AdminC and reseller will be Billing/TechC",
+            ),
+            'hideDomainRedirect' => array(
+                'FriendlyName' => 'Hide Domain Redirect',
+                'Type' => 'yesno',
+                "Description" => "Hide 'Domain Redirect' in the Client Area Side Bar",
+            ),
+            'hideOwnerChange' => array(
+                'FriendlyName' => 'Hide Owner Change',
+                'Type' => 'yesno',
+                "Description" => "Hide 'Owner Change' in the Client Area Side Bar",
             ),
         );
 
@@ -805,13 +815,20 @@ class RegistrarModule implements RegistrarModuleInterface
 
     public static function ClientAreaCustomButtonArray($params)
     {
-        return array(
-            //TODO: use LANG
-            // Lang::trans('Domain Redirect') => 'DomainForwarding',
-            // Lang::trans('Owner Change') => 'ChangeOwner',
-            'Domain Redirect' => 'DomainForwarding',
-            'Owner Change' => 'ChangeOwner',
-        );
+
+        $config = WhmcsBridge::getRegistarConfig();
+
+        $customButtons = [];
+
+        if ($config['hideDomainRedirect'] !== 'on') {
+            $customButtons[\Lang::trans('Domain Redirect')] = 'DomainForwarding';
+        }
+
+        if ($config['hideOwnerChange'] !== 'on') {
+            $customButtons[\Lang::trans('Owner Change')] = 'ChangeOwner';
+        }
+
+        return $customButtons;
     }
 
     private static function redirectCreate($domainrobot, $source, $target, $mode, $type, $title = null){
@@ -920,132 +937,6 @@ class RegistrarModule implements RegistrarModuleInterface
         );
     }
 
-    // /**
-    //  * FUNCTION InterNetX_changeOwner
-    //  * Change owner domain in client area
-    //  * @param array $params
-    //  * @return array $return
-    //  */
-    // public static function ChangeOwner($params)
-    // {
-    //     try {
-
-    //         $domainrobot = self::getApi($params);
-    //         $domain = WhmcsBridge::parseDomain($params);
-    //         $info = $domainrobot->domain->info($domain);
-    //         $fields = (array) Capsule::table('tbldomainsadditionalfields')->join('tbldomains', 'tbldomains.id', '=', 'tbldomainsadditionalfields.domainid')
-    //             ->select('tbldomainsadditionalfields.*')->where('tbldomains.domain', '=', $domain)->orderBy('id', 'asc')->get();
-
-    //             foreach ($fields as $field) {
-    //             $params['additionalfields'][$field->name] = $field->value;
-    //         }
-
-    //         $extensions = InterNetXExtension::assing($params['tld'], $params['additionalfields']);
-
-    //         // Params required for
-    //         // public static function whmcs2domainrobotContact($prefix, $params){
-
-    //         // $params['additionalfields']
-    //         // $params['address1']
-    //         // $params['address2']
-    //         // $params['city']
-    //         // $params['companyname']
-    //         // $params['country']
-    //         // $params['email']
-    //         // $params['firstname']
-    //         // $params['lastname']
-    //         // $params['phonenumber']
-    //         // $params['postcode']
-    //         // $params['state']
-    //         // $params['tld']
-
-    //         if (!empty($_POST)) {
-    //             foreach ($_POST['domainContacts'] as $key => $val) {
-    //                 if (empty($val)) {
-    //                     $contact[$key] = (string) $info->result->data->domain->$key;
-    //                 } else {
-    //                     $details = (array) Capsule::table('tblcontacts')->where('id', '=', $val)->where('userid', '=', (int) $_SESSION['uid'])->first();
-
-    //                     $type = ($key == "ownerc") ? null : "admin";
-
-    //                     if (!empty($details['address1']) && !empty($details['address2']))
-    //                         $address = $details['address1'] . " " . $details['address2'];
-    //                     else
-    //                         $address = $details['address1'];
-
-    //                     $user = array(
-    //                         'id' => $contact,
-    //                         'type' => ($details['companyname'] == "") ? "PERSON" : "ORG",
-    //                         'firstName' => $details['firstname'],
-    //                         'lastName' => $details['lastname'],
-    //                         'organization' => $details['companyname'],
-    //                         'address' => $address,
-    //                         'city' => $details['city'],
-    //                         'state' => $details['state'],
-    //                         'postCode' => $details['postcode'],
-    //                         'country' => $details['country'],
-    //                         'countryName' => $countryData[$details['country']]['name'],
-    //                         'phone' => InterNetX_FormatPhone($details['fullphonenumber']),
-    //                         //'fax' => InterNetX_FormatPhone($details['fullphonenumber']),
-    //                         'email' => $details['email'],
-    //                     );
-
-    //                     if ($key != "ownerc" && ($params['tld'] == "de" || $params['tld'] == "es"))
-    //                         $user['type'] = "PERSON";
-
-    //                     $result = $API->contactCreate($user, $extensions);
-    //                     if ($API->hasError()) {
-    //                         $errors[] = $API->getErrors();
-    //                     } else {
-    //                         $contact[$key] = (string) $result->result->status->object->value;
-    //                     }
-    //                 }
-    //             }
-
-    //             $client = internetx_getClientDetails($params['domainid']);
-    //             $domainContacts = $_POST['domainContacts'];
-    //             $autoinfo = (string) $info->result->data->domain->authinfo;
-    //             $change = $API->domainOwnerChange($domain, $contact, $autoinfo, $client['email']);
-    //             if ($API->hasError())
-    //                 $errors[] = $API->getErrors();
-    //             else
-    //                 $infoMsg = (string) $change->result->status->text;
-    //         } else {
-
-    //             $domainContacts = array(
-    //                 "ownerc" => (string) $info->result->data->domain->ownerc,
-    //                 "adminc" => (string) $info->result->data->domain->adminc,
-    //                 "techc" => (string) $info->result->data->domain->techc,
-    //                 "zonec" => (string) $info->result->data->domain->zonec,
-    //             );
-    //         }
-    //     } catch (Exception $ex) {
-    //         $errrors[] = $ex->getMessage();
-    //     }
-
-    //     if (!empty($errors))
-    //         $call['errors'] = $errors;
-
-    //     if ($infoMsg)
-    //         $call['info'] = $infoMsg;
-
-    //     $call['domain'] = $params['sld'] . '.' . $params['tld'];
-    //     $call['domainContacts'] = $domainContacts;
-    //     $call['domainId'] = $params['domainid'];
-    //     $call['contacts2'] = "<option value=''>Do not change Contact</option>";
-    //     $query = Capsule::table('tblcontacts')->where('userid', '=', (int) $_SESSION['uid'])->get();
-    //     foreach ($query as $row) {
-    //         $call['contacts2'] .= "<option value='" . $row->id . "'>" . $row->firstname . ' ' . $row->lastname . '</option>';
-    //     }
-
-    //     //$call['contacts2'] .= '<option value="---addnew---">Add new Contact..</option>';
-    //     return array(
-    //         'templatefile' => 'changeOwner',
-    //         'breadcrumb' => ' > <a href="#">Change Owner</a>',
-    //         'vars' => $call
-    //     );
-    // }
-
     /**
      * FUNCTION InterNetX_changeOwner
      * Change owner domain in client area
@@ -1054,111 +945,92 @@ class RegistrarModule implements RegistrarModuleInterface
      */
     public static function ChangeOwner($params)
     {
-        try {
-            $countryData = json_decode(file_get_contents(ROOTDIR . DS . 'resources' . DS . 'country' . DS . 'dist.countries.json'), true);
-            $API = new LegacyApi($params['serverHost'], $params['serverUsername'], $params['serverPassword'], $params['serverContext'], $params['sandboxServerUsername'], $params['sandboxServerPassword'], $params['sandboxServerContext'], $params['debug'], $params['sandboxMode']);
-            $API->setReplyTo($params['replyTo']);
-            if (isset($params['original']))
-                $params = $params['original'];
 
 
-            $domain = WhmcsBridge::parseDomain($params);
-            $errors = array();
-            $info = $API->domainInfo($domain);
-            if ($API->hasError())
-                $errors[] = $API->getErrors();
+        $domainrobot = self::getApi($params);
+        $domain = WhmcsBridge::parseDomain($params);
+
+        if (!empty($_POST) && !empty($_POST['domainContacts']['ownerc']) ) {
+            $contactId = $_POST['domainContacts']['ownerc'];
+
+            // Get Details for Selected WHMCS Contact
+            $whmcsContact = (array) Capsule::table('tblcontacts')->where('id', '=', $contactId)->where('userid', '=', (int) $_SESSION['uid'])->first();
+
+            // Compile Params required to use whmcs2domainrobotContact($prefix, $params)
+            $asWhmcsParams = [
+                'tld' => $params['tld'],
+                'additionalfields' => null,
+                'companyname' => $whmcsContact['companyname'],
+                'firstname' => $whmcsContact['firstname'],
+                'lastname' => $whmcsContact['lastname'],
+                'address1' => $whmcsContact['address1'],
+                'address2' => $whmcsContact['address2'],
+                'postcode' => $whmcsContact['postcode'],
+                'city' => $whmcsContact['city'],
+                'state' => $whmcsContact['state'],
+                'country' => $whmcsContact['country'],
+                'email' => $whmcsContact['email'],
+                'phonenumber' => $whmcsContact['phonenumber'],
+            ];
+
+            // Get Additioanl Fields already saved for the Domain
+            // And Add to params
             $fields = (array) Capsule::table('tbldomainsadditionalfields')->join('tbldomains', 'tbldomains.id', '=', 'tbldomainsadditionalfields.domainid')
                 ->select('tbldomainsadditionalfields.*')->where('tbldomains.domain', '=', $domain)->orderBy('id', 'asc')->get();
+
             foreach ($fields as $field) {
-                $params['additionalfields'][$field->name] = $field->value;
+                $asWhmcsParams['additionalfields'][$field->name] = $field->value;
             }
+            // Create "new" ownerc Contact
+            $domainRobotContact = WhmcsBridge::whmcs2domainrobotContact('', $asWhmcsParams);
+            $ownerc = $domainrobot->contact->create($domainRobotContact);
 
-            $extensions = InterNetXExtension::assing($params['tld'], $params['additionalfields']);
+            $liveDomain = $domainrobot->domain->info($domain);
+            $liveDomain->setConfirmOwnerConsent(true);
+            $liveDomain->setOwnerc($ownerc);
 
-            if (!empty($_POST)) {
-                foreach ($_POST['domainContacts'] as $key => $val) {
-                    if (empty($val)) {
-                        $contact[$key] = (string) $info->result->data->domain->$key;
-                    } else {
-                        $details = (array) Capsule::table('tblcontacts')->where('id', '=', $val)->where('userid', '=', (int) $_SESSION['uid'])->first();
-
-                        $type = ($key == "ownerc") ? null : "admin";
-
-                        if (!empty($details['address1']) && !empty($details['address2']))
-                            $address = $details['address1'] . " " . $details['address2'];
-                        else
-                            $address = $details['address1'];
-
-                        $user = array(
-                            'id' => $contact,
-                            'type' => ($details['companyname'] == "") ? "PERSON" : "ORG",
-                            'firstName' => $details['firstname'],
-                            'lastName' => $details['lastname'],
-                            'organization' => $details['companyname'],
-                            'address' => $address,
-                            'city' => $details['city'],
-                            'state' => $details['state'],
-                            'postCode' => $details['postcode'],
-                            'country' => $details['country'],
-                            'countryName' => $countryData[$details['country']]['name'],
-                            'phone' => $details['fullphonenumber'],
-                            //'fax' => InterNetX_FormatPhone($details['fullphonenumber']),
-                            'email' => $details['email'],
-                        );
-
-                        if ($key != "ownerc" && ($params['tld'] == "de" || $params['tld'] == "es"))
-                            $user['type'] = "PERSON";
-
-                        $result = $API->contactCreate($user, $extensions);
-                        if ($API->hasError()) {
-                            $errors[] = $API->getErrors();
-                        } else {
-                            $contact[$key] = (string) $result->result->status->object->value;
-                        }
-                    }
-                }
-
-                $client = ['email' => 'paulporzky@gmail.com'];
-                $domainContacts = $_POST['domainContacts'];
-                $autoinfo = (string) $info->result->data->domain->authinfo;
-                $change = $API->domainOwnerChange($domain, $contact, $autoinfo, $client['email']);
-                if ($API->hasError())
-                    $errors[] = $API->getErrors();
-                else
-                    $infoMsg = (string) $change->result->status->text;
-            } else {
-
-                $domainContacts = array(
-                    "ownerc" => (string) $info->result->data->domain->ownerc,
-                    "adminc" => (string) $info->result->data->domain->adminc,
-                    "techc" => (string) $info->result->data->domain->techc,
-                    "zonec" => (string) $info->result->data->domain->zonec,
-                );
+            $response = $domainrobot->domain->ownerChange($liveDomain);
+            if ($response){
+                $infoMsg = 'Owner Change Started';
             }
-        } catch (Exception $ex) {
-            $errrors[] = $ex->getMessage();
         }
 
         if (!empty($errors))
             $call['errors'] = $errors;
 
-        if ($infoMsg)
+        if (isset($infoMsg) && $infoMsg)
             $call['info'] = $infoMsg;
 
-        $call['domain'] = $params['sld'] . '.' . $params['tld'];
-        $call['domainContacts'] = $domainContacts;
-        $call['domainId'] = $params['domainid'];
+        $call['domain'] = $domain;
         $call['contacts2'] = "<option value=''>Do not change Contact</option>";
         $query = Capsule::table('tblcontacts')->where('userid', '=', (int) $_SESSION['uid'])->get();
         foreach ($query as $row) {
             $call['contacts2'] .= "<option value='" . $row->id . "'>" . $row->firstname . ' ' . $row->lastname . '</option>';
         }
 
-        //$call['contacts2'] .= '<option value="---addnew---">Add new Contact..</option>';
         return array(
             'templatefile' => 'changeOwner',
             'breadcrumb' => ' > <a href="#">Change Owner</a>',
             'vars' => $call
         );
     }
+
+    public static function deleteDomain($domain, $execDate){
+        $params = WhmcsBridge::getRegistarConfig();
+        $domainrobot = self::getApi($params);
+        //TODO: add delete REquest
+    }
+
+    public static function domainCancelationCreate($domain){
+        $params = WhmcsBridge::getRegistarConfig();
+        $domainrobot = self::getApi($params);
+        //TODO: add cancelationRequest
+    }
+
+    public static function domainCancelationDelete($domain){
+        $params = WhmcsBridge::getRegistarConfig();
+        $domainrobot = self::getApi($params);
+        //TODO: add cancelationRequest
+    }
+
 }

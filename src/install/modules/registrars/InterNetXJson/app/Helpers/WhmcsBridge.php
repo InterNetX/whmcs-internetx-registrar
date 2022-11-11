@@ -18,6 +18,7 @@ use Domainrobot\Model\NameserverActionConstants;
 use Domainrobot\Model\ContactIdentificationExtensions;
 use Domainrobot\Model\ResourceRecord;
 
+
 class WhmcsBridge
 {
     public static function checkRequiredParametersOrFail($requiredParams, $params){
@@ -295,6 +296,10 @@ class WhmcsBridge
         }
 
         return true;
+    }
+
+    public static function getRegistarConfig(){
+        return getRegistrarConfigOptions(Config::moduleName());
     }
 
 }
