@@ -69,7 +69,8 @@ class DomainStudioSources implements ModelInterface, ArrayAccess
         'personalNames' => '\Domainrobot\Model\DomainStudioSourcePersonalNames',
         'spinWord' => '\Domainrobot\Model\DomainStudioSourceSpinWord',
         'upcoming' => '\Domainrobot\Model\DomainStudioSourceUpcoming',
-        'prefixSuffix' => '\Domainrobot\Model\DomainStudioSourcePrefixSuffix'
+        'prefixSuffix' => '\Domainrobot\Model\DomainStudioSourcePrefixSuffix',
+        'semantic' => '\Domainrobot\Model\DomainStudioSourceSuggestion2'
     ];
 
     /**
@@ -90,7 +91,8 @@ class DomainStudioSources implements ModelInterface, ArrayAccess
         'personalNames' => null,
         'spinWord' => null,
         'upcoming' => null,
-        'prefixSuffix' => null
+        'prefixSuffix' => null,
+        'semantic' => null
     ];
 
     /**
@@ -132,7 +134,8 @@ class DomainStudioSources implements ModelInterface, ArrayAccess
         'personalNames' => 'personalNames',
         'spinWord' => 'spinWord',
         'upcoming' => 'upcoming',
-        'prefixSuffix' => 'prefixSuffix'
+        'prefixSuffix' => 'prefixSuffix',
+        'semantic' => 'semantic'
     ];
 
     /**
@@ -153,7 +156,8 @@ class DomainStudioSources implements ModelInterface, ArrayAccess
         'personalNames' => 'setPersonalNames',
         'spinWord' => 'setSpinWord',
         'upcoming' => 'setUpcoming',
-        'prefixSuffix' => 'setPrefixSuffix'
+        'prefixSuffix' => 'setPrefixSuffix',
+        'semantic' => 'setSemantic'
     ];
 
     /**
@@ -174,7 +178,8 @@ class DomainStudioSources implements ModelInterface, ArrayAccess
         'personalNames' => 'getPersonalNames',
         'spinWord' => 'getSpinWord',
         'upcoming' => 'getUpcoming',
-        'prefixSuffix' => 'getPrefixSuffix'
+        'prefixSuffix' => 'getPrefixSuffix',
+        'semantic' => 'getSemantic'
     ];
 
     /**
@@ -250,6 +255,7 @@ class DomainStudioSources implements ModelInterface, ArrayAccess
         $this->container['spinWord'] = isset($data['spinWord']) ? $this->createData($data['spinWord'], 'spinWord')  : null;
         $this->container['upcoming'] = isset($data['upcoming']) ? $this->createData($data['upcoming'], 'upcoming')  : null;
         $this->container['prefixSuffix'] = isset($data['prefixSuffix']) ? $this->createData($data['prefixSuffix'], 'prefixSuffix')  : null;
+        $this->container['semantic'] = isset($data['semantic']) ? $this->createData($data['semantic'], 'semantic')  : null;
     }
 
     /**
@@ -639,6 +645,30 @@ class DomainStudioSources implements ModelInterface, ArrayAccess
     public function setPrefixSuffix($prefixSuffix)
     {
         $this->container['prefixSuffix'] = $prefixSuffix;
+
+        return $this;
+    }
+
+    /**
+     * Gets semantic
+     *
+     * @return \Domainrobot\Model\DomainStudioSourceSuggestion2
+     */
+    public function getSemantic()
+    {
+        return $this->container['semantic'];
+    }
+
+    /**
+     * Sets semantic
+     *
+     * @param \Domainrobot\Model\DomainStudioSourceSuggestion2 $semantic The configuration for the suggestion2 source
+     *
+     * @return $this
+     */
+    public function setSemantic($semantic)
+    {
+        $this->container['semantic'] = $semantic;
 
         return $this;
     }

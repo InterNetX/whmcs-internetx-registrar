@@ -18,17 +18,20 @@ use Domainrobot\Lib\DomainrobotAuth;
 use App\Providers\WhoisProxyProvider;
 use Domainrobot\Model\TransferAnswer;
 use App\Providers\LegacyApi\LegacyApi;
+use Domainrobot\Model\DomainCancelation;
 use Domainrobot\Lib\DomainrobotException;
 use Domainrobot\Model\ContactItExtensions;
 use App\Contracts\RegistrarModuleInterface;
 use Domainrobot\Model\ContactTypeConstants;
 use WHMCS\Domains\DomainLookup\ResultsList;
-use App\Exceptions\RegistrarModuleException;
 
+use App\Exceptions\RegistrarModuleException;
 use WHMCS\Domains\DomainLookup\SearchResult;
+use Domainrobot\Model\ExecutionTypeConstants;
 use Domainrobot\Model\RegistryStatusConstants;
 use function PHPUnit\Framework\throwException;
 use App\Providers\LegacyApi\InterNetXExtension;
+use Domainrobot\Model\CancelationTypeConstants;
 use App\Providers\WhmcsModuleLogProvider as Logger;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
@@ -933,7 +936,7 @@ class RegistrarModule implements RegistrarModuleInterface
                 "source" => (string) $rd['source'],
                 "target" => (string) $rd['target'],
                 "mode" => (string) $rd['mode'],
-                "title" => $rd['title'],
+                "title" => (string) $rd['title'],
             );
         }
 
@@ -1028,21 +1031,53 @@ class RegistrarModule implements RegistrarModuleInterface
     }
 
     public static function deleteDomain($domain, $execDate){
+        // beim Delete Button in der Admin Area müsste eine Cancelation geschickt werden mit type "DELETE" und execution mit "DATE, EXPIRE, NOW" wobei nur das DATE mit dem date-picker gesetzt werden muss.
+        // Ist wie ein Delete in AutoDNS den man auch zu Sofort(now), zu einem festen Datum(date) oder zum Ablauf(expire) setzen kann.
         $params = WhmcsBridge::getRegistarConfig();
         $domainrobot = self::getApi($params);
-        //TODO: add delete REquest
+        $dc = new DomainCancelation();
+        $dc->setDomain($domain);
+        $dc->setType(CancelationTypeConstants::DELETE);
+
+
+
+        $domainCancelation = $domainrobot->domainCancelation->create($dc);
+        switch ($execDate) {
+            case 'NOW':
+                $dc->setExecution(ExecutionTypeConstants::NOW);
+                break;
+
+            case 'EXPIRE':
+                $dc->setExecution(ExecutionTypeConstants::EXPIRE);
+                break;
+
+            // Handling a posted Expiration Date
+            default:
+                $dc->setExecution(ExecutionTypeConstants::DATE);
+                $dc->setRegistryWhen(new DateTime($execDate));
+                break;
+        }
+        // Delete Existing Cancelation request just in Case
+        $domainrobot->domainCancelation->delete($domain);
+        $domainCancelation = $domainrobot->domainCancelation->create($dc);
     }
 
     public static function domainCancelationCreate($domain){
+        // beim Abschalten der Auto-Renew in der Client Area wird eine Cancelation mit Type "DELETE" und execution "EXPIRE" angelegt. Damit wird die Domain automatisch zur Fälligkeit gelöscht.
+        // Sobald der Client den Auto-Renew wieder aktiviert muss diese Cancelation gelöscht werden damit die Domain bestehen bleibt.
         $params = WhmcsBridge::getRegistarConfig();
         $domainrobot = self::getApi($params);
-        //TODO: add cancelationRequest
+        $dc = new DomainCancelation();
+        $dc->setDomain('qwdqwdqwdqwd.com');
+        $dc->setType(CancelationTypeConstants::DELETE);
+        $dc->setExecution(ExecutionTypeConstants::EXPIRE);
+        $domainCancelation = $domainrobot->domainCancelation->create($dc);
     }
 
     public static function domainCancelationDelete($domain){
         $params = WhmcsBridge::getRegistarConfig();
         $domainrobot = self::getApi($params);
-        //TODO: add cancelationRequest
+        $domainrobot->domainCancelation->delete($domain);
     }
 
 }

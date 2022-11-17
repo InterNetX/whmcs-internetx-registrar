@@ -52,7 +52,7 @@
                                     <th></th>
                               </tr>
                         </thead>
-                        <tbody>
+                        <tbody>{{debug}}
                               {foreach from=$redirects key=key item=redirect}
                                     <tr>
                                           <td class="textcenter"><input class="form-control" type="text" name="domainForwarding[{$key}][source]" value="{$redirect.source}"></td>
@@ -99,11 +99,11 @@
 {literal}
 <script type="text/javascript">
    $(document).ready(function() {
-
+        $("#newDomainForwarding_tilte").hide();
         $('#newDomainForwarding_mode').change(function(){
               var selected;
               selected =$("#newDomainForwarding_mode option:selected").val();
-              if(selected=="frame")
+              if(selected=="FRAME")
                     $("#newDomainForwarding_tilte").show();
               else
                     $("#newDomainForwarding_tilte").hide();
@@ -112,7 +112,7 @@
               var id = $(this).attr('rel');
               var selected;
               selected =$("option:selected", this).val();
-              if(selected=="frame")
+              if(selected=="FRAME")
                     $("#domainForwarding_tilte_"+id).show();
               else
                     $("#domainForwarding_tilte_"+id).hide();

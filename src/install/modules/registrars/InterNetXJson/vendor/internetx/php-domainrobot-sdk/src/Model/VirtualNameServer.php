@@ -314,7 +314,7 @@ class VirtualNameServer implements ModelInterface, ArrayAccess
     /**
      * Sets created
      *
-     * @param \DateTime $created The created date.
+     * @param \DateTime $created Date of creation.
      *
      * @return $this
      */
@@ -338,7 +338,7 @@ class VirtualNameServer implements ModelInterface, ArrayAccess
     /**
      * Sets updated
      *
-     * @param \DateTime $updated The updated date.
+     * @param \DateTime $updated Date of the last update.
      *
      * @return $this
      */
@@ -362,7 +362,7 @@ class VirtualNameServer implements ModelInterface, ArrayAccess
     /**
      * Sets owner
      *
-     * @param \Domainrobot\Model\BasicUser $owner The owner of the object.
+     * @param \Domainrobot\Model\BasicUser $owner The object owner.
      *
      * @return $this
      */
@@ -386,7 +386,7 @@ class VirtualNameServer implements ModelInterface, ArrayAccess
     /**
      * Sets updater
      *
-     * @param \Domainrobot\Model\BasicUser $updater The updater of the object.
+     * @param \Domainrobot\Model\BasicUser $updater User who performed the last update.
      *
      * @return $this
      */
@@ -410,7 +410,7 @@ class VirtualNameServer implements ModelInterface, ArrayAccess
     /**
      * Sets active
      *
-     * @param bool $active Flag to show if the nameserver is active
+     * @param bool $active Indicates whether the name server is in active use
      *
      * @return $this
      */
@@ -458,7 +458,7 @@ class VirtualNameServer implements ModelInterface, ArrayAccess
     /**
      * Sets mainAddress
      *
-     * @param \Domainrobot\Model\InetAddress $mainAddress The mainAddress
+     * @param \Domainrobot\Model\InetAddress $mainAddress Primary IP address of the name server.
      *
      * @return $this
      */
@@ -482,7 +482,7 @@ class VirtualNameServer implements ModelInterface, ArrayAccess
     /**
      * Sets ipAddresses
      *
-     * @param string[] $ipAddresses The ip addresses.
+     * @param string[] $ipAddresses IP addresses of the secondary name servers. Does not contain the primary IP address.
      *
      * @return $this
      */

@@ -12,6 +12,9 @@ use Domainrobot\Lib\DomainrobotAuth;
 use Domainrobot\Lib\DomainrobotException;
 use Domainrobot\Service\DomainrobotService;
 use App\Exceptions\RegistrarModuleException;
+use Domainrobot\Model\CancelationTypeConstants;
+use Domainrobot\Model\DomainCancelation;
+use Domainrobot\Model\ExecutionTypeConstants;
 
 require_once('bootstrap.php');
 
@@ -26,6 +29,38 @@ try {
             "context"  => 1,
         ])
     ]);
+
+  // // Domain Cancellation
+  // $dc = new DomainCancelation();
+  // $dc->setDomain('qwdqwdqwdqwd.com');
+  // $dc->setType(CancelationTypeConstants::DELETE);
+  // $dc->setExecution(ExecutionTypeConstants::EXPIRE);
+  // // $domainCancelation = $domainrobot->domainCancelation->create($dc);
+  // // print_r($domainCancelation);
+
+  $query = new Query([
+      'filters' => [ new QueryFilter([
+          'key' => 'domain',
+          'value' => 'qwdqwdqwdqwd.com',
+          'operator' => 'EQUAL'
+      ])]
+  ]);
+
+  $cancelationList = $domainrobot->domainCancelation->list($query);
+  print_r($cancelationList);
+
+  // $domainrobot->domainCancelation->delete('qwdqwdqwdqwd.com');
+
+  // $query = new Query([
+  //     'filters' => [ new QueryFilter([
+  //         'key' => 'domain',
+  //         'value' => 'qwdqwdqwdqwd.com',
+  //         'operator' => 'EQUAL'
+  //     ])]
+  // ]);
+
+  // $cancelationList = $domainrobot->domainCancelation->list($query);
+  // print_r($cancelationList);
 
   // History Query
   // $query =
@@ -47,17 +82,21 @@ try {
   // print_r(json_encode($query->toArray(), JSON_PRETTY_PRINT));
   // $r = $domainrobot->job->historyList($query);
   try {
-    $query = new Query([
-        'filters' => [ new QueryFilter([
-            'key' => 'domain',
-            'value' => 'qwdqwdqwdqwd.com',
-            'operator' => 'EQUAL'
-        ])]
-    ]);
-    // $redirectsOnServer = $domainrobot->redirect->list($query);
-    // print_r($redirectsOnServer);
-     $oneRedirect = $domainrobot->redirect->info("qwdqwdqwdqwd.com");
-     print_r($oneRedirect);
+
+
+
+    // $query = new Query([
+    //     'filters' => [ new QueryFilter([
+    //         'key' => 'domain',
+    //         'value' => 'qwdqwdqwdqwd.com',
+    //         'operator' => 'EQUAL'
+    //     ])]
+    // ]);
+    //  $redirectsOnServer = $domainrobot->redirect->list($query);
+    //  print_r($redirectsOnServer);
+    //  exit(0);
+    //  $oneRedirect = $domainrobot->redirect->info("qwdqwdqwdqwd.com");
+    //  print_r($oneRedirect);
     // $oneRedirect->setTarget('example.com');
     // $response = $domainrobot->redirect->delete("qwdqwdqwdqwd.com");
     // var_dump($response);
@@ -66,7 +105,7 @@ try {
     // // Domainrobot\Model\Redirect
     // $redirect = new Redirect();
     // // Set the source domain
-    // $redirect->setSource("other.qwdqwdqwdqwd.com");
+    // $redirect->setSource("newframe.qwdqwdqwdqwd.com");
     // // Set the target path
     // $redirect->setTarget("example-2.com/test");
     // // Set type DOMAIN
@@ -75,16 +114,16 @@ try {
     // $redirect->setMode("FRAME");
     // $redirect->setTitle("Moin Moin");
     // // Domainrobot\Model\Redirect
-    // //  $response = $domainrobot->redirect->create($redirect);
-    // //  var_dump($response);
+    //   $response = $domainrobot->redirect->create($redirect);
+    //   var_dump($response);
 
-    $response = $domainrobot->redirect->update($oneRedirect);
-    var_dump($response);
+    // $response = $domainrobot->redirect->update($oneRedirect);
+    // var_dump($response);
 
 
-    $redirect = $domainrobot->redirect->info("qwdqwdqwdqwd.com");
-    $redirect->setTarget("othertarget.com");
-    $response = $domainrobot->redirect->update($redirect);
+    // $redirect = $domainrobot->redirect->info("qwdqwdqwdqwd.com");
+    // $redirect->setTarget("othertarget.com");
+    // $response = $domainrobot->redirect->update($redirect);
     // => Call to undefined method Domainrobot\Model\Redirect::getId(
 
 

@@ -331,16 +331,16 @@
         },
         {
             "name": "internetx/php-domainrobot-sdk",
-            "version": "0.9.9",
+            "version": "0.9.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/InterNetX/php-domainrobot-sdk.git",
-                "reference": "5c674b06bf4ba4b7793a7cddbe5dda978f68af5e"
+                "reference": "7c0897715d05079fe1cb04af635c2028bb7d9dde"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/InterNetX/php-domainrobot-sdk/zipball/5c674b06bf4ba4b7793a7cddbe5dda978f68af5e",
-                "reference": "5c674b06bf4ba4b7793a7cddbe5dda978f68af5e",
+                "url": "https://api.github.com/repos/InterNetX/php-domainrobot-sdk/zipball/7c0897715d05079fe1cb04af635c2028bb7d9dde",
+                "reference": "7c0897715d05079fe1cb04af635c2028bb7d9dde",
                 "shasum": ""
             },
             "require": {
@@ -365,9 +365,9 @@
             "description": "A php package for easy integration of the domainrobot API powered by InterNetX GmbH.",
             "support": {
                 "issues": "https://github.com/InterNetX/php-domainrobot-sdk/issues",
-                "source": "https://github.com/InterNetX/php-domainrobot-sdk/tree/0.9.9"
+                "source": "https://github.com/InterNetX/php-domainrobot-sdk/tree/0.9.14"
             },
-            "time": "2022-05-09T06:13:56+00:00"
+            "time": "2022-11-16T09:13:22+00:00"
         },
         {
             "name": "psr/http-client",

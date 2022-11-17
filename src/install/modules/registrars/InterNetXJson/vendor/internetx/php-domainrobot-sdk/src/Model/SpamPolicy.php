@@ -354,7 +354,7 @@ class SpamPolicy implements ModelInterface, ArrayAccess
     /**
      * Sets modifySubject
      *
-     * @param bool $modifySubject modifySubject
+     * @param bool $modifySubject Setting for the flag in the subject:  false = The emails should not be marked in the subject  true = The emails should receive the label in the subject.  Default= false  For XML, 0 (false) and 1 (true) can also be used.
      *
      * @return $this
      */
@@ -378,7 +378,7 @@ class SpamPolicy implements ModelInterface, ArrayAccess
     /**
      * Sets tagHeader
      *
-     * @param double $tagHeader tagHeader
+     * @param double $tagHeader Enter a score. If an incoming email reaches this value, the email will   be marked as spam in the header. (Header X-Spam Status   and X-Spam Level).  Recommendation:  Value between -999 and 1  Minimum: -999.9  Maximum: 999.9
      *
      * @return $this
      */
@@ -410,7 +410,7 @@ class SpamPolicy implements ModelInterface, ArrayAccess
     /**
      * Sets spam
      *
-     * @param double $spam spam
+     * @param double $spam Enter a score from which an email should be classified as spam.   The header X-Spam-Flag will be added to emails that reach this score.  Minimum: -999.9  Maximum: 999.9
      *
      * @return $this
      */
@@ -442,7 +442,7 @@ class SpamPolicy implements ModelInterface, ArrayAccess
     /**
      * Sets kill
      *
-     * @param double $kill kill
+     * @param double $kill At what value an email should be quarantined for the selected task  Minimum: -999.9  Maximum: 999.9
      *
      * @return $this
      */
@@ -474,7 +474,7 @@ class SpamPolicy implements ModelInterface, ArrayAccess
     /**
      * Sets quarantineDigestInterval
      *
-     * @param int $quarantineDigestInterval quarantineDigestInterval
+     * @param int $quarantineDigestInterval \"Specify how long an email should be kept in quarantine.  Time unit: minutes  Default: 1440 min  Minimum: 1440 min\"
      *
      * @return $this
      */

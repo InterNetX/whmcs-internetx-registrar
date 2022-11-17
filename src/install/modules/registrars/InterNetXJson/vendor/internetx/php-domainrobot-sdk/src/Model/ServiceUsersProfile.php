@@ -308,7 +308,7 @@ class ServiceUsersProfile implements ModelInterface, ArrayAccess
     /**
      * Sets created
      *
-     * @param \DateTime $created The created date.
+     * @param \DateTime $created Date of creation.
      *
      * @return $this
      */
@@ -332,7 +332,7 @@ class ServiceUsersProfile implements ModelInterface, ArrayAccess
     /**
      * Sets updated
      *
-     * @param \DateTime $updated The updated date.
+     * @param \DateTime $updated Date of the last update.
      *
      * @return $this
      */
@@ -356,7 +356,7 @@ class ServiceUsersProfile implements ModelInterface, ArrayAccess
     /**
      * Sets owner
      *
-     * @param \Domainrobot\Model\BasicUser $owner The owner of the object.
+     * @param \Domainrobot\Model\BasicUser $owner The object owner.
      *
      * @return $this
      */
@@ -380,7 +380,7 @@ class ServiceUsersProfile implements ModelInterface, ArrayAccess
     /**
      * Sets updater
      *
-     * @param \Domainrobot\Model\BasicUser $updater The updating user of the object.
+     * @param \Domainrobot\Model\BasicUser $updater User who performed the last update.
      *
      * @return $this
      */
