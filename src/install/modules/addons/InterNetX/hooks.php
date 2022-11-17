@@ -197,6 +197,7 @@ add_hook('AdminAreaHeadOutput', 1, function($vars) {
                 MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
 
                 var img = document.querySelector(".selected-provider")
+                if (!img) return;
                 var observer = new MutationObserver(function onSrcChange(){
                   window.location.reload();
                 })
@@ -223,11 +224,12 @@ add_hook('AdminAreaHeadOutput', 1, function($vars) {
             </script>';
         }
     }else{
-        return'<script type="text/javascript">
+        return '<script type="text/javascript">
 		function reloadPage(){
                     $( window ).load(function() {
                         MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
                         var img = document.querySelector(".selected-provider")
+                        if (!img) return;
                         var observer = new MutationObserver(function onSrcChange(){
                           window.location.reload();
                         })
