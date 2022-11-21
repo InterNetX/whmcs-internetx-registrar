@@ -33,6 +33,8 @@ use function PHPUnit\Framework\throwException;
 use App\Providers\LegacyApi\InterNetXExtension;
 use Domainrobot\Model\CancelationTypeConstants;
 use App\Providers\WhmcsModuleLogProvider as Logger;
+use Domainrobot\Model\RedirectModeConstants;
+use Domainrobot\Model\RedirectTypeConstants;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 class RegistrarModule implements RegistrarModuleInterface
@@ -668,7 +670,7 @@ class RegistrarModule implements RegistrarModuleInterface
 
     public static function GetEmailForwarding($params)
     {
-        return WhmcsBridge::errorResponse('GetEmailForwarding not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
+        // return WhmcsBridge::errorResponse('GetEmailForwarding not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
         $domainrobot = self::getApi($params);
         $domain = WhmcsBridge::parseDomain($params);
         // Get All E-Mail Redirects for domain from Server
@@ -679,13 +681,81 @@ class RegistrarModule implements RegistrarModuleInterface
                 'operator' => 'LIKE'
             ])]
         ]);
+
+
         $redirectsOnServer = $domainrobot->redirect->list($query);
+        $values = array();
+        foreach ($redirectsOnServer as $key => $rd) {
+            $mode = $rd['mode'];
+            if ($rd['mode'] != RedirectModeConstants::SINGLE)
+                continue;
+            $source = current(explode("@", (string) $rd["source"]));
+            $values[] = array(
+                "recid" => $key,
+                "prefix" => $source,
+                "forwardto" => (string) $rd["target"],
+            );
+        }
+
+        return $values;
 
     }
 
     public static function SaveEmailForwarding($params)
     {
-        return WhmcsBridge::errorResponse('SaveEmailForwarding not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
+        // return WhmcsBridge::errorResponse('SaveEmailForwarding not implemented' . json_encode($params, JSON_PRETTY_PRINT) . '</pre>');
+        $domainrobot = self::getApi($params);
+        $domain = WhmcsBridge::parseDomain($params);
+        // Get Entries as Array in new
+        $new = [];
+        $prefix = $params['prefix'];
+        $foward = $params['forwardto'];
+        foreach ($params['prefix'] as $key => $value) {
+            if (is_array($value)) {
+                $new[] = array(
+                    "prefix" => $value[0],
+                    "forwardto" => $params['forwardto'][$key][0],
+                );
+            } else {
+                $new[] = array(
+                    "prefix" => $value,
+                    "forwardto" => $params['forwardto'][$key],
+                );
+            }
+        }
+
+        foreach($new as $key => $redirect){
+
+            // We can neither add or delete existing redirects if the prefix is not set
+            if (!$redirect['prefix']){
+                continue;
+            }
+
+            $source = $redirect['prefix']."@$domain";
+            $target = $redirect['forwardto'];
+            // Try to Delete Redirect
+            // Throws error for new redirects so catch
+            try {
+                $response = $domainrobot->redirect->delete($source);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+
+            if ($redirect['prefix'] && $redirect['forwardto']){
+                $response = self::redirectCreate(
+                    $domainrobot,
+                    $source,
+                    $target,
+                    RedirectModeConstants::SINGLE,
+                    RedirectTypeConstants::EMAIL
+                );
+
+            }
+
+            // Add Redirect
+        }
+
+
     }
 
     // TODO: check registrarmodule_DomainSuggestionOptions() {
@@ -898,7 +968,7 @@ class RegistrarModule implements RegistrarModuleInterface
                 } else {
                     $response = $domainrobot->redirect->delete($oldSource);
                     $response = self::redirectCreate(
-                        $domainrobot, $source, $target, $mode, "DOMAIN", $title
+                        $domainrobot, $source, $target, $mode, RedirectTypeConstants::DOMAIN, $title
                     );
                 }
 
@@ -932,7 +1002,7 @@ class RegistrarModule implements RegistrarModuleInterface
         $redirects = [];
         foreach ($redirectsOnServer as $key => $rd) {
             // Ignore mode single
-            if ($rd['mode'] == "single")
+            if ($rd['mode'] == RedirectModeConstants::SINGLE)
                 continue;
 
             $redirects[] = array(

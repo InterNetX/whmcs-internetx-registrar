@@ -100,10 +100,36 @@ try {
   // print_r(json_encode($query->toArray(), JSON_PRETTY_PRINT));
   // $r = $domainrobot->job->historyList($query);
   try {
+  // Get All E-Mail Redirects for domain from Server
+  $domain = 'somedomainas.de';
+  $query = new Query([
+      'filters' => [ new QueryFilter([
+          'key' => 'source',
+          'value' => '*'.$domain,
+          'operator' => 'LIKE'
+      ])]
+  ]);
+  $redirectsOnServer = $domainrobot->redirect->list($query);
+  print_r($redirectsOnServer);
 
-    createAuthinfo1($domainrobot, 'somedomainas.de');
-    $domain = $domainrobot->domain->info('somedomainas.de');
-    print_r($domain);
+  // // Domainrobot\Model\Redirect
+  // $redirect = new Redirect();
+  // // Set the source domain
+  // $redirect->setSource('paul@' . $domain);
+  // // Set the target path
+  // $redirect->setTarget("info@example.com");
+  // // Set type DOMAIN
+  // $redirect->setType("EMAIL");
+  // // Set mode HTTP
+  // $redirect->setMode("SINGLE");
+  //   // Domainrobot\Model\Redirect
+  // $response = $domainrobot->redirect->create($redirect);
+  // var_dump($response);
+
+
+    // createAuthinfo1($domainrobot, 'somedomainas.de');
+    // $domain = $domainrobot->domain->info('somedomainas.de');
+    // print_r($domain);
 
     // getRedirects($domainrobot);
 
