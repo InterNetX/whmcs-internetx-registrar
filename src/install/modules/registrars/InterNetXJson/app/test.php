@@ -31,6 +31,11 @@ function getRedirects($domainrobot){
    print_r($redirectsOnServer);
 }
 
+function createAuthinfo1($domainrobot, $domain){
+  $r = $domainrobot->domain->createAuthinfo1($domain);
+  print_r($r);
+}
+
 try {
     $domainrobot = new Domainrobot([
 
@@ -96,26 +101,30 @@ try {
   // $r = $domainrobot->job->historyList($query);
   try {
 
-    getRedirects($domainrobot);
+    createAuthinfo1($domainrobot, 'somedomainas.de');
+    $domain = $domainrobot->domain->info('somedomainas.de');
+    print_r($domain);
+
+    // getRedirects($domainrobot);
 
 
-    // Domainrobot\Model\Redirect
-    $redirect = new Redirect();
-    // Set the source domain
-    $redirect->setSource("newframe3.qwdqwdqwdqwd.com");
-    // Set the target path
-    $redirect->setTarget("example-2.com/test");
-    // Set type DOMAIN
-    $redirect->setType("DOMAIN");
-    // Set mode HTTP
-    $redirect->setMode("FRAME");
-    $redirect->setTitle("Moin Moin");
-    // Domainrobot\Model\Redirect
-    $response = $domainrobot->redirect->create($redirect);
-    var_dump($response);
+    // // Domainrobot\Model\Redirect
+    // $redirect = new Redirect();
+    // // Set the source domain
+    // $redirect->setSource("newframe3.qwdqwdqwdqwd.com");
+    // // Set the target path
+    // $redirect->setTarget("example-2.com/test");
+    // // Set type DOMAIN
+    // $redirect->setType("DOMAIN");
+    // // Set mode HTTP
+    // $redirect->setMode("FRAME");
+    // $redirect->setTitle("Moin Moin");
+    // // Domainrobot\Model\Redirect
+    // $response = $domainrobot->redirect->create($redirect);
+    // var_dump($response);
 
-    getRedirects($domainrobot);
-    $domainrobot->redirect->delete("newframe3.qwdqwdqwdqwd.com");
+    // getRedirects($domainrobot);
+    // $domainrobot->redirect->delete("newframe3.qwdqwdqwdqwd.com");
 
 
 

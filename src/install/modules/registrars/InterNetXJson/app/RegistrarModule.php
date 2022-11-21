@@ -555,7 +555,10 @@ class RegistrarModule implements RegistrarModuleInterface
         }
         // .de & .eu -> authinfo1Create
         if (strpos($params['tld'], 'de') !== false || strpos($params['tld'], 'eu') !== false) {
-            $domainrobot->domain->createAuthinfo1($domain);
+            // If no AuthInfo Exists
+            if (!$domain->getAuthinfo()){
+                $domainrobot->domain->createAuthinfo1(WhmcsBridge::parseDomain($params));
+            }
         }
 
         $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
