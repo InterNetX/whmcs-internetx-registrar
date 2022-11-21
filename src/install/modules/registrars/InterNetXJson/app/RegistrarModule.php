@@ -923,7 +923,7 @@ class RegistrarModule implements RegistrarModuleInterface
                 'operator' => 'EQUAL'
             ])]
         ]);
-        $redirectsOnServer = $domainrobot->redirect->list($query);
+        $redirectsOnServer = $domainrobot->redirect->list($query, ['title']);
 
         // Compile Redirects to Template Vars
         $redirects = [];
