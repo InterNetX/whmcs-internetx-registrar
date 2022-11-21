@@ -18,6 +18,19 @@ use Domainrobot\Model\ExecutionTypeConstants;
 
 require_once('bootstrap.php');
 
+function getRedirects($domainrobot){
+  $query = new Query([
+      'filters' => [ new QueryFilter([
+          'key' => 'domain',
+          'value' => 'qwdqwdqwdqwd.com',
+          'operator' => 'EQUAL'
+      ])]
+  ]);
+   $redirectsOnServer = $domainrobot->redirect->list($query, ['title']);
+   echo "REDIRECTS ON SERVER ----------------------------\n";
+   print_r($redirectsOnServer);
+}
+
 try {
     $domainrobot = new Domainrobot([
 
@@ -38,16 +51,16 @@ try {
   // // $domainCancelation = $domainrobot->domainCancelation->create($dc);
   // // print_r($domainCancelation);
 
-  $query = new Query([
-      'filters' => [ new QueryFilter([
-          'key' => 'domain',
-          'value' => 'qwdqwdqwdqwd.com',
-          'operator' => 'EQUAL'
-      ])]
-  ]);
+  // $query = new Query([
+  //     'filters' => [ new QueryFilter([
+  //         'key' => 'domain',
+  //         'value' => 'qwdqwdqwdqwd.com',
+  //         'operator' => 'EQUAL'
+  //     ])]
+  // ]);
 
-  $cancelationList = $domainrobot->domainCancelation->list($query);
-  print_r($cancelationList);
+  // $cancelationList = $domainrobot->domainCancelation->list($query);
+  // print_r($cancelationList);
 
   // $domainrobot->domainCancelation->delete('qwdqwdqwdqwd.com');
 
@@ -83,39 +96,32 @@ try {
   // $r = $domainrobot->job->historyList($query);
   try {
 
+    getRedirects($domainrobot);
 
 
-    // $query = new Query([
-    //     'filters' => [ new QueryFilter([
-    //         'key' => 'domain',
-    //         'value' => 'qwdqwdqwdqwd.com',
-    //         'operator' => 'EQUAL'
-    //     ])]
-    // ]);
-    //  $redirectsOnServer = $domainrobot->redirect->list($query);
-    //  print_r($redirectsOnServer);
-    //  exit(0);
-    //  $oneRedirect = $domainrobot->redirect->info("qwdqwdqwdqwd.com");
-    //  print_r($oneRedirect);
-    // $oneRedirect->setTarget('example.com');
-    // $response = $domainrobot->redirect->delete("qwdqwdqwdqwd.com");
-    // var_dump($response);
+    // Domainrobot\Model\Redirect
+    $redirect = new Redirect();
+    // Set the source domain
+    $redirect->setSource("newframe3.qwdqwdqwdqwd.com");
+    // Set the target path
+    $redirect->setTarget("example-2.com/test");
+    // Set type DOMAIN
+    $redirect->setType("DOMAIN");
+    // Set mode HTTP
+    $redirect->setMode("FRAME");
+    $redirect->setTitle("Moin Moin");
+    // Domainrobot\Model\Redirect
+    $response = $domainrobot->redirect->create($redirect);
+    var_dump($response);
+
+    getRedirects($domainrobot);
+    $domainrobot->redirect->delete("newframe3.qwdqwdqwdqwd.com");
 
 
-    // // Domainrobot\Model\Redirect
-    // $redirect = new Redirect();
-    // // Set the source domain
-    // $redirect->setSource("newframe.qwdqwdqwdqwd.com");
-    // // Set the target path
-    // $redirect->setTarget("example-2.com/test");
-    // // Set type DOMAIN
-    // $redirect->setType("DOMAIN");
-    // // Set mode HTTP
-    // $redirect->setMode("FRAME");
-    // $redirect->setTitle("Moin Moin");
-    // // Domainrobot\Model\Redirect
-    //   $response = $domainrobot->redirect->create($redirect);
-    //   var_dump($response);
+
+
+
+
 
     // $response = $domainrobot->redirect->update($oneRedirect);
     // var_dump($response);
