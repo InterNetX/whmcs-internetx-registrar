@@ -1141,7 +1141,7 @@ class RegistrarModule implements RegistrarModuleInterface
         $params = WhmcsBridge::getRegistarConfig();
         $domainrobot = self::getApi($params);
         $dc = new DomainCancelation();
-        $dc->setDomain('qwdqwdqwdqwd.com');
+        $dc->setDomain($domain);
         $dc->setType(CancelationTypeConstants::DELETE);
         $dc->setExecution(ExecutionTypeConstants::EXPIRE);
         $domainCancelation = $domainrobot->domainCancelation->create($dc);
