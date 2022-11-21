@@ -39,6 +39,33 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 
 class RegistrarModule implements RegistrarModuleInterface
 {
+    const LOGGERREPLACEVARS = ['sandboxServerContext', 'sandboxServerPassword', 'sandboxServerUsername', 'serverPassword', 'serverUsername', 'Username'];
+    const LOGTHESEFUNCTIONCALLS = ['RegisterDomain', 'TransferDomain', 'RenewDomain', 'GetNameservers', 'SaveNameservers', 'GetDNS', 'SaveDNS', 'GetContactDetails', 'SaveContactDetails', 'GetEPPCode', 'Sync', 'TransferSync', 'IDProtectToggle', 'GetEmailForwarding', 'SaveEmailForwarding', 'CheckAvailability', 'GetDomainSuggestions', 'TransferOutNack', 'TransferOutAck', 'DomainForwarding', 'ChangeOwner'];
+
+
+
+    private static function logWithParams($action, $params, $responseData, $processedData = '', $replaceVars = []){
+        $fullReplaceVars = $replaceVars;
+
+        foreach (self::LOGGERREPLACEVARS as $replaceKey) {
+            // Get the Param Values for ReplaceKey and add to String that should not show up
+            // added strlen > 1 to make sure other boolean values dont get replaced
+            if ($params[$replaceKey] && strlen((string) $params[$replaceKey]) > 1){
+                $fullReplaceVars[] = $params[$replaceKey];
+            }
+
+            // Also fully Remove Keys from params and original
+            // if (isset($params[$replaceKey])){
+            //      unset($params[$replaceKey]);
+            // }
+
+            // if (isset($params['original']) && isset($params['original'][$replaceKey])){
+            //      unset($params['original'][$replaceKey]);
+            // }
+
+        }
+        return Logger::log($action, $params, $responseData, $processedData, $fullReplaceVars);
+    }
 
     /*
      * wrapper for all function to provide meaningfull error Responses as handled by whmcs
@@ -46,15 +73,33 @@ class RegistrarModule implements RegistrarModuleInterface
     public static function call($functionName, $params = false)
     {
         try {
-            //TODO: Remove from Production
             // WhmcsBridge::saveParamsLog($functionName, $params);
-            return call_user_func('self::' . $functionName, $params);
+            $response = call_user_func('self::' . $functionName, $params);
+
+            // In Debug mode + Extended Debug Mode log all function calls that are in the List self::LOGTHESEFUNCTIONCALLS
+            if (isset($params['debug']) && $params['debug'] && isset($params['debugallcalls']) && $params['debugallcalls'] && in_array($functionName, self::LOGTHESEFUNCTIONCALLS)){
+                self::logWithParams($functionName, $params, $response);
+            }
+            return $response;
         } catch (RegistrarModuleException $th) {
+            if ($params['debug']) {
+                self::logWithParams($functionName, $params, $th->getMessage());
+            }
             return WhmcsBridge::errorResponse($th->getMessage());
         } catch (DomainrobotException $th) {
             //TODO: Move output to Module log
-            return WhmcsBridge::errorResponse("[" . $th->getStatusCode() . "] " . json_encode($th->getError(), JSON_PRETTY_PRINT));
+            // public static function log($action, $requestString, $responseData, $processedData = '', $replaceVars = [])
+            $errorString = "[" . $th->getStatusCode() . "] " . json_encode($th->getError(), JSON_PRETTY_PRINT);
+
+            if ($params['debug']) {
+                self::logWithParams($functionName, $params, $errorString);
+            }
+
+            return WhmcsBridge::errorResponse($errorString);
         } catch (\Throwable $th) {
+            if ($params['debug']) {
+                self::logWithParams($functionName, $params, 'Unknown Error');
+            }
             return WhmcsBridge::errorResponse($th->getMessage());
         }
     }
@@ -194,6 +239,11 @@ class RegistrarModule implements RegistrarModuleInterface
                 'Type' => 'yesno',
                 "Description" => "Logs on \"Module Log\"",
             ),
+            'debugallcalls' => array(
+                'FriendlyName' => 'Extended Debug Mode',
+                'Type' => 'yesno',
+                "Description" => "Also log successfull calls on \"Module Log\"",
+            ),
             'adminContact' => array(
                 'FriendlyName' => 'Admin Contact',
                 'Type' => 'yesno',
@@ -315,6 +365,7 @@ class RegistrarModule implements RegistrarModuleInterface
         $domain->setAuthinfo($params['eppcode']);
         $domain->setConfirmOwnerConsent(1);
         $objectJob = $domainrobot->domain->transfer($domain);
+        return true;
     }
 
     public static function RenewDomain($params)

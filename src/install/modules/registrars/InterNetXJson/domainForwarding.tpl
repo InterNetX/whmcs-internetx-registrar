@@ -52,7 +52,7 @@
                                     <th></th>
                               </tr>
                         </thead>
-                        <tbody>{{debug}}
+                        <tbody>
                               {foreach from=$redirects key=key item=redirect}
                                     <tr>
                                           <td class="textcenter"><input class="form-control" type="text" name="domainForwarding[{$key}][source]" value="{$redirect.source}"></td>
