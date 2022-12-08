@@ -1129,6 +1129,10 @@ class RegistrarModule implements RegistrarModuleInterface
             $liveDomain->setConfirmOwnerConsent(true);
             $liveDomain->setOwnerc($ownerc);
 
+            if ($params['adminContact'] == 'on'){
+                $liveDomain->setAdminc($ownerc);
+            }
+
             $response = $domainrobot->domain->ownerChange($liveDomain);
             if ($response){
                 $infoMsg = 'Owner Change Started';

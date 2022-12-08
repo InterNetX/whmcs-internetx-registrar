@@ -76,57 +76,59 @@ function myFixDomainContacts($vars){
         $script = '<script type="text/javascript">
                 window.onload = function() {
                 $(".radio").hide();
+                console.log(document.getElementById("Registrant3"));
                 if(document.getElementById("Registrant3") !== null)
                 {
                     document.getElementById("Registrant3").parentElement.style.display = "none";
                     document.getElementsByName("contactdetails[Registrant][First Name]")[0].disabled = true;
                     document.getElementsByName("contactdetails[Registrant][Last Name]")[0].disabled = true;
-                    document.getElementsByName("contactdetails[Registrant][Handle ID]")[0].disabled = true;
+                    // document.getElementsByName("contactdetails[Registrant][Handle ID]")[0].disabled = true;
                 }
+                console.log(document.getElementById("Tech3"));
                 if(document.getElementById("Tech3") !== null)
                 {
                     document.getElementById("Tech3").parentElement.style.display = "none";
                     document.getElementsByName("contactdetails[Tech][First Name]")[0].disabled = true;
                     document.getElementsByName("contactdetails[Tech][Last Name]")[0].disabled = true;
-                    document.getElementsByName("contactdetails[Tech][Handle ID]")[0].disabled = true;
-                    document.getElementsByName("contactdetails[Tech][Company Name]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Tech][City]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Tech][Address]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Tech][State]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Tech][Postcode]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Tech][Country]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Tech][Phone Number]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Tech][Email]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Tech][Handle ID]")[0].disabled = true;
+                    // document.getElementsByName("contactdetails[Tech][Company Name]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Tech][City]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Tech][Address]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Tech][State]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Tech][Postcode]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Tech][Country]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Tech][Phone Number]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Tech][Email]")[0].readOnly = true;
                 }
                 if(document.getElementById("Admin3") !== null)
                 {
                     document.getElementById("Admin3").parentElement.style.display = "none";
                     document.getElementsByName("contactdetails[Admin][First Name]")[0].disabled = true;
                     document.getElementsByName("contactdetails[Admin][Last Name]")[0].disabled = true;
-                    document.getElementsByName("contactdetails[Admin][Handle ID]")[0].disabled = true;
-                    document.getElementsByName("contactdetails[Admin][Company Name]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Admin][City]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Admin][Address]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Admin][State]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Admin][Postcode]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Admin][Country]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Admin][Phone Number]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Admin][Email]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Admin][Handle ID]")[0].disabled = true;
+                    // document.getElementsByName("contactdetails[Admin][Company Name]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Admin][City]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Admin][Address]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Admin][State]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Admin][Postcode]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Admin][Country]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Admin][Phone Number]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Admin][Email]")[0].readOnly = true;
                 }
                 if(document.getElementById("Zone3") !== null)
                 {
                     document.getElementById("Zone3").parentElement.style.display = "none";
                     document.getElementsByName("contactdetails[Zone][First Name]")[0].disabled = true;
                     document.getElementsByName("contactdetails[Zone][Last Name]")[0].disabled = true;
-                    document.getElementsByName("contactdetails[Zone][Handle ID]")[0].disabled = true;
-                    document.getElementsByName("contactdetails[Zone][Company Name]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Zone][City]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Zone][Address]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Zone][State]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Zone][Postcode]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Zone][Country]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Zone][Phone Number]")[0].readOnly = true;
-                    document.getElementsByName("contactdetails[Zone][Email]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Zone][Handle ID]")[0].disabled = true;
+                    // document.getElementsByName("contactdetails[Zone][Company Name]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Zone][City]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Zone][Address]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Zone][State]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Zone][Postcode]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Zone][Country]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Zone][Phone Number]")[0].readOnly = true;
+                    // document.getElementsByName("contactdetails[Zone][Email]")[0].readOnly = true;
                 }
                 };
                 </script>';
