@@ -18,14 +18,17 @@ use Domainrobot\Lib\DomainrobotAuth;
 use App\Providers\WhoisProxyProvider;
 use Domainrobot\Model\TransferAnswer;
 use App\Providers\LegacyApi\LegacyApi;
+use Domainrobot\Lib\DomainrobotHeaders;
 use Domainrobot\Model\DomainCancelation;
 use Domainrobot\Lib\DomainrobotException;
 use Domainrobot\Model\ContactItExtensions;
 use App\Contracts\RegistrarModuleInterface;
 use Domainrobot\Model\ContactTypeConstants;
-use WHMCS\Domains\DomainLookup\ResultsList;
 
+use WHMCS\Domains\DomainLookup\ResultsList;
 use App\Exceptions\RegistrarModuleException;
+use Domainrobot\Model\RedirectModeConstants;
+use Domainrobot\Model\RedirectTypeConstants;
 use WHMCS\Domains\DomainLookup\SearchResult;
 use Domainrobot\Model\ExecutionTypeConstants;
 use Domainrobot\Model\RegistryStatusConstants;
@@ -33,8 +36,6 @@ use function PHPUnit\Framework\throwException;
 use App\Providers\LegacyApi\InterNetXExtension;
 use Domainrobot\Model\CancelationTypeConstants;
 use App\Providers\WhmcsModuleLogProvider as Logger;
-use Domainrobot\Model\RedirectModeConstants;
-use Domainrobot\Model\RedirectTypeConstants;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 class RegistrarModule implements RegistrarModuleInterface
@@ -106,6 +107,10 @@ class RegistrarModule implements RegistrarModuleInterface
 
     private static function getApi($params)
     {
+        // Custom Headers to use with all API Requests
+        $headers =  [
+            DomainrobotHeaders::DOMAINROBOT_USER_AGENT => Config::userAgent(),
+        ];
 
         // Use Sandbox Mode (Testmode)
         if ($params['sandboxMode'] == 'on') {
