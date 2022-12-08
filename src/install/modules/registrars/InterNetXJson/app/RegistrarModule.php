@@ -17,7 +17,7 @@ use Domainrobot\Model\QueryFilter;
 use Domainrobot\Lib\DomainrobotAuth;
 use App\Providers\WhoisProxyProvider;
 use Domainrobot\Model\TransferAnswer;
-use App\Providers\LegacyApi\LegacyApi;
+
 use Domainrobot\Lib\DomainrobotHeaders;
 use Domainrobot\Model\DomainCancelation;
 use Domainrobot\Lib\DomainrobotException;
@@ -33,7 +33,6 @@ use WHMCS\Domains\DomainLookup\SearchResult;
 use Domainrobot\Model\ExecutionTypeConstants;
 use Domainrobot\Model\RegistryStatusConstants;
 use function PHPUnit\Framework\throwException;
-use App\Providers\LegacyApi\InterNetXExtension;
 use Domainrobot\Model\CancelationTypeConstants;
 use App\Providers\WhmcsModuleLogProvider as Logger;
 use Illuminate\Database\Capsule\Manager as Capsule;
