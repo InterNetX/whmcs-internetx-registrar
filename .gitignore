@@ -2,3 +2,4 @@ composer.phar
 .DS_Store
 src/install/modules/registrars/InterNetXJson/app/Helpers/log
 src/install/modules/registrars/InterNetXJson/app/Helpers/log/*
+src/install/modules/registrars/InterNetXJson/app/test.php
