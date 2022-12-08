@@ -518,6 +518,7 @@ class RegistrarModule implements RegistrarModuleInterface
         // return $contacts;
         $whmcsContacts = [];
         foreach ($contacts as $key => $contact) {
+            if (!$contact) continue;
             // Get full information from API and update Array value
             $contactDetails = $domainrobot->contact->info($contact['id']);
 
