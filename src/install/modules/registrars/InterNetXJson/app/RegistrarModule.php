@@ -98,7 +98,7 @@ class RegistrarModule implements RegistrarModuleInterface
             return WhmcsBridge::errorResponse($errorString);
         } catch (\Throwable $th) {
             if ($params['debug']) {
-                self::logWithParams($functionName, $params, 'Unknown Error');
+                self::logWithParams($functionName, $params, $th->getMessage());
             }
             return WhmcsBridge::errorResponse($th->getMessage());
         }
