@@ -48,7 +48,8 @@ If you want to use Option B, e.g. you have an external Mail Server you want to u
     }
 ]
 ```
-And make sure the MX Record in the module Config is a full hostname + ending with a dot
+And make sure the MX Record in the module Config is a full hostname + ending with a dot.
+More examples can be found in the zone.example.json file.
 
 ### Additional Domain Fields
 The additional domain fields are now defined directly within the module.
