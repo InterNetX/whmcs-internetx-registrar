@@ -26,8 +26,8 @@ class WhoisProxyProvider {
         //parse response
         $domains = [];
         $preg = '~(?i)('.implode('|',$slds).')[.]('.implode('|',$tlds).'):~';
-
-        foreach(explode("\r\n",$data) as $line){
+        $lines = preg_split('/\r\n|\r|\n/', $data);
+        foreach($lines as $line){
             if(!preg_match($preg,$line)){
                 continue;
             }
