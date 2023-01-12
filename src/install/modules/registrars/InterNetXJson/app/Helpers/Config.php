@@ -5,7 +5,7 @@ namespace App\Helpers;
 class Config {
     private static $moduleName          = 'InterNetXJson';
     private static $userAgent          = 'WHMCS Module';
-    private static $premiumAddonName    = 'InterNetX';
+    private static $premiumAddonName    = 'InterNetXJson';
     private static $registrarNameserver = 'demo.autodns2.de';
     private static $templateDir         = __DIR__ .'/../templates/';
 

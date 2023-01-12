@@ -27,8 +27,8 @@
 <div class="center80">
 			{if $registrar eq "InterNetX" or $registrar eq "SchlundTech" or $registrar eq "DomainRobot"}
 			<div style="margin-bottom: 10px; margin-left: 20px;">
-			<b>{$LANG.internetxmainip} </b><input type="text" name="zone[main][value]" size="40" value="{$zone->main->value}" />
-			<br /><br /><input type="checkbox" name="zone[www_include]" value="1" {if $zone->www_include eq 1} checked {/if}><b> {$LANG.internetxwwwinclude} </b></span>
+			<b>{$LANG.internetxjsonmainip} </b><input type="text" name="zone[main][value]" size="40" value="{$zone->main->value}" />
+			<br /><br /><input type="checkbox" name="zone[www_include]" value="1" {if $zone->www_include eq 1} checked {/if}><b> {$LANG.internetxjsonwwwinclude} </b></span>
 			</div>
 			{/if}
 

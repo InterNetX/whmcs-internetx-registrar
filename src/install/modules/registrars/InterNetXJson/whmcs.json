@@ -5,7 +5,7 @@
     "license": "proprietary",
     "category": "Domains",
     "description": {
-        "name": "InterNetX Registrar Domain Plugin",
+        "name": "InterNetXJson Registrar Domain Plugin",
         "tagline": "Access to more than 350 ccTLDs and all available gTLDs.",
         "long": "This easy to scale billing and support solution gives companies who operate in the domain, hosting and reseller industry full control over their online business.",
         "features": [
@@ -17,7 +17,7 @@
         ]
     },
     "logo": {
-        "filename": "logo.png"
+        "filename": "logo.gif"
     },
     "support": {
         "homepage": "https:\/\/www.internetx.com\/whmcs\/",

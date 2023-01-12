@@ -1,5 +1,5 @@
 ﻿{* * ********************************************************************
- * InterNetX registrar module. Product developed. (2014-02-21)
+ * internetxjson registrar module. Product developed. (2014-02-21)
  * *
  *
  *  CREATED BY MODULESGARDEN       ->       http://modulesgarden.com
@@ -21,8 +21,8 @@
 *}
 <div class="card">
     <div class="card-body">
-        <h3 class="card-title">{$LANG.internetxdomainforwarding}</h3>
-            <p> {$LANG.internetxdomainforwardingdesc}</p>
+        <h3 class="card-title">{$LANG.internetxjsondomainforwarding}</h3>
+            <p> {$LANG.internetxjsondomainforwardingdesc}</p>
             <br/>
             <div class="alert alert-block alert-info">
                   <p>Domain Name: <strong>{$domain}</strong></p>
@@ -47,8 +47,8 @@
                         <thead>
                               <tr>
                                     <th class="textcenter">Domain/Subdomain</th>
-                                    <th class="textcenter">{$LANG.internetxdomainforwardingtype}</th>
-                                    <th class="textcenter">{$LANG.internetxdomainforwardingto}</th>
+                                    <th class="textcenter">{$LANG.internetxjsondomainforwardingtype}</th>
+                                    <th class="textcenter">{$LANG.internetxjsondomainforwardingto}</th>
                                     <th></th>
                               </tr>
                         </thead>
@@ -66,7 +66,7 @@
                                           <td class="textcenter">
                                                 <input type="text" name="domainForwarding[{$key}][target]" value="{$redirect.target}" class="form-control" >
                                                 <input type="hidden" name="domainForwarding[{$key}][id]" value="{$redirect.source}" /></td>
-                                          <td class="textcenter"><div id="domainForwarding_tilte_{$key}" {if $redirect.mode != "FRAME"}style="display:none;" {/if}> {$LANG.internetxdomainforwardingtitle}  <input type="text" name="domainForwarding[{$key}][title]" value="{$redirect.title}" class="form-control" ></div></td>
+                                          <td class="textcenter"><div id="domainForwarding_tilte_{$key}" {if $redirect.mode != "FRAME"}style="display:none;" {/if}> {$LANG.internetxjsondomainforwardingtitle}  <input type="text" name="domainForwarding[{$key}][title]" value="{$redirect.title}" class="form-control" ></div></td>
 
                                     </tr>
                               {/foreach}
@@ -83,7 +83,7 @@
                                           </select>
                                     </td>
                                     <td class="textcenter"><input type="text" name="newDomainForwarding[target]" class="form-control" ></td>
-                                    <td class="textcenter"><div id="newDomainForwarding_tilte">  <input type="text" class="form-control"  name="newDomainForwarding[title]" placeholder="{$LANG.internetxdomainforwardingtitle}" value=""></div></td>
+                                    <td class="textcenter"><div id="newDomainForwarding_tilte">  <input type="text" class="form-control"  name="newDomainForwarding[title]" placeholder="{$LANG.internetxjsondomainforwardingtitle}" value=""></div></td>
                               </tr>
                         </tbody>
                   </table>

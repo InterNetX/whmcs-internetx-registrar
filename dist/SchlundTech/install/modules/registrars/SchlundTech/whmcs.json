@@ -1,0 +1,35 @@
+{
+    "schema": "1.0",
+    "type": "whmcs-registrars",
+    "name": "SchlundTech",
+    "license": "proprietary",
+    "category": "Domains",
+    "description": {
+        "name": "SchlundTech Registrar Domain Plugin",
+        "tagline": "Access to more than 350 ccTLDs and all available gTLDs.",
+        "long": "This easy to scale billing and support solution gives companies who operate in the domain, hosting and reseller industry full control over their online business.",
+        "features": [
+            "Access to more than 350 ccTLDs and all available gTLDs.",
+            "Register, transfer, renew domains and manage contact details easily.",
+            "Order Premium Domains",
+            "Order and administer SSL certificates of the esablished providers Symantec, Thawte and GeoTrust (other brands on request).",
+            "Order S/MIME certificates"
+        ]
+    },
+    "logo": {
+        "filename": "logo.gif"
+    },
+    "support": {
+        "homepage": "https:\/\/www.internetx.com\/whmcs\/",
+        "learn_more": "https:\/\/www.internetx.com\/whmcs\/",
+        "email": "info@internetx.com",
+        "support_url": "https:\/\/www.internetx.com\/whmcs\/",
+        "docs_url": "https:\/\/en.help.internetx.com\/display\/MODSEN\/SetupGuide+WHMCS+Domain+Plugin"
+    },
+    "authors": [
+        {
+            "name": "InterNetX GmbH",
+            "homepage": "https:\/\/www.internetx.com\/"
+        }
+    ]
+}

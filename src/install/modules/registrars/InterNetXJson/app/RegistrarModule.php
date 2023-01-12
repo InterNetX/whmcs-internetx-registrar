@@ -147,11 +147,11 @@ class RegistrarModule implements RegistrarModuleInterface
         $configArray = array(
             "FriendlyName" => array(
                 "Type" => "System",
-                "Value" => "InterNetX Json",
+                "Value" => "InterNetXJson",
             ),
             "Description" => array(
                 "Type" => "System",
-                "Value" => "Get your free InterNetX Reseller Account here: <a href=\"https://www.internetx.com\" target=\"_blank\">https://www.internetx.com</a>.",
+                "Value" => "Get your free Reseller Account here: <a href=\"https://www.internetxjson.com\" target=\"_blank\">https://www.internetxjson.com</a>.",
             ),
             "serverUsername" => array(
                 'FriendlyName' => 'Username',

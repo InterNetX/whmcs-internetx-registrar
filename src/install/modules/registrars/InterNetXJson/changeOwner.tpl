@@ -25,9 +25,9 @@
 
  <div class="card">
     <div class="card-body">
-        <h3 class="card-title">{$LANG.internetxchangeowner}</h3>
+        <h3 class="card-title">{$LANG.internetxjsonchangeowner}</h3>
 
-            <p>{$LANG.internetxchangeownerdesc}</p>
+            <p>{$LANG.internetxjsonchangeownerdesc}</p>
             <br/>
             <div class="alert alert-block alert-info">
                   <p>Domain Name: <strong>{$domain}</strong></p>
@@ -51,7 +51,7 @@
                         <table  class="table table-striped table-framed">
                               <thead>
                                     <tr>
-                                          <th colspan="2" style="text-align: center !important;">{$LANG.internetxchangeownercontacts}</th>
+                                          <th colspan="2" style="text-align: center !important;">{$LANG.internetxjsonchangeownercontacts}</th>
                                     </tr>
                               </thead>
                               <tbody>

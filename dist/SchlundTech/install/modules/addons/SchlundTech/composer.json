@@ -1,0 +1,32 @@
+{
+    "require": {
+    },
+    "autoload": {
+        "psr-4": {
+            "MGModule\\InterNetX\\": [
+                "/"
+            ],
+            "MGModule\\InterNetX\\Addon\\": [
+                "app/"
+            ],
+            "MGModule\\InterNetX\\Addon\\Conctrollers\\": [
+                "app/Controllers"
+            ],
+            "MGModule\\InterNetX\\Addon\\Conctrollers\\Admin\\": [
+                "app/Controllers/Admin"
+            ],
+            "MGModule\\InterNetX\\Addon\\Conctrollers\\ClientArea\\": [
+                "app/Controllers/ClientArea"
+            ],
+            "MGModule\\InterNetX\\Addon\\Core\\": [
+                "app/Core"
+            ],
+            "MGModule\\InterNetX\\Addon\\Models\\": [
+                "app/Models"
+            ],
+            "ModulesGarden\\": [
+                "vendor/ModulesGarden/mgLibs/src/"
+            ]
+        }
+    }
+}

@@ -157,14 +157,14 @@ function clientDomainsCustomButtons($vars)
                 var domain    = jQuery("select[name=id]").val();
 
                 jQuery(".form").find("input[name^=oldns]").attr("value","");
-                // jQuery(".form").find("input[type=button][data-target=\'#modalGetEPP\']").after(\' <input type="button" class="button btn btn-default" value="Delete Domain" id="DeleteDomain" /><div id="delete_dialog" style="display:none;"><br/>Execute: <select id="internetx_excute"><option value="NOW">Now</option><option value="EXPIRE">Expire</option><option value="WHEN">Date</option></select><span id="internetx_date" style="display:none;"> <input type="text" id="internetx_date_input" style="width:60px;"/> </span> </div>\');
-                jQuery(".form").find("input[type=button][data-target=\'#modalGetEPP\']").after(\'<button type="button" class="button btn btn-default" id="DeleteDomain" data-toggle="modal" data-target="#InterNetXmodalDelete"> Delete Domain </button> <div class="modal fade" id="InterNetXmodalDelete" role="dialog" aria-labelledby="DeleteLabel" aria-hidden="true"> <div class="modal-dialog"> <div class="modal-content panel panel-primary"> <div id="InterNetXmodalDeleteHeading" class="modal-header panel-heading"> <button type="button" class="close" data-dismiss="modal"> <span aria-hidden="true">×</span> <span class="sr-only">Close</span> </button> <h4 class="modal-title" id="DeleteLabel">Delete Domain</h4> </div> <div id="InterNetXmodalDeleteBody" class="modal-body panel-body"> Execute: <select id="internetx_excute"> <option value="NOW">Now</option> <option value="EXPIRE">Expire</option> <option value="WHEN">Date</option> </select> <span id="internetx_date" style="display:none;"> <input type="text" id="internetx_date_input"/> </span> </div> <div id="InterNetXmodalDeleteFooter" class="modal-footer panel-footer"> <button type="button" id="InterNetX-Delete-Yes" class="btn btn-primary"> Send Deletion Request </button><button type="button" id="InterNetX-Delete-No" class="btn btn-default" data-dismiss="modal"> Cancel </button> </div> </div> </div> </div>\');
+                // jQuery(".form").find("input[type=button][data-target=\'#modalGetEPP\']").after(\' <input type="button" class="button btn btn-default" value="Delete Domain" id="DeleteDomain" /><div id="delete_dialog" style="display:none;"><br/>Execute: <select id="internetxjson_excute"><option value="NOW">Now</option><option value="EXPIRE">Expire</option><option value="WHEN">Date</option></select><span id="internetxjson_date" style="display:none;"> <input type="text" id="internetxjson_date_input" style="width:60px;"/> </span> </div>\');
+                jQuery(".form").find("input[type=button][data-target=\'#modalGetEPP\']").after(\'<button type="button" class="button btn btn-default" id="DeleteDomain" data-toggle="modal" data-target="#internetxjsonmodalDelete"> Delete Domain </button> <div class="modal fade" id="internetxjsonmodalDelete" role="dialog" aria-labelledby="DeleteLabel" aria-hidden="true"> <div class="modal-dialog"> <div class="modal-content panel panel-primary"> <div id="internetxjsonmodalDeleteHeading" class="modal-header panel-heading"> <button type="button" class="close" data-dismiss="modal"> <span aria-hidden="true">×</span> <span class="sr-only">Close</span> </button> <h4 class="modal-title" id="DeleteLabel">Delete Domain</h4> </div> <div id="internetxjsonmodalDeleteBody" class="modal-body panel-body"> Execute: <select id="internetxjson_excute"> <option value="NOW">Now</option> <option value="EXPIRE">Expire</option> <option value="WHEN">Date</option> </select> <span id="internetxjson_date" style="display:none;"> <input type="text" id="internetxjson_date_input"/> </span> </div> <div id="internetxjsonmodalDeleteFooter" class="modal-footer panel-footer"> <button type="button" id="internetxjson-Delete-Yes" class="btn btn-primary"> Send Deletion Request </button><button type="button" id="internetxjson-Delete-No" class="btn btn-default" data-dismiss="modal"> Cancel </button> </div> </div> </div> </div>\');
                 jQuery(".form").find("input[type=button][value=\'Transfer Out NACK\']").after(\'<div id="modcmdworking" style="display:none;text-align:center;margin-top:10px;"><img src="images/loader.gif"> &nbsp; Working...</div>\');
 
-                $("#InterNetX-Delete-Yes").on("click", function(event) {
-                        var execdate =$("#internetx_excute option:selected").val();
+                $("#internetxjson-Delete-Yes").on("click", function(event) {
+                        var execdate =$("#internetxjson_excute option:selected").val();
                         if(execdate=="WHEN")
-                            execdate = $("#internetx_date_input").val();
+                            execdate = $("#internetxjson_date_input").val();
 
                         jQuery.post("clientsdomains.php?userid=' . $_GET['userid'] . '&id=' . $_GET['id'] . '",{"action": "deleteDomain","ajax":1,"registrar":reg,"domain":domain,"execdate":execdate},function(data){
                              if(data=="success")
@@ -173,16 +173,16 @@ function clientDomainsCustomButtons($vars)
                                  jQuery("#profileContent > div").first().after(\'<div class="errorbox ajax-info"><strong><span class="title">Error</spam></strong><br />\'+data+\'</div>\');
 
                          });
-                         $("#InterNetXmodalDelete").modal( "hide" );
+                         $("#internetxjsonmodalDelete").modal( "hide" );
 
                 });
 
-                $("#internetx_excute").change(function(){
-                        var selected =$("#internetx_excute option:selected").val();
+                $("#internetxjson_excute").change(function(){
+                        var selected =$("#internetxjson_excute option:selected").val();
                         if( selected == "WHEN")
-                                $("#internetx_date").show();
+                                $("#internetxjson_date").show();
                         else
-                                $("#internetx_date").hide();
+                                $("#internetxjson_date").hide();
                 });
 
                 jQuery( document ).ajaxStart(function() {
@@ -192,7 +192,7 @@ function clientDomainsCustomButtons($vars)
             }
         });
            $(function() {
-                $( "#internetx_date_input" ).datepicker({ format: \'yyyy-mm-dd\' });
+                $( "#internetxjson_date_input" ).datepicker({ format: \'yyyy-mm-dd\' });
           });
         </script>';
     }

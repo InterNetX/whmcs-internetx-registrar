@@ -1,0 +1,22 @@
+{
+    "action": "{{nameserver_action}}",
+    "main": {
+        "address": "{{config_ip}}",
+        "ttl": 86400
+    },
+    "wwwInclude": true,
+    "resourceRecords": [
+        {
+            "name": "{{config_mx}}",
+            "ttl": 86400,
+            "type": "A",
+            "value": "{{config_ip}}"
+        },
+        {
+            "name": "",
+            "ttl": 86400,
+            "type": "MX",
+            "value": "{{config_mx}}.{{domain}}."
+        }
+    ]
+}

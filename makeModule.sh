@@ -1,0 +1,90 @@
+#!/bin/bash -e
+
+## EXIT IF NO ARGUMENTS ARE GIVEN
+if [[ $# -eq 0 ]] ; then
+    echo "Usage: $0 ModuleName RegistrarUrl RegistrarNS"
+    echo "example:"
+    echo "$0 DomainRobot www.domain-robot.org ns14.net"
+    echo "will create ./dist/DomainRobot and rename all files and sourcecode"
+    exit 1
+fi
+
+# THE NAME OF THE TARGET REGISTRAR TO BUILD
+REGISTRARNAME=$1
+REGISTRARURL=$2
+REGISTRARNS=$3
+
+# SRC is the original InterNetX Module. So that what we will replace
+PLACEHOLDERNAME=InterNetXJson
+
+# Script Vars and Derived values
+SRCFOLDER=src
+DISTFOLDER=dist
+PLACEHOLDERNAME_LOWERCASE=$(echo "$PLACEHOLDERNAME" | tr '[:upper:]' '[:lower:]')
+REGISTRARNAME_LOWERCASE=$(echo "$REGISTRARNAME" | tr '[:upper:]' '[:lower:]')
+OUTPUTFOLDER=${DISTFOLDER}/$REGISTRARNAME
+
+echo "About to create a module Version for $REGISTRARNAME in '$OUTPUTFOLDER'"
+
+# REMOVE OUTPUTFOLDER
+echo "Deleting and Creating Outputfolder (${OUTPUTFOLDER})"
+rm -rf $OUTPUTFOLDER
+mkdir -p $DISTFOLDER
+
+# Copy all Files to the new Folder
+echo "Copying files from src to (${OUTPUTFOLDER})"
+cp -a $SRCFOLDER $OUTPUTFOLDER
+
+# Copy Logo for Registarmodule
+echo "Copying Logo (cp assets/$REGISTRARNAME_LOWERCASE/logo.gif $OUTPUTFOLDER/install/modules/registrars/$PLACEHOLDERNAME/)"
+cp assets/$REGISTRARNAME_LOWERCASE/logo.gif $OUTPUTFOLDER/install/modules/registrars/$PLACEHOLDERNAME/
+
+# Rename Across all Files in OUTPUTFOLDER
+cd $OUTPUTFOLDER
+
+## Replace Link to Account creation in Admin Area
+echo "Replacing Link to Registrar Account Creation"
+sed -i "s/www.$PLACEHOLDERNAME_LOWERCASE.com/$REGISTRARURL/" install/modules/registrars/InterNetXJson/app/RegistrarModule.php
+
+
+## Replace InterNetX with RegistrarName (Case sensitive) Across all Files
+echo "Replacing $PLACEHOLDERNAME with $REGISTRARNAME across all files"
+grep -rl $PLACEHOLDERNAME .           | xargs sed -i "s/$PLACEHOLDERNAME/$REGISTRARNAME/g"
+grep -rl $PLACEHOLDERNAME_LOWERCASE . | xargs sed -i "s/$PLACEHOLDERNAME_LOWERCASE/$REGISTRARNAME_LOWERCASE/g"
+
+## Replace Nameserver domain in class.InterNetX_API.php
+echo "Replacing demo.autodns2.de with $REGISTRARNS in install/modules/registrars/InterNetXJson/app/Helpers/Config.php"
+sed -i "s/demo.autodns2.de/$REGISTRARNS/" install/modules/registrars/InterNetXJson/app/Helpers/Config.php
+
+## Change into module install files folder
+cd install
+
+## Removing Tests
+rm modules/registrars/InterNetXJson/test.sh
+rm -rf modules/registrars/InterNetXJson/tests
+## Removing Monkey-Debug Logs
+rm -rf modules/registrars/InterNetXJson/app/Helpers/log
+
+#rm -rf modules/registrars/InterNetXJson/vendor/phpunit
+#rm -rf modules/registrars/InterNetXJson/vendor/nikic
+#rm -rf modules/registrars/InterNetXJson/vendor/bin
+rm modules/registrars/InterNetXJson/composer.json
+rm modules/registrars/InterNetXJson/composer.lock
+rm modules/registrars/InterNetXJson/vendor/internetx/php-domainrobot-sdk/swagger-codegen-cli.jar
+
+
+## Rename Folders
+echo "Renaming Folders"
+mv modules/addons/$PLACEHOLDERNAME modules/addons/$REGISTRARNAME
+mv modules/registrars/$PLACEHOLDERNAME modules/registrars/$REGISTRARNAME
+
+## Rename Files
+echo "Renaming Files"
+## Premium Domain Addon
+mv modules/addons/${REGISTRARNAME}/app/Models/Migrations/Create${PLACEHOLDERNAME}PremiumDomiansPricingTable.php modules/addons/${REGISTRARNAME}/app/Models/Migrations/Create${REGISTRARNAME}PremiumDomiansPricingTable.php
+mv modules/addons/${REGISTRARNAME}/app/Models/Migrations/Create${PLACEHOLDERNAME}PremiumDomiansClassesTable.php modules/addons/${REGISTRARNAME}/app/Models/Migrations/Create${REGISTRARNAME}PremiumDomiansClassesTable.php
+mv modules/addons/${REGISTRARNAME}/${PLACEHOLDERNAME}.php modules/addons/${REGISTRARNAME}/${REGISTRARNAME}.php
+## Registrar Module Entry File
+mv modules/registrars/${REGISTRARNAME}/${PLACEHOLDERNAME}.php modules/registrars/${REGISTRARNAME}/${REGISTRARNAME}.php
+
+echo "All Done. The new Module files can be found in '$OUTPUTFOLDER'"
