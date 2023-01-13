@@ -7,7 +7,7 @@ class DomainRobotExtension
 
     public static $tlds = array(
         "au", "aero", "cat", "hk", "it", "jobs", "pro",
-        "ru", "uk", "ro", "de", "ca", "travel", "fr", "es", "nu", "swiss"
+        "ru", "uk", "ro", "ca", "travel", "fr", "es", "nu", "swiss"
     );
 
     /**
