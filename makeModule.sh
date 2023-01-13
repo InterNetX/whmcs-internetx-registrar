@@ -87,4 +87,7 @@ mv modules/addons/${REGISTRARNAME}/${PLACEHOLDERNAME}.php modules/addons/${REGIS
 ## Registrar Module Entry File
 mv modules/registrars/${REGISTRARNAME}/${PLACEHOLDERNAME}.php modules/registrars/${REGISTRARNAME}/${REGISTRARNAME}.php
 
+cd ../..
+zip -r ${REGISTRARNAME}_whmcs.zip ${REGISTRARNAME}
+
 echo "All Done. The new Module files can be found in '$OUTPUTFOLDER'"
