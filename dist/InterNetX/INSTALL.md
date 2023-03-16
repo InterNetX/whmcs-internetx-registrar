@@ -37,3 +37,7 @@ To sell premium domains, you need to install our premium domains addon alongside
 
 `install/modules/addons/InterNetX` needs to be copied to `{your-whmcs-folder}/modules/addons/InterNetX`
 Activate it in the Addon Modules settings of WHMCS and enable premium domains on the Domainpricing page.
+
+### Virtual Nameservers
+If you are using virtual nameservers from InterNetX please update /modules/registrars/InterNetX/app/Helpers/Config.php and change the "ns14.net" entries to your own virtual nameserver domain.
+
