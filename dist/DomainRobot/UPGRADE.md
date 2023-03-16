@@ -84,5 +84,6 @@ Delete "resources/domains/InterNetX_additionaldomainfields.php" as it is no long
 ### Hooks
 Hooks are now defined directly within the module.
 #### Cleanup
-Please remove the old File "includes/hooks/InterNetX_hooks.php" from your whmcs folder
-Please remove the old File "includes/hooks/delete_InterNetX_hooks.php" from your whmcs folder
+Please remove the old File "includes/hooks/InterNetX_hooks.php" from your whmcs folder.
+
+Please remove the old File "includes/hooks/delete_InterNetX_hooks.php" from your whmcs folder.
