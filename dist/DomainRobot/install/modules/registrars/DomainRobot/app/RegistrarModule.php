@@ -606,19 +606,19 @@ class RegistrarModule implements RegistrarModuleInterface
         // Get Domaininfo
         $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
 
-        // SET Domain Status to Active if not already
-        if ($domain->getRegistryStatus() != RegistryStatusConstants::ACTIVE) {
-            $domain->setRegistryStatus(RegistryStatusConstants::ACTIVE);
-            $domainrobot->domain->update($domain);
-        }
-        // .de & .eu -> authinfo1Create
-        if (strpos($params['tld'], 'de') !== false || strpos($params['tld'], 'eu') !== false) {
+        // .de & .eu & .cz -> authinfo1Create
+        if (strpos($params['tld'], 'de') !== false || strpos($params['tld'], 'eu') !== false || strpos($params['tld'], 'cz') !== false) {
             // If no AuthInfo Exists
-            // if (!$domain->getAuthinfo()){
-            //     $domainrobot->domain->createAuthinfo1(WhmcsBridge::parseDomain($params));
-            // }
-            // Always do it. The Above Status update might remove an existing Auth Code
-            $domainrobot->domain->createAuthinfo1(WhmcsBridge::parseDomain($params));
+            if (!$domain->getAuthinfo()){
+                $domainrobot->domain->createAuthinfo1(WhmcsBridge::parseDomain($params));
+            }
+        } else {
+            // SET Domain Status to Active if not already
+            // For all tlds except the one above
+            if ($domain->getRegistryStatus() != RegistryStatusConstants::ACTIVE) {
+                $domain->setRegistryStatus(RegistryStatusConstants::ACTIVE);
+                $domainrobot->domain->update($domain);
+            }
         }
 
         $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
