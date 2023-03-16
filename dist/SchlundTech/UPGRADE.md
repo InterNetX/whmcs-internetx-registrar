@@ -1,6 +1,10 @@
 # Upgrade / Migrate from older Plugin Versions
 The new module makes use of our JSON Api to support multiple new features, while beeing mostly backwards compatible.
 
+## Setup Process
+Please remove the existing directory "/modules/registrars/InterNetX" completely or rename it.
+After that upload the new modules files from the zip.
+
 ## New Features
 ### Zone Template
 You can now define Templates for the Zones created for new domains, by editing the file "app/templates/zone.json"
