@@ -85,7 +85,7 @@ abstract class AbstractMainDriver
         self::$type = $type;
     }
 
-    private final function __clone()
+    private function __clone()
     {
         ;
     }
