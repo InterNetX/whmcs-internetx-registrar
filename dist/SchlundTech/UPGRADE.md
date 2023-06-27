@@ -5,6 +5,10 @@ The new module makes use of our JSON Api to support multiple new features, while
 Please remove the existing directory "/modules/registrars/InterNetX" completely or rename it.
 After that upload the new modules files from the zip.
 
+## Domain Registrar Configuration
+Please update the API server in your WHMCS registrar configuration to show the new API url:
+https://api.autodns.com/v1
+
 ## New Features
 ### Zone Template
 You can now define Templates for the Zones created for new domains, by editing the file "app/templates/zone.json"
