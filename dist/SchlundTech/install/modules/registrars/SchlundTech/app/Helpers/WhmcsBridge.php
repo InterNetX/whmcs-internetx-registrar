@@ -38,7 +38,8 @@ class WhmcsBridge
     }
 
     public static function errorResponse($msg){
-        return array("error" => $msg);
+// debugged my MW        return array("error" => $msg);
+        return array("error" => print_r($msg,true));
     }
 
     public static function containsRegistrarNameServer(Array $nsArray){
