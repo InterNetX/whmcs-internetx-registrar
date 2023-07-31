@@ -43,8 +43,7 @@ if (!class_exists("InterNetX_SSL_API")) {
                                      $debug = true) {
 
                 self::$testMode   = false;
-/**                self::$serverUrl  = 'https://'.str_replace('https://','',$serverUrl);   URL now hardcoded for SSL API connection to XML API */
-                self::$serverUrl  = 'https://'.str_replace('https://','',gateway.autodns.com);
+                self::$serverUrl  = 'https://'.str_replace('https://','',$serverUrl);
                 self::$username   = $username;
                 self::$password   = htmlspecialchars_decode($password);
                 self::$context    = $context;
