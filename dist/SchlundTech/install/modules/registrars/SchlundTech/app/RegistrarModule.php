@@ -615,7 +615,8 @@ class RegistrarModule implements RegistrarModuleInterface
         } else {
             // SET Domain Status to Active if not already
             // For all tlds except the one above
-            if ($domain->getRegistryStatus() != RegistryStatusConstants::ACTIVE) {
+
+            if (strpos($params['tld'], 'at') === false && $domain->getRegistryStatus() != RegistryStatusConstants::ACTIVE) {
                 $domain->setRegistryStatus(RegistryStatusConstants::ACTIVE);
                 $domainrobot->domain->update($domain);
             }
