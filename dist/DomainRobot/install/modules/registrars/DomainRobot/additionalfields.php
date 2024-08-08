@@ -177,3 +177,7 @@ $additionaldomainfields[".swiss"][] = array("Name" => "Registrant Enterprise ID"
 // Add our custom fields
 $additionaldomainfields[".swiss"][] = array("Name" => ".swiss Enterprise ID", "Type" => "text", "Size" => "30", "Default" => "", "Required" => true);
 $additionaldomainfields[".swiss"][] = array("Name" => ".swiss Intended Use", "Type" => "text", "Size" => "30", "Default" => "", "Required" => true);
+
+// .dk
+$additionaldomainfields[".dk"] = array();
+$additionaldomainfields[".dk"][] = array("DisplayName" => "VAT Number", "Name" => "vatnumber", "Type" => "text", "Size" => "30", "Default" => "");
