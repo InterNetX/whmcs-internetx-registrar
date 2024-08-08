@@ -367,7 +367,7 @@ class RegistrarModule implements RegistrarModuleInterface
         $domainrobot = self::getApi($params);
         $domain = self::prepareDomain($params, $domainrobot);
         $domain->setAuthinfo($params['eppcode']);
-        $domain->setConfirmOwnerConsent(1);
+        $domain->setConfirmOwnerConsent(true);
         $objectJob = $domainrobot->domain->transfer($domain);
         return true;
     }
@@ -577,6 +577,7 @@ class RegistrarModule implements RegistrarModuleInterface
                 continue;
             }
             $liveContact = $domainrobot->contact->info($contacts[$key]['id']);
+            $liveContact->setConfirmOwnerConsent(true);
             // $liveContact["fname"] = ($whmcsContacts[$key]['First Name']);
             // $liveContact["lname"] = ($whmcsContacts[$key]['Last Name']);
             $liveContact["organization"] = ($whmcsContacts[$key]['Company Name']);
