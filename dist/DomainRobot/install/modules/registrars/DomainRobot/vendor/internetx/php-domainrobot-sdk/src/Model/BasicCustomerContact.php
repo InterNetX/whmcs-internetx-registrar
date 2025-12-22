@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -49,7 +49,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
       *
       * @var string
       */
-    protected static $swaggerModelName = 'basicCustomerContact';
+    protected static $swaggerModelName = 'BasicCustomerContact';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -74,8 +74,8 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
         'city' => 'string',
         'country' => 'string',
         'state' => 'string',
-        'phones' => '\Domainrobot\Model\Phone[]',
-        'faxes' => '\Domainrobot\Model\Phone[]',
+        'phone' => 'string',
+        'fax' => 'string',
         'email' => 'string',
         'address' => 'string[]'
     ];
@@ -103,8 +103,8 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
         'city' => null,
         'country' => null,
         'state' => null,
-        'phones' => null,
-        'faxes' => null,
+        'phone' => null,
+        'fax' => null,
         'email' => null,
         'address' => null
     ];
@@ -114,7 +114,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerTypes()
+    public static function swaggerTypes(): array
     {
         return self::$swaggerTypes;
     }
@@ -124,7 +124,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerFormats()
+    public static function swaggerFormats(): array
     {
         return self::$swaggerFormats;
     }
@@ -153,8 +153,8 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
         'city' => 'city',
         'country' => 'country',
         'state' => 'state',
-        'phones' => 'phones',
-        'faxes' => 'faxes',
+        'phone' => 'phone',
+        'fax' => 'fax',
         'email' => 'email',
         'address' => 'address'
     ];
@@ -182,8 +182,8 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
         'city' => 'setCity',
         'country' => 'setCountry',
         'state' => 'setState',
-        'phones' => 'setPhones',
-        'faxes' => 'setFaxes',
+        'phone' => 'setPhone',
+        'fax' => 'setFax',
         'email' => 'setEmail',
         'address' => 'setAddress'
     ];
@@ -211,8 +211,8 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
         'city' => 'getCity',
         'country' => 'getCountry',
         'state' => 'getState',
-        'phones' => 'getPhones',
-        'faxes' => 'getFaxes',
+        'phone' => 'getPhone',
+        'fax' => 'getFax',
         'email' => 'getEmail',
         'address' => 'getAddress'
     ];
@@ -223,7 +223,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function attributeMap()
+    public static function attributeMap(): array
     {
         return self::$attributeMap;
     }
@@ -233,7 +233,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function setters()
+    public static function setters(): array
     {
         return self::$setters;
     }
@@ -243,7 +243,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function getters()
+    public static function getters(): array
     {
         return self::$getters;
     }
@@ -253,7 +253,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function getModelName()
+    public function getModelName(): string
     {
         return self::$swaggerModelName;
     }
@@ -275,7 +275,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
      * @param mixed[] $data Associated array of property values
      *                      initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->container['created'] = isset($data['created']) ? $this->createData($data['created'], 'created')  : null;
         $this->container['updated'] = isset($data['updated']) ? $this->createData($data['updated'], 'updated')  : null;
@@ -294,8 +294,8 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
         $this->container['city'] = isset($data['city']) ? $this->createData($data['city'], 'city')  : null;
         $this->container['country'] = isset($data['country']) ? $this->createData($data['country'], 'country')  : null;
         $this->container['state'] = isset($data['state']) ? $this->createData($data['state'], 'state')  : null;
-        $this->container['phones'] = isset($data['phones']) ? $this->createData($data['phones'], 'phones')  : null;
-        $this->container['faxes'] = isset($data['faxes']) ? $this->createData($data['faxes'], 'faxes')  : null;
+        $this->container['phone'] = isset($data['phone']) ? $this->createData($data['phone'], 'phone')  : null;
+        $this->container['fax'] = isset($data['fax']) ? $this->createData($data['fax'], 'fax')  : null;
         $this->container['email'] = isset($data['email']) ? $this->createData($data['email'], 'email')  : null;
         $this->container['address'] = isset($data['address']) ? $this->createData($data['address'], 'address')  : null;
     }
@@ -309,11 +309,12 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
      * @param string $property
      * @return mixed
      */
-    public function createData($data = null, $property = '')
+    public function createData($data = null, $property = null): mixed
     {
-        if ($data === null || $property === '') {
+        if ($data === null || $property === null) {
             return '';
         }
+        
         $swaggerType = self::$swaggerTypes[$property];
 
         preg_match("/([\\\\\w\d]+)(\[\])?/", $swaggerType, $matches);
@@ -360,7 +361,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
      *
      * @return array invalid properties with reasons
      */
-    public function listInvalidProperties()
+    public function listInvalidProperties(): array
     {
         $invalidProperties = [];
 
@@ -379,7 +380,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
      *
      * @return bool True if all properties are valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return count($this->listInvalidProperties()) === 0;
     }
@@ -494,7 +495,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
     /**
      * Sets id
      *
-     * @param int $id The id.
+     * @param int $id ID of the domain contact.
      *
      * @return $this
      */
@@ -518,7 +519,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
     /**
      * Sets customer
      *
-     * @param \Domainrobot\Model\GenericCustomer $customer customer
+     * @param \Domainrobot\Model\GenericCustomer $customer Contains basic information that uniquely identifies a customer technically.
      *
      * @return $this
      */
@@ -542,7 +543,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
     /**
      * Sets type
      *
-     * @param \Domainrobot\Model\ContactType $type type
+     * @param \Domainrobot\Model\ContactType $type Type of domain contact. e.g.
      *
      * @return $this
      */
@@ -566,7 +567,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
     /**
      * Sets firstName
      *
-     * @param string $firstName firstName
+     * @param string $firstName Contact first name.
      *
      * @return $this
      */
@@ -590,7 +591,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
     /**
      * Sets lastName
      *
-     * @param string $lastName lastName
+     * @param string $lastName Contact last name.
      *
      * @return $this
      */
@@ -614,7 +615,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
     /**
      * Sets title
      *
-     * @param string $title title
+     * @param string $title The title of the contact.
      *
      * @return $this
      */
@@ -638,7 +639,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
     /**
      * Sets label
      *
-     * @param string $label label
+     * @param string $label Designation of the contact. In most cases the last name is used.
      *
      * @return $this
      */
@@ -662,7 +663,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
     /**
      * Sets language
      *
-     * @param string $language The language to use for the contact.
+     * @param string $language The language for communication with the contact. Supported languages:
      *
      * @return $this
      */
@@ -686,7 +687,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
     /**
      * Sets gender
      *
-     * @param \Domainrobot\Model\GenderConstants $gender gender
+     * @param \Domainrobot\Model\GenderConstants $gender The gender of the contact.
      *
      * @return $this
      */
@@ -710,7 +711,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
     /**
      * Sets postalCode
      *
-     * @param string $postalCode postalCode
+     * @param string $postalCode Zip code of the contact address.
      *
      * @return $this
      */
@@ -734,7 +735,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
     /**
      * Sets city
      *
-     * @param string $city city
+     * @param string $city The city of the contact.
      *
      * @return $this
      */
@@ -758,7 +759,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
     /**
      * Sets country
      *
-     * @param string $country country
+     * @param string $country The country of the contact.
      *
      * @return $this
      */
@@ -782,7 +783,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
     /**
      * Sets state
      *
-     * @param string $state state
+     * @param string $state The state of the contact.
      *
      * @return $this
      */
@@ -794,49 +795,49 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
     }
 
     /**
-     * Gets phones
+     * Gets phone
      *
-     * @return \Domainrobot\Model\Phone[]
+     * @return string
      */
-    public function getPhones()
+    public function getPhone()
     {
-        return $this->container['phones'];
+        return $this->container['phone'];
     }
 
     /**
-     * Sets phones
+     * Sets phone
      *
-     * @param \Domainrobot\Model\Phone[] $phones phones
+     * @param string $phone The phone numbers of the contact
      *
      * @return $this
      */
-    public function setPhones($phones)
+    public function setPhone($phone)
     {
-        $this->container['phones'] = $phones;
+        $this->container['phone'] = $phone;
 
         return $this;
     }
 
     /**
-     * Gets faxes
+     * Gets fax
      *
-     * @return \Domainrobot\Model\Phone[]
+     * @return string
      */
-    public function getFaxes()
+    public function getFax()
     {
-        return $this->container['faxes'];
+        return $this->container['fax'];
     }
 
     /**
-     * Sets faxes
+     * Sets fax
      *
-     * @param \Domainrobot\Model\Phone[] $faxes faxes
+     * @param string $fax The fax numbers of the contact
      *
      * @return $this
      */
-    public function setFaxes($faxes)
+    public function setFax($fax)
     {
-        $this->container['faxes'] = $faxes;
+        $this->container['fax'] = $fax;
 
         return $this;
     }
@@ -854,7 +855,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
     /**
      * Sets email
      *
-     * @param string $email email
+     * @param string $email The email address of the contact.
      *
      * @return $this
      */
@@ -878,7 +879,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
     /**
      * Sets address
      *
-     * @param string[] $address address
+     * @param string[] $address The address of the contact.
      *
      * @return $this
      */
@@ -895,7 +896,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -907,7 +908,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
@@ -920,7 +921,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -936,7 +937,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -946,7 +947,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
             return json_encode(
@@ -966,7 +967,8 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
      * toArray() => returns only non empty values
      * toArray(true) => returns all values
      */
-    public function toArray($retrieveAllValues = false){
+    public function toArray($retrieveAllValues = false): array
+    {
         $container = $this->container;
 
         $cleanContainer = [];
@@ -994,6 +996,7 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             if (is_array($value)) {
                 foreach ($value as &$v) {
                     if (gettype($v) === "object") {
@@ -1001,8 +1004,10 @@ class BasicCustomerContact implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             $cleanContainer[self::$attributeMap[$key]] = $value;
         };
+
         return $cleanContainer;
     }
 }

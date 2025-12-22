@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -65,6 +65,9 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
         'allowDuplicates' => 'bool',
         'sources' => '\Domainrobot\Model\DomainStudioSources',
         'clientIp' => 'string',
+        'ctid' => 'string',
+        'stid' => 'string',
+        'agent' => 'string',
         'onlyAvailable' => 'bool',
         'whoisTimeout' => 'int',
         'ignorePremium' => 'bool',
@@ -85,6 +88,9 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
         'allowDuplicates' => null,
         'sources' => null,
         'clientIp' => null,
+        'ctid' => null,
+        'stid' => null,
+        'agent' => null,
         'onlyAvailable' => null,
         'whoisTimeout' => 'int32',
         'ignorePremium' => null,
@@ -96,7 +102,7 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerTypes()
+    public static function swaggerTypes(): array
     {
         return self::$swaggerTypes;
     }
@@ -106,7 +112,7 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerFormats()
+    public static function swaggerFormats(): array
     {
         return self::$swaggerFormats;
     }
@@ -126,6 +132,9 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
         'allowDuplicates' => 'allowDuplicates',
         'sources' => 'sources',
         'clientIp' => 'clientIp',
+        'ctid' => 'ctid',
+        'stid' => 'stid',
+        'agent' => 'agent',
         'onlyAvailable' => 'onlyAvailable',
         'whoisTimeout' => 'whoisTimeout',
         'ignorePremium' => 'ignorePremium',
@@ -146,6 +155,9 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
         'allowDuplicates' => 'setAllowDuplicates',
         'sources' => 'setSources',
         'clientIp' => 'setClientIp',
+        'ctid' => 'setCtid',
+        'stid' => 'setStid',
+        'agent' => 'setAgent',
         'onlyAvailable' => 'setOnlyAvailable',
         'whoisTimeout' => 'setWhoisTimeout',
         'ignorePremium' => 'setIgnorePremium',
@@ -166,6 +178,9 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
         'allowDuplicates' => 'getAllowDuplicates',
         'sources' => 'getSources',
         'clientIp' => 'getClientIp',
+        'ctid' => 'getCtid',
+        'stid' => 'getStid',
+        'agent' => 'getAgent',
         'onlyAvailable' => 'getOnlyAvailable',
         'whoisTimeout' => 'getWhoisTimeout',
         'ignorePremium' => 'getIgnorePremium',
@@ -178,7 +193,7 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function attributeMap()
+    public static function attributeMap(): array
     {
         return self::$attributeMap;
     }
@@ -188,7 +203,7 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function setters()
+    public static function setters(): array
     {
         return self::$setters;
     }
@@ -198,7 +213,7 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function getters()
+    public static function getters(): array
     {
         return self::$getters;
     }
@@ -208,7 +223,7 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function getModelName()
+    public function getModelName(): string
     {
         return self::$swaggerModelName;
     }
@@ -230,7 +245,7 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
      * @param mixed[] $data Associated array of property values
      *                      initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->container['searchToken'] = isset($data['searchToken']) ? $this->createData($data['searchToken'], 'searchToken')  : null;
         $this->container['currency'] = isset($data['currency']) ? $this->createData($data['currency'], 'currency')  : null;
@@ -240,6 +255,9 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
         $this->container['allowDuplicates'] = isset($data['allowDuplicates']) ? $this->createData($data['allowDuplicates'], 'allowDuplicates')  : null;
         $this->container['sources'] = isset($data['sources']) ? $this->createData($data['sources'], 'sources')  : null;
         $this->container['clientIp'] = isset($data['clientIp']) ? $this->createData($data['clientIp'], 'clientIp')  : null;
+        $this->container['ctid'] = isset($data['ctid']) ? $this->createData($data['ctid'], 'ctid')  : null;
+        $this->container['stid'] = isset($data['stid']) ? $this->createData($data['stid'], 'stid')  : null;
+        $this->container['agent'] = isset($data['agent']) ? $this->createData($data['agent'], 'agent')  : null;
         $this->container['onlyAvailable'] = isset($data['onlyAvailable']) ? $this->createData($data['onlyAvailable'], 'onlyAvailable')  : null;
         $this->container['whoisTimeout'] = isset($data['whoisTimeout']) ? $this->createData($data['whoisTimeout'], 'whoisTimeout')  : null;
         $this->container['ignorePremium'] = isset($data['ignorePremium']) ? $this->createData($data['ignorePremium'], 'ignorePremium')  : null;
@@ -255,11 +273,12 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
      * @param string $property
      * @return mixed
      */
-    public function createData($data = null, $property = '')
+    public function createData($data = null, $property = null): mixed
     {
-        if ($data === null || $property === '') {
+        if ($data === null || $property === null) {
             return '';
         }
+        
         $swaggerType = self::$swaggerTypes[$property];
 
         preg_match("/([\\\\\w\d]+)(\[\])?/", $swaggerType, $matches);
@@ -306,7 +325,7 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
      *
      * @return array invalid properties with reasons
      */
-    public function listInvalidProperties()
+    public function listInvalidProperties(): array
     {
         $invalidProperties = [];
 
@@ -319,7 +338,7 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
      *
      * @return bool True if all properties are valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return count($this->listInvalidProperties()) === 0;
     }
@@ -518,6 +537,78 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
     }
 
     /**
+     * Gets ctid
+     *
+     * @return string
+     */
+    public function getCtid()
+    {
+        return $this->container['ctid'];
+    }
+
+    /**
+     * Sets ctid
+     *
+     * @param string $ctid The ctid of the request. Only readable!
+     *
+     * @return $this
+     */
+    public function setCtid($ctid)
+    {
+        $this->container['ctid'] = $ctid;
+
+        return $this;
+    }
+
+    /**
+     * Gets stid
+     *
+     * @return string
+     */
+    public function getStid()
+    {
+        return $this->container['stid'];
+    }
+
+    /**
+     * Sets stid
+     *
+     * @param string $stid The stid of the request. Only readable!
+     *
+     * @return $this
+     */
+    public function setStid($stid)
+    {
+        $this->container['stid'] = $stid;
+
+        return $this;
+    }
+
+    /**
+     * Gets agent
+     *
+     * @return string
+     */
+    public function getAgent()
+    {
+        return $this->container['agent'];
+    }
+
+    /**
+     * Sets agent
+     *
+     * @param string $agent The user agent of the request. Only readable!
+     *
+     * @return $this
+     */
+    public function setAgent($agent)
+    {
+        $this->container['agent'] = $agent;
+
+        return $this;
+    }
+
+    /**
      * Gets onlyAvailable
      *
      * @return bool
@@ -619,7 +710,7 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -631,7 +722,7 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
@@ -644,7 +735,7 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -660,7 +751,7 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -670,7 +761,7 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
             return json_encode(
@@ -690,7 +781,8 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
      * toArray() => returns only non empty values
      * toArray(true) => returns all values
      */
-    public function toArray($retrieveAllValues = false){
+    public function toArray($retrieveAllValues = false): array
+    {
         $container = $this->container;
 
         $cleanContainer = [];
@@ -718,6 +810,7 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             if (is_array($value)) {
                 foreach ($value as &$v) {
                     if (gettype($v) === "object") {
@@ -725,8 +818,10 @@ class DomainEnvelopeSearchRequest implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             $cleanContainer[self::$attributeMap[$key]] = $value;
         };
+
         return $cleanContainer;
     }
 }

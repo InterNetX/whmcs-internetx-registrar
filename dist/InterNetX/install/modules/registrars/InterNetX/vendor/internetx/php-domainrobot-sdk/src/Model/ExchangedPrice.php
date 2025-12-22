@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -78,7 +78,9 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
         'from' => '\DateTime',
         'until' => '\DateTime',
         'normalPrice' => '\Domainrobot\Model\ExchangedPrice',
+        'newPrice' => '\Domainrobot\Model\ExchangedPrice',
         'valid' => '\DateTime',
+        'priceChange' => '\Domainrobot\Model\PriceChange',
         'vatRate' => 'double',
         'vatAmount' => 'double',
         'rate' => 'double',
@@ -112,7 +114,9 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
         'from' => 'date-time',
         'until' => 'date-time',
         'normalPrice' => null,
+        'newPrice' => null,
         'valid' => 'date-time',
+        'priceChange' => null,
         'vatRate' => 'double',
         'vatAmount' => 'double',
         'rate' => 'double',
@@ -124,7 +128,7 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerTypes()
+    public static function swaggerTypes(): array
     {
         return self::$swaggerTypes;
     }
@@ -134,7 +138,7 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerFormats()
+    public static function swaggerFormats(): array
     {
         return self::$swaggerFormats;
     }
@@ -167,7 +171,9 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
         'from' => 'from',
         'until' => 'until',
         'normalPrice' => 'normalPrice',
+        'newPrice' => 'newPrice',
         'valid' => 'valid',
+        'priceChange' => 'priceChange',
         'vatRate' => 'vatRate',
         'vatAmount' => 'vatAmount',
         'rate' => 'rate',
@@ -201,7 +207,9 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
         'from' => 'setFrom',
         'until' => 'setUntil',
         'normalPrice' => 'setNormalPrice',
+        'newPrice' => 'setNewPrice',
         'valid' => 'setValid',
+        'priceChange' => 'setPriceChange',
         'vatRate' => 'setVatRate',
         'vatAmount' => 'setVatAmount',
         'rate' => 'setRate',
@@ -235,7 +243,9 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
         'from' => 'getFrom',
         'until' => 'getUntil',
         'normalPrice' => 'getNormalPrice',
+        'newPrice' => 'getNewPrice',
         'valid' => 'getValid',
+        'priceChange' => 'getPriceChange',
         'vatRate' => 'getVatRate',
         'vatAmount' => 'getVatAmount',
         'rate' => 'getRate',
@@ -248,7 +258,7 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function attributeMap()
+    public static function attributeMap(): array
     {
         return self::$attributeMap;
     }
@@ -258,7 +268,7 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function setters()
+    public static function setters(): array
     {
         return self::$setters;
     }
@@ -268,7 +278,7 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function getters()
+    public static function getters(): array
     {
         return self::$getters;
     }
@@ -278,7 +288,7 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function getModelName()
+    public function getModelName(): string
     {
         return self::$swaggerModelName;
     }
@@ -300,7 +310,7 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
      * @param mixed[] $data Associated array of property values
      *                      initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->container['created'] = isset($data['created']) ? $this->createData($data['created'], 'created')  : null;
         $this->container['updated'] = isset($data['updated']) ? $this->createData($data['updated'], 'updated')  : null;
@@ -323,7 +333,9 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
         $this->container['from'] = isset($data['from']) ? $this->createData($data['from'], 'from')  : null;
         $this->container['until'] = isset($data['until']) ? $this->createData($data['until'], 'until')  : null;
         $this->container['normalPrice'] = isset($data['normalPrice']) ? $this->createData($data['normalPrice'], 'normalPrice')  : null;
+        $this->container['newPrice'] = isset($data['newPrice']) ? $this->createData($data['newPrice'], 'newPrice')  : null;
         $this->container['valid'] = isset($data['valid']) ? $this->createData($data['valid'], 'valid')  : null;
+        $this->container['priceChange'] = isset($data['priceChange']) ? $this->createData($data['priceChange'], 'priceChange')  : null;
         $this->container['vatRate'] = isset($data['vatRate']) ? $this->createData($data['vatRate'], 'vatRate')  : null;
         $this->container['vatAmount'] = isset($data['vatAmount']) ? $this->createData($data['vatAmount'], 'vatAmount')  : null;
         $this->container['rate'] = isset($data['rate']) ? $this->createData($data['rate'], 'rate')  : null;
@@ -339,11 +351,12 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
      * @param string $property
      * @return mixed
      */
-    public function createData($data = null, $property = '')
+    public function createData($data = null, $property = null): mixed
     {
-        if ($data === null || $property === '') {
+        if ($data === null || $property === null) {
             return '';
         }
+        
         $swaggerType = self::$swaggerTypes[$property];
 
         preg_match("/([\\\\\w\d]+)(\[\])?/", $swaggerType, $matches);
@@ -390,7 +403,7 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
      *
      * @return array invalid properties with reasons
      */
-    public function listInvalidProperties()
+    public function listInvalidProperties(): array
     {
         $invalidProperties = [];
 
@@ -409,7 +422,7 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
      *
      * @return bool True if all properties are valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return count($this->listInvalidProperties()) === 0;
     }
@@ -920,6 +933,30 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
     }
 
     /**
+     * Gets newPrice
+     *
+     * @return \Domainrobot\Model\ExchangedPrice
+     */
+    public function getNewPrice()
+    {
+        return $this->container['newPrice'];
+    }
+
+    /**
+     * Sets newPrice
+     *
+     * @param \Domainrobot\Model\ExchangedPrice $newPrice new price
+     *
+     * @return $this
+     */
+    public function setNewPrice($newPrice)
+    {
+        $this->container['newPrice'] = $newPrice;
+
+        return $this;
+    }
+
+    /**
      * Gets valid
      *
      * @return \DateTime
@@ -939,6 +976,30 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
     public function setValid($valid)
     {
         $this->container['valid'] = $valid;
+
+        return $this;
+    }
+
+    /**
+     * Gets priceChange
+     *
+     * @return \Domainrobot\Model\PriceChange
+     */
+    public function getPriceChange()
+    {
+        return $this->container['priceChange'];
+    }
+
+    /**
+     * Sets priceChange
+     *
+     * @param \Domainrobot\Model\PriceChange $priceChange The price change
+     *
+     * @return $this
+     */
+    public function setPriceChange($priceChange)
+    {
+        $this->container['priceChange'] = $priceChange;
 
         return $this;
     }
@@ -1045,7 +1106,7 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -1057,7 +1118,7 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
@@ -1070,7 +1131,7 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -1086,7 +1147,7 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -1096,7 +1157,7 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
             return json_encode(
@@ -1116,7 +1177,8 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
      * toArray() => returns only non empty values
      * toArray(true) => returns all values
      */
-    public function toArray($retrieveAllValues = false){
+    public function toArray($retrieveAllValues = false): array
+    {
         $container = $this->container;
 
         $cleanContainer = [];
@@ -1144,6 +1206,7 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             if (is_array($value)) {
                 foreach ($value as &$v) {
                     if (gettype($v) === "object") {
@@ -1151,8 +1214,10 @@ class ExchangedPrice implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             $cleanContainer[self::$attributeMap[$key]] = $value;
         };
+
         return $cleanContainer;
     }
 }

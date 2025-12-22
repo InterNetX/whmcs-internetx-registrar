@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -100,7 +100,7 @@ class Redirect implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerTypes()
+    public static function swaggerTypes(): array
     {
         return self::$swaggerTypes;
     }
@@ -110,7 +110,7 @@ class Redirect implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerFormats()
+    public static function swaggerFormats(): array
     {
         return self::$swaggerFormats;
     }
@@ -188,7 +188,7 @@ class Redirect implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function attributeMap()
+    public static function attributeMap(): array
     {
         return self::$attributeMap;
     }
@@ -198,7 +198,7 @@ class Redirect implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function setters()
+    public static function setters(): array
     {
         return self::$setters;
     }
@@ -208,7 +208,7 @@ class Redirect implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function getters()
+    public static function getters(): array
     {
         return self::$getters;
     }
@@ -218,7 +218,7 @@ class Redirect implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function getModelName()
+    public function getModelName(): string
     {
         return self::$swaggerModelName;
     }
@@ -240,7 +240,7 @@ class Redirect implements ModelInterface, ArrayAccess
      * @param mixed[] $data Associated array of property values
      *                      initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->container['created'] = isset($data['created']) ? $this->createData($data['created'], 'created')  : null;
         $this->container['updated'] = isset($data['updated']) ? $this->createData($data['updated'], 'updated')  : null;
@@ -267,11 +267,12 @@ class Redirect implements ModelInterface, ArrayAccess
      * @param string $property
      * @return mixed
      */
-    public function createData($data = null, $property = '')
+    public function createData($data = null, $property = null): mixed
     {
-        if ($data === null || $property === '') {
+        if ($data === null || $property === null) {
             return '';
         }
+        
         $swaggerType = self::$swaggerTypes[$property];
 
         preg_match("/([\\\\\w\d]+)(\[\])?/", $swaggerType, $matches);
@@ -318,10 +319,16 @@ class Redirect implements ModelInterface, ArrayAccess
      *
      * @return array invalid properties with reasons
      */
-    public function listInvalidProperties()
+    public function listInvalidProperties(): array
     {
         $invalidProperties = [];
 
+        if ($this->container['source'] === null) {
+            $invalidProperties[] = "'source' can't be null";
+        }
+        if ($this->container['target'] === null) {
+            $invalidProperties[] = "'target' can't be null";
+        }
         if ($this->container['type'] === null) {
             $invalidProperties[] = "'type' can't be null";
         }
@@ -337,7 +344,7 @@ class Redirect implements ModelInterface, ArrayAccess
      *
      * @return bool True if all properties are valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return count($this->listInvalidProperties()) === 0;
     }
@@ -452,7 +459,7 @@ class Redirect implements ModelInterface, ArrayAccess
     /**
      * Sets source
      *
-     * @param string $source The domain to be redirected. Enter the domain with or without \"www\".
+     * @param string $source Domain that is to be redirected, e.g. test.example.com.
      *
      * @return $this
      */
@@ -476,7 +483,7 @@ class Redirect implements ModelInterface, ArrayAccess
     /**
      * Sets target
      *
-     * @param string $target The URL of the target domain. Enter the domain without \"http://\"
+     * @param string $target The URL of the target domain. Enter the domain without \"https://\".
      *
      * @return $this
      */
@@ -500,7 +507,7 @@ class Redirect implements ModelInterface, ArrayAccess
     /**
      * Sets type
      *
-     * @param \Domainrobot\Model\RedirectTypeConstants $type Redirect type
+     * @param \Domainrobot\Model\RedirectTypeConstants $type The type of redirect.
      *
      * @return $this
      */
@@ -524,7 +531,7 @@ class Redirect implements ModelInterface, ArrayAccess
     /**
      * Sets mode
      *
-     * @param \Domainrobot\Model\RedirectModeConstants $mode Redirect mode
+     * @param \Domainrobot\Model\RedirectModeConstants $mode The redirect mode of domain and email forwarding.
      *
      * @return $this
      */
@@ -548,7 +555,7 @@ class Redirect implements ModelInterface, ArrayAccess
     /**
      * Sets domain
      *
-     * @param string $domain The domain, which the redirect belongs.
+     * @param string $domain Domain that is to be redirected, e.g. example.com.
      *
      * @return $this
      */
@@ -572,7 +579,7 @@ class Redirect implements ModelInterface, ArrayAccess
     /**
      * Sets title
      *
-     * @param string $title Name of the redirection
+     * @param string $title Only for the 'frame' mode. Page title to be displayed in the browser title bar.
      *
      * @return $this
      */
@@ -596,7 +603,7 @@ class Redirect implements ModelInterface, ArrayAccess
     /**
      * Sets backups
      *
-     * @param string[] $backups Alternative URLs for frame redirect
+     * @param string[] $backups Backup destinations for the redirects. If the first destination cannot be reached, the domain is automatically redirected to the substitute destination (domain redirection, frame redirect).
      *
      * @return $this
      */
@@ -620,7 +627,7 @@ class Redirect implements ModelInterface, ArrayAccess
     /**
      * Sets sourceIdn
      *
-     * @param string $sourceIdn The IDN version of the domain to be redirected. Enter the domain with or without \"www\".
+     * @param string $sourceIdn The IDN version of the domain name. Domains can be entered with or without \"www\".
      *
      * @return $this
      */
@@ -644,7 +651,7 @@ class Redirect implements ModelInterface, ArrayAccess
     /**
      * Sets targetIdn
      *
-     * @param string $targetIdn The IDN version of the URL of the target domain. Enter the domain without \"http://\"
+     * @param string $targetIdn The Punycode syntax (IDN) version of the target domain URL. Enter the domain without \"https://\".
      *
      * @return $this
      */
@@ -668,7 +675,7 @@ class Redirect implements ModelInterface, ArrayAccess
     /**
      * Sets lastSeen
      *
-     * @param \DateTime $lastSeen The last dns connection.
+     * @param \DateTime $lastSeen The last DNS connection. Used for analytics, to keep track of when the DNS has been used.
      *
      * @return $this
      */
@@ -685,7 +692,7 @@ class Redirect implements ModelInterface, ArrayAccess
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -697,7 +704,7 @@ class Redirect implements ModelInterface, ArrayAccess
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
@@ -710,7 +717,7 @@ class Redirect implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -726,7 +733,7 @@ class Redirect implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -736,7 +743,7 @@ class Redirect implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
             return json_encode(
@@ -756,7 +763,8 @@ class Redirect implements ModelInterface, ArrayAccess
      * toArray() => returns only non empty values
      * toArray(true) => returns all values
      */
-    public function toArray($retrieveAllValues = false){
+    public function toArray($retrieveAllValues = false): array
+    {
         $container = $this->container;
 
         $cleanContainer = [];
@@ -784,6 +792,7 @@ class Redirect implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             if (is_array($value)) {
                 foreach ($value as &$v) {
                     if (gettype($v) === "object") {
@@ -791,8 +800,10 @@ class Redirect implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             $cleanContainer[self::$attributeMap[$key]] = $value;
         };
+
         return $cleanContainer;
     }
 }

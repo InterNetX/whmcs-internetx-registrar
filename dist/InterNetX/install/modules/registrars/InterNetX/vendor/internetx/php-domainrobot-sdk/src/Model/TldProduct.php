@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -96,7 +96,7 @@ class TldProduct implements ModelInterface, ArrayAccess
         'numeralDomains' => 'bool',
         'realtime' => 'bool',
         'idn' => '\Domainrobot\Model\Charset[]',
-        'transferComfirmation' => 'bool',
+        'transferConfirmation' => 'bool',
         'dnsCheck' => 'bool',
         'premiumDomains' => 'bool',
         'contactExtensions' => 'string[]',
@@ -130,6 +130,7 @@ class TldProduct implements ModelInterface, ArrayAccess
         'isManual' => 'bool',
         'requiredFields' => 'string[]',
         'transferImportedContacts' => '\Domainrobot\Model\ContactReferenceType[]',
+        'allowedOcCases' => 'string[]',
         'registrars' => '\Domainrobot\Model\Registrar[]',
         'autoDelete' => 'bool',
         'documents' => '\Domainrobot\Model\Document[]',
@@ -137,7 +138,8 @@ class TldProduct implements ModelInterface, ArrayAccess
         'trusteeTypes' => '\Domainrobot\Model\ContactReferenceType[]',
         'sldMin' => 'int',
         'sldMax' => 'int',
-        'numeric' => 'bool'
+        'numeric' => 'bool',
+        'sedoMls' => 'bool'
     ];
 
     /**
@@ -185,7 +187,7 @@ class TldProduct implements ModelInterface, ArrayAccess
         'numeralDomains' => null,
         'realtime' => null,
         'idn' => null,
-        'transferComfirmation' => null,
+        'transferConfirmation' => null,
         'dnsCheck' => null,
         'premiumDomains' => null,
         'contactExtensions' => null,
@@ -219,6 +221,7 @@ class TldProduct implements ModelInterface, ArrayAccess
         'isManual' => null,
         'requiredFields' => null,
         'transferImportedContacts' => null,
+        'allowedOcCases' => null,
         'registrars' => null,
         'autoDelete' => null,
         'documents' => null,
@@ -226,7 +229,8 @@ class TldProduct implements ModelInterface, ArrayAccess
         'trusteeTypes' => null,
         'sldMin' => 'int32',
         'sldMax' => 'int32',
-        'numeric' => null
+        'numeric' => null,
+        'sedoMls' => null
     ];
 
     /**
@@ -234,7 +238,7 @@ class TldProduct implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerTypes()
+    public static function swaggerTypes(): array
     {
         return self::$swaggerTypes;
     }
@@ -244,7 +248,7 @@ class TldProduct implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerFormats()
+    public static function swaggerFormats(): array
     {
         return self::$swaggerFormats;
     }
@@ -295,7 +299,7 @@ class TldProduct implements ModelInterface, ArrayAccess
         'numeralDomains' => 'numeralDomains',
         'realtime' => 'realtime',
         'idn' => 'idn',
-        'transferComfirmation' => 'transferComfirmation',
+        'transferConfirmation' => 'transferConfirmation',
         'dnsCheck' => 'dnsCheck',
         'premiumDomains' => 'premiumDomains',
         'contactExtensions' => 'contactExtensions',
@@ -329,6 +333,7 @@ class TldProduct implements ModelInterface, ArrayAccess
         'isManual' => 'isManual',
         'requiredFields' => 'requiredFields',
         'transferImportedContacts' => 'transferImportedContacts',
+        'allowedOcCases' => 'allowedOcCases',
         'registrars' => 'registrars',
         'autoDelete' => 'autoDelete',
         'documents' => 'documents',
@@ -336,7 +341,8 @@ class TldProduct implements ModelInterface, ArrayAccess
         'trusteeTypes' => 'trusteeTypes',
         'sldMin' => 'sldMin',
         'sldMax' => 'sldMax',
-        'numeric' => 'numeric'
+        'numeric' => 'numeric',
+        'sedoMls' => 'sedo_mls'
     ];
 
     /**
@@ -384,7 +390,7 @@ class TldProduct implements ModelInterface, ArrayAccess
         'numeralDomains' => 'setNumeralDomains',
         'realtime' => 'setRealtime',
         'idn' => 'setIdn',
-        'transferComfirmation' => 'setTransferComfirmation',
+        'transferConfirmation' => 'setTransferConfirmation',
         'dnsCheck' => 'setDnsCheck',
         'premiumDomains' => 'setPremiumDomains',
         'contactExtensions' => 'setContactExtensions',
@@ -418,6 +424,7 @@ class TldProduct implements ModelInterface, ArrayAccess
         'isManual' => 'setIsManual',
         'requiredFields' => 'setRequiredFields',
         'transferImportedContacts' => 'setTransferImportedContacts',
+        'allowedOcCases' => 'setAllowedOcCases',
         'registrars' => 'setRegistrars',
         'autoDelete' => 'setAutoDelete',
         'documents' => 'setDocuments',
@@ -425,7 +432,8 @@ class TldProduct implements ModelInterface, ArrayAccess
         'trusteeTypes' => 'setTrusteeTypes',
         'sldMin' => 'setSldMin',
         'sldMax' => 'setSldMax',
-        'numeric' => 'setNumeric'
+        'numeric' => 'setNumeric',
+        'sedoMls' => 'setSedoMls'
     ];
 
     /**
@@ -473,7 +481,7 @@ class TldProduct implements ModelInterface, ArrayAccess
         'numeralDomains' => 'getNumeralDomains',
         'realtime' => 'getRealtime',
         'idn' => 'getIdn',
-        'transferComfirmation' => 'getTransferComfirmation',
+        'transferConfirmation' => 'getTransferConfirmation',
         'dnsCheck' => 'getDnsCheck',
         'premiumDomains' => 'getPremiumDomains',
         'contactExtensions' => 'getContactExtensions',
@@ -507,6 +515,7 @@ class TldProduct implements ModelInterface, ArrayAccess
         'isManual' => 'getIsManual',
         'requiredFields' => 'getRequiredFields',
         'transferImportedContacts' => 'getTransferImportedContacts',
+        'allowedOcCases' => 'getAllowedOcCases',
         'registrars' => 'getRegistrars',
         'autoDelete' => 'getAutoDelete',
         'documents' => 'getDocuments',
@@ -514,7 +523,8 @@ class TldProduct implements ModelInterface, ArrayAccess
         'trusteeTypes' => 'getTrusteeTypes',
         'sldMin' => 'getSldMin',
         'sldMax' => 'getSldMax',
-        'numeric' => 'getNumeric'
+        'numeric' => 'getNumeric',
+        'sedoMls' => 'getSedoMls'
     ];
 
     /**
@@ -523,7 +533,7 @@ class TldProduct implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function attributeMap()
+    public static function attributeMap(): array
     {
         return self::$attributeMap;
     }
@@ -533,7 +543,7 @@ class TldProduct implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function setters()
+    public static function setters(): array
     {
         return self::$setters;
     }
@@ -543,7 +553,7 @@ class TldProduct implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function getters()
+    public static function getters(): array
     {
         return self::$getters;
     }
@@ -553,7 +563,7 @@ class TldProduct implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function getModelName()
+    public function getModelName(): string
     {
         return self::$swaggerModelName;
     }
@@ -575,7 +585,7 @@ class TldProduct implements ModelInterface, ArrayAccess
      * @param mixed[] $data Associated array of property values
      *                      initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->container['id'] = isset($data['id']) ? $this->createData($data['id'], 'id')  : null;
         $this->container['label'] = isset($data['label']) ? $this->createData($data['label'], 'label')  : null;
@@ -616,7 +626,7 @@ class TldProduct implements ModelInterface, ArrayAccess
         $this->container['numeralDomains'] = isset($data['numeralDomains']) ? $this->createData($data['numeralDomains'], 'numeralDomains')  : null;
         $this->container['realtime'] = isset($data['realtime']) ? $this->createData($data['realtime'], 'realtime')  : null;
         $this->container['idn'] = isset($data['idn']) ? $this->createData($data['idn'], 'idn')  : null;
-        $this->container['transferComfirmation'] = isset($data['transferComfirmation']) ? $this->createData($data['transferComfirmation'], 'transferComfirmation')  : null;
+        $this->container['transferConfirmation'] = isset($data['transferConfirmation']) ? $this->createData($data['transferConfirmation'], 'transferConfirmation')  : null;
         $this->container['dnsCheck'] = isset($data['dnsCheck']) ? $this->createData($data['dnsCheck'], 'dnsCheck')  : null;
         $this->container['premiumDomains'] = isset($data['premiumDomains']) ? $this->createData($data['premiumDomains'], 'premiumDomains')  : null;
         $this->container['contactExtensions'] = isset($data['contactExtensions']) ? $this->createData($data['contactExtensions'], 'contactExtensions')  : null;
@@ -650,6 +660,7 @@ class TldProduct implements ModelInterface, ArrayAccess
         $this->container['isManual'] = isset($data['isManual']) ? $this->createData($data['isManual'], 'isManual')  : null;
         $this->container['requiredFields'] = isset($data['requiredFields']) ? $this->createData($data['requiredFields'], 'requiredFields')  : null;
         $this->container['transferImportedContacts'] = isset($data['transferImportedContacts']) ? $this->createData($data['transferImportedContacts'], 'transferImportedContacts')  : null;
+        $this->container['allowedOcCases'] = isset($data['allowedOcCases']) ? $this->createData($data['allowedOcCases'], 'allowedOcCases')  : null;
         $this->container['registrars'] = isset($data['registrars']) ? $this->createData($data['registrars'], 'registrars')  : null;
         $this->container['autoDelete'] = isset($data['autoDelete']) ? $this->createData($data['autoDelete'], 'autoDelete')  : null;
         $this->container['documents'] = isset($data['documents']) ? $this->createData($data['documents'], 'documents')  : null;
@@ -658,6 +669,7 @@ class TldProduct implements ModelInterface, ArrayAccess
         $this->container['sldMin'] = isset($data['sldMin']) ? $this->createData($data['sldMin'], 'sldMin')  : null;
         $this->container['sldMax'] = isset($data['sldMax']) ? $this->createData($data['sldMax'], 'sldMax')  : null;
         $this->container['numeric'] = isset($data['numeric']) ? $this->createData($data['numeric'], 'numeric')  : null;
+        $this->container['sedoMls'] = isset($data['sedoMls']) ? $this->createData($data['sedoMls'], 'sedoMls')  : null;
     }
 
     /**
@@ -669,11 +681,12 @@ class TldProduct implements ModelInterface, ArrayAccess
      * @param string $property
      * @return mixed
      */
-    public function createData($data = null, $property = '')
+    public function createData($data = null, $property = null): mixed
     {
-        if ($data === null || $property === '') {
+        if ($data === null || $property === null) {
             return '';
         }
+        
         $swaggerType = self::$swaggerTypes[$property];
 
         preg_match("/([\\\\\w\d]+)(\[\])?/", $swaggerType, $matches);
@@ -720,7 +733,7 @@ class TldProduct implements ModelInterface, ArrayAccess
      *
      * @return array invalid properties with reasons
      */
-    public function listInvalidProperties()
+    public function listInvalidProperties(): array
     {
         $invalidProperties = [];
 
@@ -733,7 +746,7 @@ class TldProduct implements ModelInterface, ArrayAccess
      *
      * @return bool True if all properties are valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return count($this->listInvalidProperties()) === 0;
     }
@@ -1676,25 +1689,25 @@ class TldProduct implements ModelInterface, ArrayAccess
     }
 
     /**
-     * Gets transferComfirmation
+     * Gets transferConfirmation
      *
      * @return bool
      */
-    public function getTransferComfirmation()
+    public function getTransferConfirmation()
     {
-        return $this->container['transferComfirmation'];
+        return $this->container['transferConfirmation'];
     }
 
     /**
-     * Sets transferComfirmation
+     * Sets transferConfirmation
      *
-     * @param bool $transferComfirmation transferComfirmation
+     * @param bool $transferConfirmation transferConfirmation
      *
      * @return $this
      */
-    public function setTransferComfirmation($transferComfirmation)
+    public function setTransferConfirmation($transferConfirmation)
     {
-        $this->container['transferComfirmation'] = $transferComfirmation;
+        $this->container['transferConfirmation'] = $transferConfirmation;
 
         return $this;
     }
@@ -2492,6 +2505,30 @@ class TldProduct implements ModelInterface, ArrayAccess
     }
 
     /**
+     * Gets allowedOcCases
+     *
+     * @return string[]
+     */
+    public function getAllowedOcCases()
+    {
+        return $this->container['allowedOcCases'];
+    }
+
+    /**
+     * Sets allowedOcCases
+     *
+     * @param string[] $allowedOcCases allowedOcCases
+     *
+     * @return $this
+     */
+    public function setAllowedOcCases($allowedOcCases)
+    {
+        $this->container['allowedOcCases'] = $allowedOcCases;
+
+        return $this;
+    }
+
+    /**
      * Gets registrars
      *
      * @return \Domainrobot\Model\Registrar[]
@@ -2682,6 +2719,30 @@ class TldProduct implements ModelInterface, ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets sedoMls
+     *
+     * @return bool
+     */
+    public function getSedoMls()
+    {
+        return $this->container['sedoMls'];
+    }
+
+    /**
+     * Sets sedoMls
+     *
+     * @param bool $sedoMls sedoMls
+     *
+     * @return $this
+     */
+    public function setSedoMls($sedoMls)
+    {
+        $this->container['sedoMls'] = $sedoMls;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      *
@@ -2689,7 +2750,7 @@ class TldProduct implements ModelInterface, ArrayAccess
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -2701,7 +2762,7 @@ class TldProduct implements ModelInterface, ArrayAccess
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
@@ -2714,7 +2775,7 @@ class TldProduct implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -2730,7 +2791,7 @@ class TldProduct implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -2740,7 +2801,7 @@ class TldProduct implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
             return json_encode(
@@ -2760,7 +2821,8 @@ class TldProduct implements ModelInterface, ArrayAccess
      * toArray() => returns only non empty values
      * toArray(true) => returns all values
      */
-    public function toArray($retrieveAllValues = false){
+    public function toArray($retrieveAllValues = false): array
+    {
         $container = $this->container;
 
         $cleanContainer = [];
@@ -2788,6 +2850,7 @@ class TldProduct implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             if (is_array($value)) {
                 foreach ($value as &$v) {
                     if (gettype($v) === "object") {
@@ -2795,8 +2858,10 @@ class TldProduct implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             $cleanContainer[self::$attributeMap[$key]] = $value;
         };
+
         return $cleanContainer;
     }
 }

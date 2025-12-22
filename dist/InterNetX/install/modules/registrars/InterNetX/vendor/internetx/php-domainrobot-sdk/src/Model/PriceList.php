@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -71,7 +71,9 @@ class PriceList implements ModelInterface, ArrayAccess
         'inactive' => 'bool',
         'comment' => 'string',
         'customerPriceListsAdd' => '\Domainrobot\Model\CustomerPriceList[]',
-        'customerPriceListsRem' => '\Domainrobot\Model\CustomerPriceList[]'
+        'customerPriceListsRem' => '\Domainrobot\Model\CustomerPriceList[]',
+        'hasCustomerPriceList' => 'bool',
+        'excludeFromPricechange' => 'bool'
     ];
 
     /**
@@ -94,7 +96,9 @@ class PriceList implements ModelInterface, ArrayAccess
         'inactive' => null,
         'comment' => null,
         'customerPriceListsAdd' => null,
-        'customerPriceListsRem' => null
+        'customerPriceListsRem' => null,
+        'hasCustomerPriceList' => null,
+        'excludeFromPricechange' => null
     ];
 
     /**
@@ -102,7 +106,7 @@ class PriceList implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerTypes()
+    public static function swaggerTypes(): array
     {
         return self::$swaggerTypes;
     }
@@ -112,7 +116,7 @@ class PriceList implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerFormats()
+    public static function swaggerFormats(): array
     {
         return self::$swaggerFormats;
     }
@@ -138,7 +142,9 @@ class PriceList implements ModelInterface, ArrayAccess
         'inactive' => 'inactive',
         'comment' => 'comment',
         'customerPriceListsAdd' => 'customerPriceListsAdd',
-        'customerPriceListsRem' => 'customerPriceListsRem'
+        'customerPriceListsRem' => 'customerPriceListsRem',
+        'hasCustomerPriceList' => 'hasCustomerPriceList',
+        'excludeFromPricechange' => 'excludeFromPricechange'
     ];
 
     /**
@@ -161,7 +167,9 @@ class PriceList implements ModelInterface, ArrayAccess
         'inactive' => 'setInactive',
         'comment' => 'setComment',
         'customerPriceListsAdd' => 'setCustomerPriceListsAdd',
-        'customerPriceListsRem' => 'setCustomerPriceListsRem'
+        'customerPriceListsRem' => 'setCustomerPriceListsRem',
+        'hasCustomerPriceList' => 'setHasCustomerPriceList',
+        'excludeFromPricechange' => 'setExcludeFromPricechange'
     ];
 
     /**
@@ -184,7 +192,9 @@ class PriceList implements ModelInterface, ArrayAccess
         'inactive' => 'getInactive',
         'comment' => 'getComment',
         'customerPriceListsAdd' => 'getCustomerPriceListsAdd',
-        'customerPriceListsRem' => 'getCustomerPriceListsRem'
+        'customerPriceListsRem' => 'getCustomerPriceListsRem',
+        'hasCustomerPriceList' => 'getHasCustomerPriceList',
+        'excludeFromPricechange' => 'getExcludeFromPricechange'
     ];
 
     /**
@@ -193,7 +203,7 @@ class PriceList implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function attributeMap()
+    public static function attributeMap(): array
     {
         return self::$attributeMap;
     }
@@ -203,7 +213,7 @@ class PriceList implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function setters()
+    public static function setters(): array
     {
         return self::$setters;
     }
@@ -213,7 +223,7 @@ class PriceList implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function getters()
+    public static function getters(): array
     {
         return self::$getters;
     }
@@ -223,7 +233,7 @@ class PriceList implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function getModelName()
+    public function getModelName(): string
     {
         return self::$swaggerModelName;
     }
@@ -245,7 +255,7 @@ class PriceList implements ModelInterface, ArrayAccess
      * @param mixed[] $data Associated array of property values
      *                      initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->container['created'] = isset($data['created']) ? $this->createData($data['created'], 'created')  : null;
         $this->container['updated'] = isset($data['updated']) ? $this->createData($data['updated'], 'updated')  : null;
@@ -262,6 +272,8 @@ class PriceList implements ModelInterface, ArrayAccess
         $this->container['comment'] = isset($data['comment']) ? $this->createData($data['comment'], 'comment')  : null;
         $this->container['customerPriceListsAdd'] = isset($data['customerPriceListsAdd']) ? $this->createData($data['customerPriceListsAdd'], 'customerPriceListsAdd')  : null;
         $this->container['customerPriceListsRem'] = isset($data['customerPriceListsRem']) ? $this->createData($data['customerPriceListsRem'], 'customerPriceListsRem')  : null;
+        $this->container['hasCustomerPriceList'] = isset($data['hasCustomerPriceList']) ? $this->createData($data['hasCustomerPriceList'], 'hasCustomerPriceList')  : null;
+        $this->container['excludeFromPricechange'] = isset($data['excludeFromPricechange']) ? $this->createData($data['excludeFromPricechange'], 'excludeFromPricechange')  : null;
     }
 
     /**
@@ -273,11 +285,12 @@ class PriceList implements ModelInterface, ArrayAccess
      * @param string $property
      * @return mixed
      */
-    public function createData($data = null, $property = '')
+    public function createData($data = null, $property = null): mixed
     {
-        if ($data === null || $property === '') {
+        if ($data === null || $property === null) {
             return '';
         }
+        
         $swaggerType = self::$swaggerTypes[$property];
 
         preg_match("/([\\\\\w\d]+)(\[\])?/", $swaggerType, $matches);
@@ -324,7 +337,7 @@ class PriceList implements ModelInterface, ArrayAccess
      *
      * @return array invalid properties with reasons
      */
-    public function listInvalidProperties()
+    public function listInvalidProperties(): array
     {
         $invalidProperties = [];
 
@@ -337,7 +350,7 @@ class PriceList implements ModelInterface, ArrayAccess
      *
      * @return bool True if all properties are valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return count($this->listInvalidProperties()) === 0;
     }
@@ -702,6 +715,54 @@ class PriceList implements ModelInterface, ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets hasCustomerPriceList
+     *
+     * @return bool
+     */
+    public function getHasCustomerPriceList()
+    {
+        return $this->container['hasCustomerPriceList'];
+    }
+
+    /**
+     * Sets hasCustomerPriceList
+     *
+     * @param bool $hasCustomerPriceList Flag indication if the priceList is inactive
+     *
+     * @return $this
+     */
+    public function setHasCustomerPriceList($hasCustomerPriceList)
+    {
+        $this->container['hasCustomerPriceList'] = $hasCustomerPriceList;
+
+        return $this;
+    }
+
+    /**
+     * Gets excludeFromPricechange
+     *
+     * @return bool
+     */
+    public function getExcludeFromPricechange()
+    {
+        return $this->container['excludeFromPricechange'];
+    }
+
+    /**
+     * Sets excludeFromPricechange
+     *
+     * @param bool $excludeFromPricechange excludeFromPricechange
+     *
+     * @return $this
+     */
+    public function setExcludeFromPricechange($excludeFromPricechange)
+    {
+        $this->container['excludeFromPricechange'] = $excludeFromPricechange;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      *
@@ -709,7 +770,7 @@ class PriceList implements ModelInterface, ArrayAccess
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -721,7 +782,7 @@ class PriceList implements ModelInterface, ArrayAccess
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
@@ -734,7 +795,7 @@ class PriceList implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -750,7 +811,7 @@ class PriceList implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -760,7 +821,7 @@ class PriceList implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
             return json_encode(
@@ -780,7 +841,8 @@ class PriceList implements ModelInterface, ArrayAccess
      * toArray() => returns only non empty values
      * toArray(true) => returns all values
      */
-    public function toArray($retrieveAllValues = false){
+    public function toArray($retrieveAllValues = false): array
+    {
         $container = $this->container;
 
         $cleanContainer = [];
@@ -808,6 +870,7 @@ class PriceList implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             if (is_array($value)) {
                 foreach ($value as &$v) {
                     if (gettype($v) === "object") {
@@ -815,8 +878,10 @@ class PriceList implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             $cleanContainer[self::$attributeMap[$key]] = $value;
         };
+
         return $cleanContainer;
     }
 }

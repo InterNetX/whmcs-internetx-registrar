@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -61,7 +61,8 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
         'joiLocality' => 'string',
         'joiStateOrProvince' => 'string',
         'companyNumber' => 'string',
-        'businessCategory' => '\Domainrobot\Model\BusinessCategory'
+        'businessCategory' => '\Domainrobot\Model\BusinessCategory',
+        'organisationalIdentifier' => 'string'
     ];
 
     /**
@@ -74,7 +75,8 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
         'joiLocality' => null,
         'joiStateOrProvince' => null,
         'companyNumber' => null,
-        'businessCategory' => null
+        'businessCategory' => null,
+        'organisationalIdentifier' => null
     ];
 
     /**
@@ -82,7 +84,7 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerTypes()
+    public static function swaggerTypes(): array
     {
         return self::$swaggerTypes;
     }
@@ -92,7 +94,7 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerFormats()
+    public static function swaggerFormats(): array
     {
         return self::$swaggerFormats;
     }
@@ -108,7 +110,8 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
         'joiLocality' => 'joiLocality',
         'joiStateOrProvince' => 'joiStateOrProvince',
         'companyNumber' => 'companyNumber',
-        'businessCategory' => 'businessCategory'
+        'businessCategory' => 'businessCategory',
+        'organisationalIdentifier' => 'organisationalIdentifier'
     ];
 
     /**
@@ -121,7 +124,8 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
         'joiLocality' => 'setJoiLocality',
         'joiStateOrProvince' => 'setJoiStateOrProvince',
         'companyNumber' => 'setCompanyNumber',
-        'businessCategory' => 'setBusinessCategory'
+        'businessCategory' => 'setBusinessCategory',
+        'organisationalIdentifier' => 'setOrganisationalIdentifier'
     ];
 
     /**
@@ -134,7 +138,8 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
         'joiLocality' => 'getJoiLocality',
         'joiStateOrProvince' => 'getJoiStateOrProvince',
         'companyNumber' => 'getCompanyNumber',
-        'businessCategory' => 'getBusinessCategory'
+        'businessCategory' => 'getBusinessCategory',
+        'organisationalIdentifier' => 'getOrganisationalIdentifier'
     ];
 
     /**
@@ -143,7 +148,7 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function attributeMap()
+    public static function attributeMap(): array
     {
         return self::$attributeMap;
     }
@@ -153,7 +158,7 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function setters()
+    public static function setters(): array
     {
         return self::$setters;
     }
@@ -163,7 +168,7 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function getters()
+    public static function getters(): array
     {
         return self::$getters;
     }
@@ -173,7 +178,7 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function getModelName()
+    public function getModelName(): string
     {
         return self::$swaggerModelName;
     }
@@ -195,13 +200,14 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
      * @param mixed[] $data Associated array of property values
      *                      initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->container['joiCountryName'] = isset($data['joiCountryName']) ? $this->createData($data['joiCountryName'], 'joiCountryName')  : null;
         $this->container['joiLocality'] = isset($data['joiLocality']) ? $this->createData($data['joiLocality'], 'joiLocality')  : null;
         $this->container['joiStateOrProvince'] = isset($data['joiStateOrProvince']) ? $this->createData($data['joiStateOrProvince'], 'joiStateOrProvince')  : null;
         $this->container['companyNumber'] = isset($data['companyNumber']) ? $this->createData($data['companyNumber'], 'companyNumber')  : null;
         $this->container['businessCategory'] = isset($data['businessCategory']) ? $this->createData($data['businessCategory'], 'businessCategory')  : null;
+        $this->container['organisationalIdentifier'] = isset($data['organisationalIdentifier']) ? $this->createData($data['organisationalIdentifier'], 'organisationalIdentifier')  : null;
     }
 
     /**
@@ -213,11 +219,12 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
      * @param string $property
      * @return mixed
      */
-    public function createData($data = null, $property = '')
+    public function createData($data = null, $property = null): mixed
     {
-        if ($data === null || $property === '') {
+        if ($data === null || $property === null) {
             return '';
         }
+        
         $swaggerType = self::$swaggerTypes[$property];
 
         preg_match("/([\\\\\w\d]+)(\[\])?/", $swaggerType, $matches);
@@ -264,7 +271,7 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
      *
      * @return array invalid properties with reasons
      */
-    public function listInvalidProperties()
+    public function listInvalidProperties(): array
     {
         $invalidProperties = [];
 
@@ -277,7 +284,7 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
      *
      * @return bool True if all properties are valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return count($this->listInvalidProperties()) === 0;
     }
@@ -402,6 +409,30 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets organisationalIdentifier
+     *
+     * @return string
+     */
+    public function getOrganisationalIdentifier()
+    {
+        return $this->container['organisationalIdentifier'];
+    }
+
+    /**
+     * Sets organisationalIdentifier
+     *
+     * @param string $organisationalIdentifier The Organisational Identifier is the company/organization's registration number. It can either be a VAT, NTR, LEI number. You can provide GOV-identifier ( GOV + Country Code ) if it is a governmental organisation. INTXG if none matches.
+     *
+     * @return $this
+     */
+    public function setOrganisationalIdentifier($organisationalIdentifier)
+    {
+        $this->container['organisationalIdentifier'] = $organisationalIdentifier;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      *
@@ -409,7 +440,7 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -421,7 +452,7 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
@@ -434,7 +465,7 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -450,7 +481,7 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -460,7 +491,7 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
             return json_encode(
@@ -480,7 +511,8 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
      * toArray() => returns only non empty values
      * toArray(true) => returns all values
      */
-    public function toArray($retrieveAllValues = false){
+    public function toArray($retrieveAllValues = false): array
+    {
         $container = $this->container;
 
         $cleanContainer = [];
@@ -508,6 +540,7 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             if (is_array($value)) {
                 foreach ($value as &$v) {
                     if (gettype($v) === "object") {
@@ -515,8 +548,10 @@ class SslContactGeneralExtensions implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             $cleanContainer[self::$attributeMap[$key]] = $value;
         };
+
         return $cleanContainer;
     }
 }
