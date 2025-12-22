@@ -17,6 +17,7 @@ use Domainrobot\Model\ContactGeneralExtensions;
 use Domainrobot\Model\NameserverActionConstants;
 use Domainrobot\Model\ContactIdentificationExtensions;
 use Domainrobot\Model\ResourceRecord;
+use App\Providers\WhmcsModuleLogProvider as Logger;
 
 
 class WhmcsBridge
@@ -44,15 +45,12 @@ class WhmcsBridge
 
     public static function containsRegistrarNameServer(Array $nsArray){
         foreach ($nsArray as $ns) {
+            Logger::log("check", $ns['name'] ." : ". Config::registrarNameserver(), "" . strpos($ns['name'], Config::registrarNameserver()));
             if (strpos($ns['name'], Config::registrarNameserver()) !== FALSE){
                 return true;
             }
         }
         return false;
-    }
-
-    public static function parseDomainZone($params){
-        return self::domainZoneFromTemplate($params);
     }
 
     public static function replaceInTemplate($t, $replaceMap, $replaceMapCache = null){
@@ -101,12 +99,14 @@ class WhmcsBridge
         $mainip = $params['domainIP'];
         $mx = $params['domainMX'];
         $nameservers = self::parseNameservers($params);
+        Logger::log("register", "Asdasd", $nameservers);
+
         $action = self::containsRegistrarNameServer($nameservers) ? NameserverActionConstants::AUTO : NameserverActionConstants::NONE;
 
         $template = self::replaceInTemplate($template, [
             '{{domain}}' => self::parseDomain($params),
             '{{nameservers}}' => $nameservers,
-            '{{config_ip}}' => $mainip,
+            '{{config_ip}}' => $mainip ? $mainip : '127.0.0.1',
             '{{config_mx}}' => $mx ? $mx : 'mail',
             '{{nameserver_action}}' => $action
         ]);

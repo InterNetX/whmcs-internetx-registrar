@@ -8,6 +8,8 @@ class Config {
     private static $premiumAddonName    = 'InterNetXJson';
     private static $registrarNameserver = 'demo.autodns2.de';
     private static $templateDir         = __DIR__ .'/../templates/';
+    private static $version             = "1.0.0";
+
 
     public static function moduleName(){
         return self::$moduleName;
@@ -23,6 +25,10 @@ class Config {
 
     public static function templateDir(){
         return self::$templateDir;
+    }
+
+    public static function version(){
+        return self::$version;
     }
 
     public static function userAgent(){
