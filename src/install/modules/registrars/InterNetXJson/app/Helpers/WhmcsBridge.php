@@ -45,7 +45,7 @@ class WhmcsBridge
 
     public static function containsRegistrarNameServer(Array $nsArray){
         foreach ($nsArray as $ns) {
-            Logger::log("check", $ns['name'] ." : ". Config::registrarNameserver(), "" . strpos($ns['name'], Config::registrarNameserver()));
+            // Logger::log("check", $ns['name'] ." : ". Config::registrarNameserver(), "" . strpos($ns['name'], Config::registrarNameserver()));
             if (strpos($ns['name'], Config::registrarNameserver()) !== FALSE){
                 return true;
             }
@@ -99,7 +99,7 @@ class WhmcsBridge
         $mainip = $params['domainIP'];
         $mx = $params['domainMX'];
         $nameservers = self::parseNameservers($params);
-        Logger::log("register", "Asdasd", $nameservers);
+        // Logger::log("register", "Asdasd", $nameservers);
 
         $action = self::containsRegistrarNameServer($nameservers) ? NameserverActionConstants::AUTO : NameserverActionConstants::NONE;
 
@@ -171,7 +171,7 @@ class WhmcsBridge
         $contact->setFname($params[$prefix.'firstname']);
         $contact->setLname($params[$prefix.'lastname']);
         $contact->setEmail($params[$prefix.'email']);
-        $contact->setPhone($params[$prefix.'phonenumber']);
+        $contact->setPhone($params[$prefix.'fullphonenumber']);
 
         // Get tld specific Extensions From params
         $extensions = DomainRobotExtension::assign($params['tld'], $params['additionalfields']);

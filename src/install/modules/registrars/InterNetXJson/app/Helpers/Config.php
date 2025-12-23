@@ -8,7 +8,7 @@ class Config {
     private static $premiumAddonName    = 'InterNetXJson';
     private static $registrarNameserver = 'demo.autodns2.de';
     private static $templateDir         = __DIR__ .'/../templates/';
-    private static $version             = "1.0.0";
+    private static $version             = "1.0.0-pre";
 
 
     public static function moduleName(){
