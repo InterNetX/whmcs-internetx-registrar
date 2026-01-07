@@ -36,6 +36,8 @@ PLACEHOLDERNAME_LOWERCASE=$(echo "$PLACEHOLDERNAME" | tr '[:upper:]' '[:lower:]'
 REGISTRARNAME_LOWERCASE=$(echo "$REGISTRARNAME" | tr '[:upper:]' '[:lower:]')
 OUTPUTFOLDER=${DISTFOLDER}/$REGISTRARNAME
 
+VERSION=$(cat ./VERSION)
+
 echo "About to create a module Version for $REGISTRARNAME in '$OUTPUTFOLDER'"
 
 # REMOVE OUTPUTFOLDER
@@ -67,6 +69,10 @@ grep -rl $PLACEHOLDERNAME_LOWERCASE . | xargs ${SED_CMD} -i "s/$PLACEHOLDERNAME_
 ## Replace Nameserver domain in class.InterNetX_API.php
 echo "Replacing demo.autodns2.de with $REGISTRARNS in install/modules/registrars/InterNetXJson/app/Helpers/Config.php"
 ${SED_CMD} -i "s/demo.autodns2.de/$REGISTRARNS/" install/modules/registrars/InterNetXJson/app/Helpers/Config.php
+
+
+echo "Replacing version with $VERSION"
+${SED_CMD} -i "s/DEVELOPMENT-VERSION/$VERSION/" install/modules/registrars/InterNetXJson/app/Helpers/Config.php
 
 ## Change into module install files folder
 cd install

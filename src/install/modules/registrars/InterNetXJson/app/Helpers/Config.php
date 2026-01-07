@@ -4,11 +4,11 @@ namespace App\Helpers;
 
 class Config {
     private static $moduleName          = 'InterNetXJson';
-    private static $userAgent          = 'WHMCS Module';
+    private static $userAgent           = 'WHMCS Module';
     private static $premiumAddonName    = 'InterNetXJson';
     private static $registrarNameserver = 'demo.autodns2.de';
     private static $templateDir         = __DIR__ .'/../templates/';
-    private static $version             = "1.0.0-pre";
+    private static $version             = "DEVELOPMENT-VERSION";
 
 
     public static function moduleName(){

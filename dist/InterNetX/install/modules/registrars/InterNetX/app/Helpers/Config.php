@@ -8,7 +8,7 @@ class Config {
     private static $premiumAddonName    = 'InterNetX';
     private static $registrarNameserver = 'ns14.net';
     private static $templateDir         = __DIR__ .'/../templates/';
-    private static $version             = "1.0.0-pre";
+    private static $version             = "1.0.0-preview";
 
 
     public static function moduleName(){
