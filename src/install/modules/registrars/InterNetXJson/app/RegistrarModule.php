@@ -64,7 +64,7 @@ class RegistrarModule implements RegistrarModuleInterface
             // }
 
         }
-        return Logger::log($action, $params, $responseData, $processedData, $fullReplaceVars);
+        return Logger::log("mod_func_" . $action, $params, $responseData, $processedData, $fullReplaceVars);
     }
 
     /*
@@ -121,7 +121,13 @@ class RegistrarModule implements RegistrarModuleInterface
                     "user"     => $params['sandboxServerUsername'],
                     "password" => $params['sandboxServerPassword'],
                     "context"  => $params['sandboxServerContext']
-                ])
+                ]),
+//                "logRequestCallback" => function ($method, $url, $requestOptions, $headers){
+//                    Logger::log("req_outbound: ".$method.":" . $url, $requestOptions, $headers);
+//                },
+//                "logResponseCallback" => function ($url, $response, $statusCode, $exectime){
+//                    Logger::log("req_inbound:" . $url, $statusCode . " in " . $exectime, $response);
+//                }
             ]);
             // Live Mode
         } else {
@@ -133,7 +139,16 @@ class RegistrarModule implements RegistrarModuleInterface
                     "user"     => $params['serverUsername'],
                     "password" => $params['serverPassword'],
                     "context"  => $params['serverContext']
-                ])
+                ]),
+                "headers" => [
+                    "User-Agent" => Config::version(),
+                ],
+//                "logRequestCallback" => function ($method, $url, $requestOptions, $headers){
+//                    Logger::log("req_outbound:" . $url, $requestOptions, $headers);
+//                },
+//                "logResponseCallback" => function ($url, $response, $statusCode, $exectime){
+//                    Logger::log("req_inbound:" . $url, $statusCode, $response);
+//                }
             ]);
         }
 
@@ -334,7 +349,7 @@ class RegistrarModule implements RegistrarModuleInterface
         }
         // Add zone if nameservers are ours
         if (WhmcsBridge::containsRegistrarNameServer($nameservers)) {
-            $zone = WhmcsBridge::parseDomainZone($params);
+            $zone = WhmcsBridge::domainZoneFromTemplate($params);
             // Initially i had to manually create the zone before the registration
             // This works now directly with the registration request, by using nameser->action = 'AUTO'
             // $createdZone = $domainrobot->zone->create($zone);
@@ -356,8 +371,7 @@ class RegistrarModule implements RegistrarModuleInterface
         $domainrobot = self::getApi($params);
         $domain = self::prepareDomain($params, $domainrobot);
 
-        // TODO: Check if needed
-        //$domain->setIgnoreWhois(true);
+        // Logger::log("post", "" . $domain, "" . $domain["zone"]);
         $objectJob = $domainrobot->domain->create($domain);
         return $objectJob;
     }
@@ -423,6 +437,7 @@ class RegistrarModule implements RegistrarModuleInterface
     {
         $domainrobot = self::getApi($params);
         $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
+        $domain->setConfirmOwnerConsent(true);
         $domain->setNameServers(WhmcsBridge::parseNameservers($params));
         $domainrobot->domain->update($domain);
     }

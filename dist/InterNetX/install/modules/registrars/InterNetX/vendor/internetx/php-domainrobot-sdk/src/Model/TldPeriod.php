@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -60,7 +60,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
         'restoreArgpPeriod' => '\Domainrobot\Model\TimePeriod',
         'restoreRgpPeriod' => '\Domainrobot\Model\TimePeriod',
         'cancelationPeriod' => '\Domainrobot\Model\TimePeriod',
-        'cancelationPeriodAutoDelete' => '\Domainrobot\Model\TimePeriod'
+        'cutoffPeriod' => '\Domainrobot\Model\TimePeriod'
     ];
 
     /**
@@ -72,7 +72,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
         'restoreArgpPeriod' => null,
         'restoreRgpPeriod' => null,
         'cancelationPeriod' => null,
-        'cancelationPeriodAutoDelete' => null
+        'cutoffPeriod' => null
     ];
 
     /**
@@ -80,7 +80,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerTypes()
+    public static function swaggerTypes(): array
     {
         return self::$swaggerTypes;
     }
@@ -90,7 +90,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerFormats()
+    public static function swaggerFormats(): array
     {
         return self::$swaggerFormats;
     }
@@ -105,7 +105,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
         'restoreArgpPeriod' => 'restoreArgpPeriod',
         'restoreRgpPeriod' => 'restoreRgpPeriod',
         'cancelationPeriod' => 'cancelationPeriod',
-        'cancelationPeriodAutoDelete' => 'cancelationPeriodAutoDelete'
+        'cutoffPeriod' => 'cutoffPeriod'
     ];
 
     /**
@@ -117,7 +117,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
         'restoreArgpPeriod' => 'setRestoreArgpPeriod',
         'restoreRgpPeriod' => 'setRestoreRgpPeriod',
         'cancelationPeriod' => 'setCancelationPeriod',
-        'cancelationPeriodAutoDelete' => 'setCancelationPeriodAutoDelete'
+        'cutoffPeriod' => 'setCutoffPeriod'
     ];
 
     /**
@@ -129,7 +129,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
         'restoreArgpPeriod' => 'getRestoreArgpPeriod',
         'restoreRgpPeriod' => 'getRestoreRgpPeriod',
         'cancelationPeriod' => 'getCancelationPeriod',
-        'cancelationPeriodAutoDelete' => 'getCancelationPeriodAutoDelete'
+        'cutoffPeriod' => 'getCutoffPeriod'
     ];
 
     /**
@@ -138,7 +138,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function attributeMap()
+    public static function attributeMap(): array
     {
         return self::$attributeMap;
     }
@@ -148,7 +148,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function setters()
+    public static function setters(): array
     {
         return self::$setters;
     }
@@ -158,7 +158,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function getters()
+    public static function getters(): array
     {
         return self::$getters;
     }
@@ -168,7 +168,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function getModelName()
+    public function getModelName(): string
     {
         return self::$swaggerModelName;
     }
@@ -190,12 +190,12 @@ class TldPeriod implements ModelInterface, ArrayAccess
      * @param mixed[] $data Associated array of property values
      *                      initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->container['restoreArgpPeriod'] = isset($data['restoreArgpPeriod']) ? $this->createData($data['restoreArgpPeriod'], 'restoreArgpPeriod')  : null;
         $this->container['restoreRgpPeriod'] = isset($data['restoreRgpPeriod']) ? $this->createData($data['restoreRgpPeriod'], 'restoreRgpPeriod')  : null;
         $this->container['cancelationPeriod'] = isset($data['cancelationPeriod']) ? $this->createData($data['cancelationPeriod'], 'cancelationPeriod')  : null;
-        $this->container['cancelationPeriodAutoDelete'] = isset($data['cancelationPeriodAutoDelete']) ? $this->createData($data['cancelationPeriodAutoDelete'], 'cancelationPeriodAutoDelete')  : null;
+        $this->container['cutoffPeriod'] = isset($data['cutoffPeriod']) ? $this->createData($data['cutoffPeriod'], 'cutoffPeriod')  : null;
     }
 
     /**
@@ -207,11 +207,12 @@ class TldPeriod implements ModelInterface, ArrayAccess
      * @param string $property
      * @return mixed
      */
-    public function createData($data = null, $property = '')
+    public function createData($data = null, $property = null): mixed
     {
-        if ($data === null || $property === '') {
+        if ($data === null || $property === null) {
             return '';
         }
+        
         $swaggerType = self::$swaggerTypes[$property];
 
         preg_match("/([\\\\\w\d]+)(\[\])?/", $swaggerType, $matches);
@@ -258,7 +259,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
      *
      * @return array invalid properties with reasons
      */
-    public function listInvalidProperties()
+    public function listInvalidProperties(): array
     {
         $invalidProperties = [];
 
@@ -271,7 +272,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
      *
      * @return bool True if all properties are valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return count($this->listInvalidProperties()) === 0;
     }
@@ -350,25 +351,25 @@ class TldPeriod implements ModelInterface, ArrayAccess
     }
 
     /**
-     * Gets cancelationPeriodAutoDelete
+     * Gets cutoffPeriod
      *
      * @return \Domainrobot\Model\TimePeriod
      */
-    public function getCancelationPeriodAutoDelete()
+    public function getCutoffPeriod()
     {
-        return $this->container['cancelationPeriodAutoDelete'];
+        return $this->container['cutoffPeriod'];
     }
 
     /**
-     * Sets cancelationPeriodAutoDelete
+     * Sets cutoffPeriod
      *
-     * @param \Domainrobot\Model\TimePeriod $cancelationPeriodAutoDelete cancelationPeriodAutoDelete
+     * @param \Domainrobot\Model\TimePeriod $cutoffPeriod cutoffPeriod
      *
      * @return $this
      */
-    public function setCancelationPeriodAutoDelete($cancelationPeriodAutoDelete)
+    public function setCutoffPeriod($cutoffPeriod)
     {
-        $this->container['cancelationPeriodAutoDelete'] = $cancelationPeriodAutoDelete;
+        $this->container['cutoffPeriod'] = $cutoffPeriod;
 
         return $this;
     }
@@ -379,7 +380,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -391,7 +392,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
@@ -404,7 +405,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -420,7 +421,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -430,7 +431,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
             return json_encode(
@@ -450,7 +451,8 @@ class TldPeriod implements ModelInterface, ArrayAccess
      * toArray() => returns only non empty values
      * toArray(true) => returns all values
      */
-    public function toArray($retrieveAllValues = false){
+    public function toArray($retrieveAllValues = false): array
+    {
         $container = $this->container;
 
         $cleanContainer = [];
@@ -478,6 +480,7 @@ class TldPeriod implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             if (is_array($value)) {
                 foreach ($value as &$v) {
                     if (gettype($v) === "object") {
@@ -485,8 +488,10 @@ class TldPeriod implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             $cleanContainer[self::$attributeMap[$key]] = $value;
         };
+
         return $cleanContainer;
     }
 }

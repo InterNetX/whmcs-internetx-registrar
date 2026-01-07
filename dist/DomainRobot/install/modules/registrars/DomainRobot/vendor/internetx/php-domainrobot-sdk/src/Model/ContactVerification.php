@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -100,7 +100,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerTypes()
+    public static function swaggerTypes(): array
     {
         return self::$swaggerTypes;
     }
@@ -110,7 +110,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerFormats()
+    public static function swaggerFormats(): array
     {
         return self::$swaggerFormats;
     }
@@ -188,7 +188,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function attributeMap()
+    public static function attributeMap(): array
     {
         return self::$attributeMap;
     }
@@ -198,7 +198,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function setters()
+    public static function setters(): array
     {
         return self::$setters;
     }
@@ -208,7 +208,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function getters()
+    public static function getters(): array
     {
         return self::$getters;
     }
@@ -218,7 +218,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function getModelName()
+    public function getModelName(): string
     {
         return self::$swaggerModelName;
     }
@@ -240,7 +240,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
      * @param mixed[] $data Associated array of property values
      *                      initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->container['created'] = isset($data['created']) ? $this->createData($data['created'], 'created')  : null;
         $this->container['updated'] = isset($data['updated']) ? $this->createData($data['updated'], 'updated')  : null;
@@ -267,11 +267,12 @@ class ContactVerification implements ModelInterface, ArrayAccess
      * @param string $property
      * @return mixed
      */
-    public function createData($data = null, $property = '')
+    public function createData($data = null, $property = null): mixed
     {
-        if ($data === null || $property === '') {
+        if ($data === null || $property === null) {
             return '';
         }
+        
         $swaggerType = self::$swaggerTypes[$property];
 
         preg_match("/([\\\\\w\d]+)(\[\])?/", $swaggerType, $matches);
@@ -318,7 +319,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
      *
      * @return array invalid properties with reasons
      */
-    public function listInvalidProperties()
+    public function listInvalidProperties(): array
     {
         $invalidProperties = [];
 
@@ -337,7 +338,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
      *
      * @return bool True if all properties are valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return count($this->listInvalidProperties()) === 0;
     }
@@ -452,7 +453,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
     /**
      * Sets reference
      *
-     * @param string $reference the unique reference of the Verification
+     * @param string $reference The unique reference of the Verification
      *
      * @return $this
      */
@@ -476,7 +477,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
     /**
      * Sets messageSend
      *
-     * @param \DateTime $messageSend the messageSend date of the Verification
+     * @param \DateTime $messageSend The date when the last verification email was sent.
      *
      * @return $this
      */
@@ -500,7 +501,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
     /**
      * Sets confirmed
      *
-     * @param \DateTime $confirmed the confirmed date of the Verification
+     * @param \DateTime $confirmed The date when the last verification email was confirmed.
      *
      * @return $this
      */
@@ -524,7 +525,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
     /**
      * Sets confirmIp
      *
-     * @param \Domainrobot\Model\InetAddress $confirmIp the confirmIp of the Verification
+     * @param \Domainrobot\Model\InetAddress $confirmIp The IP address from which the verification was confirmed.
      *
      * @return $this
      */
@@ -548,7 +549,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
     /**
      * Sets failed
      *
-     * @param \DateTime $failed the failed date of the Verification
+     * @param \DateTime $failed The date on which the verification failed.
      *
      * @return $this
      */
@@ -572,7 +573,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
     /**
      * Sets domains
      *
-     * @param \Domainrobot\Model\ContactVerificationDomain[] $domains the domains of the Verification
+     * @param \Domainrobot\Model\ContactVerificationDomain[] $domains Domain for which verification was/is required.
      *
      * @return $this
      */
@@ -596,7 +597,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
     /**
      * Sets verificationMails
      *
-     * @param \Domainrobot\Model\ContactVerificationMessage[] $verificationMails the messages of the Verification
+     * @param \Domainrobot\Model\ContactVerificationMessage[] $verificationMails The verification mails. For each mail sent, it is recorded here whether the verification was successful or not.
      *
      * @return $this
      */
@@ -620,7 +621,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
     /**
      * Sets comment
      *
-     * @param string $comment the comment of the Verification
+     * @param string $comment The verification comment. Can be included in the confirmation.
      *
      * @return $this
      */
@@ -644,7 +645,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
     /**
      * Sets action
      *
-     * @param string $action the action of the Verification, e.g. domain update or contact task
+     * @param string $action Action for which the verification was triggered or updated.
      *
      * @return $this
      */
@@ -685,7 +686,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -697,7 +698,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
@@ -710,7 +711,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -726,7 +727,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -736,7 +737,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
             return json_encode(
@@ -756,7 +757,8 @@ class ContactVerification implements ModelInterface, ArrayAccess
      * toArray() => returns only non empty values
      * toArray(true) => returns all values
      */
-    public function toArray($retrieveAllValues = false){
+    public function toArray($retrieveAllValues = false): array
+    {
         $container = $this->container;
 
         $cleanContainer = [];
@@ -784,6 +786,7 @@ class ContactVerification implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             if (is_array($value)) {
                 foreach ($value as &$v) {
                     if (gettype($v) === "object") {
@@ -791,8 +794,10 @@ class ContactVerification implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             $cleanContainer[self::$attributeMap[$key]] = $value;
         };
+
         return $cleanContainer;
     }
 }

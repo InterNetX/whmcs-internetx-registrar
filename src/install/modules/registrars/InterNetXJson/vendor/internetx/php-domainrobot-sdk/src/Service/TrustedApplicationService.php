@@ -70,7 +70,7 @@ class TrustedApplicationService extends DomainrobotService
      *
      * @return TrustedApplication[]
      */
-    public function list(Query $query = null)
+    public function list(?Query $query = null)
     {
         $domainrobotPromise = $this->listAsync($query);
         $domainrobotResult = $domainrobotPromise->wait();
@@ -102,7 +102,7 @@ class TrustedApplicationService extends DomainrobotService
      *
      * @return DomainrobotPromise
      */
-    public function listAsync(Query $query = null)
+    public function listAsync(?Query $query = null)
     {
         $body = null;
         if ($query != null) {
@@ -180,7 +180,7 @@ class TrustedApplicationService extends DomainrobotService
      * Sends a TrustedApplication update request.
      *
      * @param TrustedApplication $body
-     * @return void
+     * @return TrustedApplication
      */
     public function update(TrustedApplication $body)
     {
@@ -188,6 +188,8 @@ class TrustedApplicationService extends DomainrobotService
         $domainrobotResult = $domainrobotPromise->wait();
 
         Domainrobot::setLastDomainrobotResult($domainrobotResult);
+
+        return new TrustedApplication(ArrayHelper::getValueFromArray($domainrobotResult->getResult(), 'data.0', []));
     }
 
     /**
@@ -209,3 +211,4 @@ class TrustedApplicationService extends DomainrobotService
         );
     }
 }
+

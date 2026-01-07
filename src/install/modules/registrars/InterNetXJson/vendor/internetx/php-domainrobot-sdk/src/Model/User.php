@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -68,6 +68,8 @@ class User implements ModelInterface, ArrayAccess
         'details' => '\Domainrobot\Model\UserDetails',
         'lock' => '\Domainrobot\Model\UserLock',
         'oldPassword' => 'string',
+        'passwordChanged' => '\DateTime',
+        'passwordExpired' => 'bool',
         'acls' => '\Domainrobot\Model\UserAcls',
         'profiles' => '\Domainrobot\Model\UserProfileViews',
         'serviceProfiles' => '\Domainrobot\Model\ServiceProfiles',
@@ -104,6 +106,8 @@ class User implements ModelInterface, ArrayAccess
         'details' => null,
         'lock' => null,
         'oldPassword' => null,
+        'passwordChanged' => 'date-time',
+        'passwordExpired' => null,
         'acls' => null,
         'profiles' => null,
         'serviceProfiles' => null,
@@ -128,7 +132,7 @@ class User implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerTypes()
+    public static function swaggerTypes(): array
     {
         return self::$swaggerTypes;
     }
@@ -138,7 +142,7 @@ class User implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerFormats()
+    public static function swaggerFormats(): array
     {
         return self::$swaggerFormats;
     }
@@ -161,6 +165,8 @@ class User implements ModelInterface, ArrayAccess
         'details' => 'details',
         'lock' => 'lock',
         'oldPassword' => 'oldPassword',
+        'passwordChanged' => 'passwordChanged',
+        'passwordExpired' => 'passwordExpired',
         'acls' => 'acls',
         'profiles' => 'profiles',
         'serviceProfiles' => 'serviceProfiles',
@@ -197,6 +203,8 @@ class User implements ModelInterface, ArrayAccess
         'details' => 'setDetails',
         'lock' => 'setLock',
         'oldPassword' => 'setOldPassword',
+        'passwordChanged' => 'setPasswordChanged',
+        'passwordExpired' => 'setPasswordExpired',
         'acls' => 'setAcls',
         'profiles' => 'setProfiles',
         'serviceProfiles' => 'setServiceProfiles',
@@ -233,6 +241,8 @@ class User implements ModelInterface, ArrayAccess
         'details' => 'getDetails',
         'lock' => 'getLock',
         'oldPassword' => 'getOldPassword',
+        'passwordChanged' => 'getPasswordChanged',
+        'passwordExpired' => 'getPasswordExpired',
         'acls' => 'getAcls',
         'profiles' => 'getProfiles',
         'serviceProfiles' => 'getServiceProfiles',
@@ -258,7 +268,7 @@ class User implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function attributeMap()
+    public static function attributeMap(): array
     {
         return self::$attributeMap;
     }
@@ -268,7 +278,7 @@ class User implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function setters()
+    public static function setters(): array
     {
         return self::$setters;
     }
@@ -278,7 +288,7 @@ class User implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function getters()
+    public static function getters(): array
     {
         return self::$getters;
     }
@@ -288,7 +298,7 @@ class User implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function getModelName()
+    public function getModelName(): string
     {
         return self::$swaggerModelName;
     }
@@ -310,7 +320,7 @@ class User implements ModelInterface, ArrayAccess
      * @param mixed[] $data Associated array of property values
      *                      initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->container['created'] = isset($data['created']) ? $this->createData($data['created'], 'created')  : null;
         $this->container['updated'] = isset($data['updated']) ? $this->createData($data['updated'], 'updated')  : null;
@@ -323,6 +333,8 @@ class User implements ModelInterface, ArrayAccess
         $this->container['details'] = isset($data['details']) ? $this->createData($data['details'], 'details')  : null;
         $this->container['lock'] = isset($data['lock']) ? $this->createData($data['lock'], 'lock')  : null;
         $this->container['oldPassword'] = isset($data['oldPassword']) ? $this->createData($data['oldPassword'], 'oldPassword')  : null;
+        $this->container['passwordChanged'] = isset($data['passwordChanged']) ? $this->createData($data['passwordChanged'], 'passwordChanged')  : null;
+        $this->container['passwordExpired'] = isset($data['passwordExpired']) ? $this->createData($data['passwordExpired'], 'passwordExpired')  : null;
         $this->container['acls'] = isset($data['acls']) ? $this->createData($data['acls'], 'acls')  : null;
         $this->container['profiles'] = isset($data['profiles']) ? $this->createData($data['profiles'], 'profiles')  : null;
         $this->container['serviceProfiles'] = isset($data['serviceProfiles']) ? $this->createData($data['serviceProfiles'], 'serviceProfiles')  : null;
@@ -351,11 +363,12 @@ class User implements ModelInterface, ArrayAccess
      * @param string $property
      * @return mixed
      */
-    public function createData($data = null, $property = '')
+    public function createData($data = null, $property = null): mixed
     {
-        if ($data === null || $property === '') {
+        if ($data === null || $property === null) {
             return '';
         }
+        
         $swaggerType = self::$swaggerTypes[$property];
 
         preg_match("/([\\\\\w\d]+)(\[\])?/", $swaggerType, $matches);
@@ -402,7 +415,7 @@ class User implements ModelInterface, ArrayAccess
      *
      * @return array invalid properties with reasons
      */
-    public function listInvalidProperties()
+    public function listInvalidProperties(): array
     {
         $invalidProperties = [];
 
@@ -425,7 +438,7 @@ class User implements ModelInterface, ArrayAccess
      *
      * @return bool True if all properties are valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return count($this->listInvalidProperties()) === 0;
     }
@@ -492,7 +505,7 @@ class User implements ModelInterface, ArrayAccess
     /**
      * Sets context
      *
-     * @param int $context The context.
+     * @param int $context The context. A separated section.
      *
      * @return $this
      */
@@ -691,6 +704,54 @@ class User implements ModelInterface, ArrayAccess
     public function setOldPassword($oldPassword)
     {
         $this->container['oldPassword'] = $oldPassword;
+
+        return $this;
+    }
+
+    /**
+     * Gets passwordChanged
+     *
+     * @return \DateTime
+     */
+    public function getPasswordChanged()
+    {
+        return $this->container['passwordChanged'];
+    }
+
+    /**
+     * Sets passwordChanged
+     *
+     * @param \DateTime $passwordChanged The date on which the password has changed
+     *
+     * @return $this
+     */
+    public function setPasswordChanged($passwordChanged)
+    {
+        $this->container['passwordChanged'] = $passwordChanged;
+
+        return $this;
+    }
+
+    /**
+     * Gets passwordExpired
+     *
+     * @return bool
+     */
+    public function getPasswordExpired()
+    {
+        return $this->container['passwordExpired'];
+    }
+
+    /**
+     * Sets passwordExpired
+     *
+     * @param bool $passwordExpired The passwordExpired boolean
+     *
+     * @return $this
+     */
+    public function setPasswordExpired($passwordExpired)
+    {
+        $this->container['passwordExpired'] = $passwordExpired;
 
         return $this;
     }
@@ -1114,7 +1175,7 @@ class User implements ModelInterface, ArrayAccess
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -1126,7 +1187,7 @@ class User implements ModelInterface, ArrayAccess
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
@@ -1139,7 +1200,7 @@ class User implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -1155,7 +1216,7 @@ class User implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -1165,7 +1226,7 @@ class User implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
             return json_encode(
@@ -1185,7 +1246,8 @@ class User implements ModelInterface, ArrayAccess
      * toArray() => returns only non empty values
      * toArray(true) => returns all values
      */
-    public function toArray($retrieveAllValues = false){
+    public function toArray($retrieveAllValues = false): array
+    {
         $container = $this->container;
 
         $cleanContainer = [];
@@ -1213,6 +1275,7 @@ class User implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             if (is_array($value)) {
                 foreach ($value as &$v) {
                     if (gettype($v) === "object") {
@@ -1220,8 +1283,10 @@ class User implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             $cleanContainer[self::$attributeMap[$key]] = $value;
         };
+
         return $cleanContainer;
     }
 }

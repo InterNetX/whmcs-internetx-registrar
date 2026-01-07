@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -57,8 +57,12 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
+        'jobId' => 'int',
         'vertex' => 'int',
-        'type' => 'string'
+        'ctid' => 'string',
+        'object' => 'string',
+        'type' => 'string',
+        'subtype' => 'string'
     ];
 
     /**
@@ -67,8 +71,12 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
+        'jobId' => 'int64',
         'vertex' => 'int32',
-        'type' => null
+        'ctid' => null,
+        'object' => null,
+        'type' => null,
+        'subtype' => null
     ];
 
     /**
@@ -76,7 +84,7 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerTypes()
+    public static function swaggerTypes(): array
     {
         return self::$swaggerTypes;
     }
@@ -86,7 +94,7 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerFormats()
+    public static function swaggerFormats(): array
     {
         return self::$swaggerFormats;
     }
@@ -98,8 +106,12 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
+        'jobId' => 'jobId',
         'vertex' => 'vertex',
-        'type' => 'type'
+        'ctid' => 'ctid',
+        'object' => 'object',
+        'type' => 'type',
+        'subtype' => 'subtype'
     ];
 
     /**
@@ -108,8 +120,12 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $setters = [
+        'jobId' => 'setJobId',
         'vertex' => 'setVertex',
-        'type' => 'setType'
+        'ctid' => 'setCtid',
+        'object' => 'setObject',
+        'type' => 'setType',
+        'subtype' => 'setSubtype'
     ];
 
     /**
@@ -118,8 +134,12 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $getters = [
+        'jobId' => 'getJobId',
         'vertex' => 'getVertex',
-        'type' => 'getType'
+        'ctid' => 'getCtid',
+        'object' => 'getObject',
+        'type' => 'getType',
+        'subtype' => 'getSubtype'
     ];
 
     /**
@@ -128,7 +148,7 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function attributeMap()
+    public static function attributeMap(): array
     {
         return self::$attributeMap;
     }
@@ -138,7 +158,7 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function setters()
+    public static function setters(): array
     {
         return self::$setters;
     }
@@ -148,7 +168,7 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function getters()
+    public static function getters(): array
     {
         return self::$getters;
     }
@@ -158,7 +178,7 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function getModelName()
+    public function getModelName(): string
     {
         return self::$swaggerModelName;
     }
@@ -180,10 +200,14 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      * @param mixed[] $data Associated array of property values
      *                      initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
+        $this->container['jobId'] = isset($data['jobId']) ? $this->createData($data['jobId'], 'jobId')  : null;
         $this->container['vertex'] = isset($data['vertex']) ? $this->createData($data['vertex'], 'vertex')  : null;
+        $this->container['ctid'] = isset($data['ctid']) ? $this->createData($data['ctid'], 'ctid')  : null;
+        $this->container['object'] = isset($data['object']) ? $this->createData($data['object'], 'object')  : null;
         $this->container['type'] = isset($data['type']) ? $this->createData($data['type'], 'type')  : null;
+        $this->container['subtype'] = isset($data['subtype']) ? $this->createData($data['subtype'], 'subtype')  : null;
     }
 
     /**
@@ -195,11 +219,12 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      * @param string $property
      * @return mixed
      */
-    public function createData($data = null, $property = '')
+    public function createData($data = null, $property = null): mixed
     {
-        if ($data === null || $property === '') {
+        if ($data === null || $property === null) {
             return '';
         }
+        
         $swaggerType = self::$swaggerTypes[$property];
 
         preg_match("/([\\\\\w\d]+)(\[\])?/", $swaggerType, $matches);
@@ -246,7 +271,7 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      *
      * @return array invalid properties with reasons
      */
-    public function listInvalidProperties()
+    public function listInvalidProperties(): array
     {
         $invalidProperties = [];
 
@@ -259,11 +284,35 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      *
      * @return bool True if all properties are valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return count($this->listInvalidProperties()) === 0;
     }
 
+
+    /**
+     * Gets jobId
+     *
+     * @return int
+     */
+    public function getJobId()
+    {
+        return $this->container['jobId'];
+    }
+
+    /**
+     * Sets jobId
+     *
+     * @param int $jobId Job id
+     *
+     * @return $this
+     */
+    public function setJobId($jobId)
+    {
+        $this->container['jobId'] = $jobId;
+
+        return $this;
+    }
 
     /**
      * Gets vertex
@@ -290,6 +339,54 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
     }
 
     /**
+     * Gets ctid
+     *
+     * @return string
+     */
+    public function getCtid()
+    {
+        return $this->container['ctid'];
+    }
+
+    /**
+     * Sets ctid
+     *
+     * @param string $ctid Client Transaction ID
+     *
+     * @return $this
+     */
+    public function setCtid($ctid)
+    {
+        $this->container['ctid'] = $ctid;
+
+        return $this;
+    }
+
+    /**
+     * Gets object
+     *
+     * @return string
+     */
+    public function getObject()
+    {
+        return $this->container['object'];
+    }
+
+    /**
+     * Sets object
+     *
+     * @param string $object Object for which the job was created. (e.g. domain)
+     *
+     * @return $this
+     */
+    public function setObject($object)
+    {
+        $this->container['object'] = $object;
+
+        return $this;
+    }
+
+    /**
      * Gets type
      *
      * @return string
@@ -302,13 +399,37 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
     /**
      * Sets type
      *
-     * @param string $type Event type
+     * @param string $type Type of Event
      *
      * @return $this
      */
     public function setType($type)
     {
         $this->container['type'] = $type;
+
+        return $this;
+    }
+
+    /**
+     * Gets subtype
+     *
+     * @return string
+     */
+    public function getSubtype()
+    {
+        return $this->container['subtype'];
+    }
+
+    /**
+     * Sets subtype
+     *
+     * @param string $subtype Subtype of the event to specify the event type (e.g . DONUTS-PSIUSA_toys)
+     *
+     * @return $this
+     */
+    public function setSubtype($subtype)
+    {
+        $this->container['subtype'] = $subtype;
 
         return $this;
     }
@@ -319,7 +440,7 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -331,7 +452,7 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
@@ -344,7 +465,7 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -360,7 +481,7 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -370,7 +491,7 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
             return json_encode(
@@ -390,7 +511,8 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
      * toArray() => returns only non empty values
      * toArray(true) => returns all values
      */
-    public function toArray($retrieveAllValues = false){
+    public function toArray($retrieveAllValues = false): array
+    {
         $container = $this->container;
 
         $cleanContainer = [];
@@ -418,6 +540,7 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             if (is_array($value)) {
                 foreach ($value as &$v) {
                     if (gettype($v) === "object") {
@@ -425,8 +548,10 @@ class WorkflowEvent implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             $cleanContainer[self::$attributeMap[$key]] = $value;
         };
+
         return $cleanContainer;
     }
 }

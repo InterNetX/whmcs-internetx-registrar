@@ -1,4 +1,5 @@
 {
+    "origin": "{{domain}}",
     "action": "{{nameserver_action}}",
     "main": {
         "address": "{{config_ip}}",
@@ -6,17 +7,12 @@
     },
     "wwwInclude": true,
     "resourceRecords": [
-        {
-            "name": "{{config_mx}}",
-            "ttl": 86400,
-            "type": "A",
-            "value": "{{config_ip}}"
-        },
-        {
-            "name": "",
-            "ttl": 86400,
-            "type": "MX",
-            "value": "{{config_mx}}.{{domain}}."
-        }
-    ]
+    ],
+    "soa": {
+        "refresh": 3600,
+        "retry": 7200,
+        "expire": 604800,
+        "ttl": 600,
+        "email": "do-not-reply@{{domain}}"
+    }
 }

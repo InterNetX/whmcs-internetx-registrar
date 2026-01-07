@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -71,7 +71,9 @@ class Subscription implements ModelInterface, ArrayAccess
         'articleLabel' => 'string',
         'item' => '\Domainrobot\Model\PeriodicBilling[]',
         'expire' => '\DateTime',
+        'cancelationTerm' => '\Domainrobot\Model\TimePeriod',
         'cancelation' => '\DateTime',
+        'canceled' => '\DateTime',
         'limits' => '\Domainrobot\Model\BillingObjectLimit[]',
         'acls' => '\Domainrobot\Model\UserAcl[]',
         'profiles' => '\Domainrobot\Model\UserProfile[]',
@@ -101,7 +103,9 @@ class Subscription implements ModelInterface, ArrayAccess
         'articleLabel' => null,
         'item' => null,
         'expire' => 'date-time',
+        'cancelationTerm' => null,
         'cancelation' => 'date-time',
+        'canceled' => 'date-time',
         'limits' => null,
         'acls' => null,
         'profiles' => null,
@@ -116,7 +120,7 @@ class Subscription implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerTypes()
+    public static function swaggerTypes(): array
     {
         return self::$swaggerTypes;
     }
@@ -126,7 +130,7 @@ class Subscription implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerFormats()
+    public static function swaggerFormats(): array
     {
         return self::$swaggerFormats;
     }
@@ -152,7 +156,9 @@ class Subscription implements ModelInterface, ArrayAccess
         'articleLabel' => 'articleLabel',
         'item' => 'item',
         'expire' => 'expire',
+        'cancelationTerm' => 'cancelationTerm',
         'cancelation' => 'cancelation',
+        'canceled' => 'canceled',
         'limits' => 'limits',
         'acls' => 'acls',
         'profiles' => 'profiles',
@@ -182,7 +188,9 @@ class Subscription implements ModelInterface, ArrayAccess
         'articleLabel' => 'setArticleLabel',
         'item' => 'setItem',
         'expire' => 'setExpire',
+        'cancelationTerm' => 'setCancelationTerm',
         'cancelation' => 'setCancelation',
+        'canceled' => 'setCanceled',
         'limits' => 'setLimits',
         'acls' => 'setAcls',
         'profiles' => 'setProfiles',
@@ -212,7 +220,9 @@ class Subscription implements ModelInterface, ArrayAccess
         'articleLabel' => 'getArticleLabel',
         'item' => 'getItem',
         'expire' => 'getExpire',
+        'cancelationTerm' => 'getCancelationTerm',
         'cancelation' => 'getCancelation',
+        'canceled' => 'getCanceled',
         'limits' => 'getLimits',
         'acls' => 'getAcls',
         'profiles' => 'getProfiles',
@@ -228,7 +238,7 @@ class Subscription implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function attributeMap()
+    public static function attributeMap(): array
     {
         return self::$attributeMap;
     }
@@ -238,7 +248,7 @@ class Subscription implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function setters()
+    public static function setters(): array
     {
         return self::$setters;
     }
@@ -248,7 +258,7 @@ class Subscription implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function getters()
+    public static function getters(): array
     {
         return self::$getters;
     }
@@ -258,7 +268,7 @@ class Subscription implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function getModelName()
+    public function getModelName(): string
     {
         return self::$swaggerModelName;
     }
@@ -280,7 +290,7 @@ class Subscription implements ModelInterface, ArrayAccess
      * @param mixed[] $data Associated array of property values
      *                      initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->container['created'] = isset($data['created']) ? $this->createData($data['created'], 'created')  : null;
         $this->container['updated'] = isset($data['updated']) ? $this->createData($data['updated'], 'updated')  : null;
@@ -296,7 +306,9 @@ class Subscription implements ModelInterface, ArrayAccess
         $this->container['articleLabel'] = isset($data['articleLabel']) ? $this->createData($data['articleLabel'], 'articleLabel')  : null;
         $this->container['item'] = isset($data['item']) ? $this->createData($data['item'], 'item')  : null;
         $this->container['expire'] = isset($data['expire']) ? $this->createData($data['expire'], 'expire')  : null;
+        $this->container['cancelationTerm'] = isset($data['cancelationTerm']) ? $this->createData($data['cancelationTerm'], 'cancelationTerm')  : null;
         $this->container['cancelation'] = isset($data['cancelation']) ? $this->createData($data['cancelation'], 'cancelation')  : null;
+        $this->container['canceled'] = isset($data['canceled']) ? $this->createData($data['canceled'], 'canceled')  : null;
         $this->container['limits'] = isset($data['limits']) ? $this->createData($data['limits'], 'limits')  : null;
         $this->container['acls'] = isset($data['acls']) ? $this->createData($data['acls'], 'acls')  : null;
         $this->container['profiles'] = isset($data['profiles']) ? $this->createData($data['profiles'], 'profiles')  : null;
@@ -315,11 +327,12 @@ class Subscription implements ModelInterface, ArrayAccess
      * @param string $property
      * @return mixed
      */
-    public function createData($data = null, $property = '')
+    public function createData($data = null, $property = null): mixed
     {
-        if ($data === null || $property === '') {
+        if ($data === null || $property === null) {
             return '';
         }
+        
         $swaggerType = self::$swaggerTypes[$property];
 
         preg_match("/([\\\\\w\d]+)(\[\])?/", $swaggerType, $matches);
@@ -366,7 +379,7 @@ class Subscription implements ModelInterface, ArrayAccess
      *
      * @return array invalid properties with reasons
      */
-    public function listInvalidProperties()
+    public function listInvalidProperties(): array
     {
         $invalidProperties = [];
 
@@ -382,7 +395,7 @@ class Subscription implements ModelInterface, ArrayAccess
      *
      * @return bool True if all properties are valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return count($this->listInvalidProperties()) === 0;
     }
@@ -725,6 +738,30 @@ class Subscription implements ModelInterface, ArrayAccess
     }
 
     /**
+     * Gets cancelationTerm
+     *
+     * @return \Domainrobot\Model\TimePeriod
+     */
+    public function getCancelationTerm()
+    {
+        return $this->container['cancelationTerm'];
+    }
+
+    /**
+     * Sets cancelationTerm
+     *
+     * @param \Domainrobot\Model\TimePeriod $cancelationTerm cancelationTerm of the subscription..
+     *
+     * @return $this
+     */
+    public function setCancelationTerm($cancelationTerm)
+    {
+        $this->container['cancelationTerm'] = $cancelationTerm;
+
+        return $this;
+    }
+
+    /**
      * Gets cancelation
      *
      * @return \DateTime
@@ -744,6 +781,30 @@ class Subscription implements ModelInterface, ArrayAccess
     public function setCancelation($cancelation)
     {
         $this->container['cancelation'] = $cancelation;
+
+        return $this;
+    }
+
+    /**
+     * Gets canceled
+     *
+     * @return \DateTime
+     */
+    public function getCanceled()
+    {
+        return $this->container['canceled'];
+    }
+
+    /**
+     * Sets canceled
+     *
+     * @param \DateTime $canceled The canceled date.
+     *
+     * @return $this
+     */
+    public function setCanceled($canceled)
+    {
+        $this->container['canceled'] = $canceled;
 
         return $this;
     }
@@ -922,7 +983,7 @@ class Subscription implements ModelInterface, ArrayAccess
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -934,7 +995,7 @@ class Subscription implements ModelInterface, ArrayAccess
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
@@ -947,7 +1008,7 @@ class Subscription implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -963,7 +1024,7 @@ class Subscription implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -973,7 +1034,7 @@ class Subscription implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
             return json_encode(
@@ -993,7 +1054,8 @@ class Subscription implements ModelInterface, ArrayAccess
      * toArray() => returns only non empty values
      * toArray(true) => returns all values
      */
-    public function toArray($retrieveAllValues = false){
+    public function toArray($retrieveAllValues = false): array
+    {
         $container = $this->container;
 
         $cleanContainer = [];
@@ -1021,6 +1083,7 @@ class Subscription implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             if (is_array($value)) {
                 foreach ($value as &$v) {
                     if (gettype($v) === "object") {
@@ -1028,8 +1091,10 @@ class Subscription implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             $cleanContainer[self::$attributeMap[$key]] = $value;
         };
+
         return $cleanContainer;
     }
 }

@@ -9,6 +9,18 @@ if [[ $# -eq 0 ]] ; then
     exit 1
 fi
 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  # Require gnu-sed.
+  if ! [ -x "$(command -v gsed)" ]; then
+    echo "Error: 'gsed' is not istalled." >&2
+    echo "If you are using Homebrew, install with 'brew install gnu-sed'." >&2
+    exit 1
+  fi
+  SED_CMD=gsed
+else
+  SED_CMD=sed
+fi
+
 # THE NAME OF THE TARGET REGISTRAR TO BUILD
 REGISTRARNAME=$1
 REGISTRARURL=$2
@@ -44,17 +56,17 @@ cd $OUTPUTFOLDER
 
 ## Replace Link to Account creation in Admin Area
 echo "Replacing Link to Registrar Account Creation"
-sed -i "s/www.$PLACEHOLDERNAME_LOWERCASE.com/$REGISTRARURL/" install/modules/registrars/InterNetXJson/app/RegistrarModule.php
+${SED_CMD} -i "s/www.$PLACEHOLDERNAME_LOWERCASE.com/$REGISTRARURL/" install/modules/registrars/InterNetXJson/app/RegistrarModule.php
 
 
 ## Replace InterNetX with RegistrarName (Case sensitive) Across all Files
 echo "Replacing $PLACEHOLDERNAME with $REGISTRARNAME across all files"
-grep -rl $PLACEHOLDERNAME .           | xargs sed -i "s/$PLACEHOLDERNAME/$REGISTRARNAME/g"
-grep -rl $PLACEHOLDERNAME_LOWERCASE . | xargs sed -i "s/$PLACEHOLDERNAME_LOWERCASE/$REGISTRARNAME_LOWERCASE/g"
+grep -rl $PLACEHOLDERNAME .           | xargs ${SED_CMD} -i "s/$PLACEHOLDERNAME/$REGISTRARNAME/g"
+grep -rl $PLACEHOLDERNAME_LOWERCASE . | xargs ${SED_CMD} -i "s/$PLACEHOLDERNAME_LOWERCASE/$REGISTRARNAME_LOWERCASE/g"
 
 ## Replace Nameserver domain in class.InterNetX_API.php
 echo "Replacing demo.autodns2.de with $REGISTRARNS in install/modules/registrars/InterNetXJson/app/Helpers/Config.php"
-sed -i "s/demo.autodns2.de/$REGISTRARNS/" install/modules/registrars/InterNetXJson/app/Helpers/Config.php
+${SED_CMD} -i "s/demo.autodns2.de/$REGISTRARNS/" install/modules/registrars/InterNetXJson/app/Helpers/Config.php
 
 ## Change into module install files folder
 cd install

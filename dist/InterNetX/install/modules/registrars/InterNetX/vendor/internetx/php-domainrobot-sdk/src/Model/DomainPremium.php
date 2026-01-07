@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -59,8 +59,6 @@ class DomainPremium implements ModelInterface, ArrayAccess
     protected static $swaggerTypes = [
         'created' => '\DateTime',
         'updated' => '\DateTime',
-        'owner' => '\Domainrobot\Model\BasicUser',
-        'updater' => '\Domainrobot\Model\BasicUser',
         'name' => 'string',
         'idn' => 'string',
         'priceClass' => 'string',
@@ -70,6 +68,9 @@ class DomainPremium implements ModelInterface, ArrayAccess
         'provider' => 'string',
         'configuration' => '\Domainrobot\Model\Configuration',
         'metric' => '\Domainrobot\Model\Metric',
+        'owner' => '\Domainrobot\Model\BasicUser',
+        'updater' => '\Domainrobot\Model\BasicUser',
+        'minPrice' => 'double',
         'premiumStatus' => '\Domainrobot\Model\PremiumStatusConstants'
     ];
 
@@ -81,8 +82,6 @@ class DomainPremium implements ModelInterface, ArrayAccess
     protected static $swaggerFormats = [
         'created' => 'date-time',
         'updated' => 'date-time',
-        'owner' => null,
-        'updater' => null,
         'name' => null,
         'idn' => null,
         'priceClass' => null,
@@ -92,6 +91,9 @@ class DomainPremium implements ModelInterface, ArrayAccess
         'provider' => null,
         'configuration' => null,
         'metric' => null,
+        'owner' => null,
+        'updater' => null,
+        'minPrice' => 'double',
         'premiumStatus' => null
     ];
 
@@ -100,7 +102,7 @@ class DomainPremium implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerTypes()
+    public static function swaggerTypes(): array
     {
         return self::$swaggerTypes;
     }
@@ -110,7 +112,7 @@ class DomainPremium implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerFormats()
+    public static function swaggerFormats(): array
     {
         return self::$swaggerFormats;
     }
@@ -124,8 +126,6 @@ class DomainPremium implements ModelInterface, ArrayAccess
     protected static $attributeMap = [
         'created' => 'created',
         'updated' => 'updated',
-        'owner' => 'owner',
-        'updater' => 'updater',
         'name' => 'name',
         'idn' => 'idn',
         'priceClass' => 'priceClass',
@@ -135,6 +135,9 @@ class DomainPremium implements ModelInterface, ArrayAccess
         'provider' => 'provider',
         'configuration' => 'configuration',
         'metric' => 'metric',
+        'owner' => 'owner',
+        'updater' => 'updater',
+        'minPrice' => 'minPrice',
         'premiumStatus' => 'premiumStatus'
     ];
 
@@ -146,8 +149,6 @@ class DomainPremium implements ModelInterface, ArrayAccess
     protected static $setters = [
         'created' => 'setCreated',
         'updated' => 'setUpdated',
-        'owner' => 'setOwner',
-        'updater' => 'setUpdater',
         'name' => 'setName',
         'idn' => 'setIdn',
         'priceClass' => 'setPriceClass',
@@ -157,6 +158,9 @@ class DomainPremium implements ModelInterface, ArrayAccess
         'provider' => 'setProvider',
         'configuration' => 'setConfiguration',
         'metric' => 'setMetric',
+        'owner' => 'setOwner',
+        'updater' => 'setUpdater',
+        'minPrice' => 'setMinPrice',
         'premiumStatus' => 'setPremiumStatus'
     ];
 
@@ -168,8 +172,6 @@ class DomainPremium implements ModelInterface, ArrayAccess
     protected static $getters = [
         'created' => 'getCreated',
         'updated' => 'getUpdated',
-        'owner' => 'getOwner',
-        'updater' => 'getUpdater',
         'name' => 'getName',
         'idn' => 'getIdn',
         'priceClass' => 'getPriceClass',
@@ -179,6 +181,9 @@ class DomainPremium implements ModelInterface, ArrayAccess
         'provider' => 'getProvider',
         'configuration' => 'getConfiguration',
         'metric' => 'getMetric',
+        'owner' => 'getOwner',
+        'updater' => 'getUpdater',
+        'minPrice' => 'getMinPrice',
         'premiumStatus' => 'getPremiumStatus'
     ];
 
@@ -188,7 +193,7 @@ class DomainPremium implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function attributeMap()
+    public static function attributeMap(): array
     {
         return self::$attributeMap;
     }
@@ -198,7 +203,7 @@ class DomainPremium implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function setters()
+    public static function setters(): array
     {
         return self::$setters;
     }
@@ -208,7 +213,7 @@ class DomainPremium implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function getters()
+    public static function getters(): array
     {
         return self::$getters;
     }
@@ -218,7 +223,7 @@ class DomainPremium implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function getModelName()
+    public function getModelName(): string
     {
         return self::$swaggerModelName;
     }
@@ -240,12 +245,10 @@ class DomainPremium implements ModelInterface, ArrayAccess
      * @param mixed[] $data Associated array of property values
      *                      initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->container['created'] = isset($data['created']) ? $this->createData($data['created'], 'created')  : null;
         $this->container['updated'] = isset($data['updated']) ? $this->createData($data['updated'], 'updated')  : null;
-        $this->container['owner'] = isset($data['owner']) ? $this->createData($data['owner'], 'owner')  : null;
-        $this->container['updater'] = isset($data['updater']) ? $this->createData($data['updater'], 'updater')  : null;
         $this->container['name'] = isset($data['name']) ? $this->createData($data['name'], 'name')  : null;
         $this->container['idn'] = isset($data['idn']) ? $this->createData($data['idn'], 'idn')  : null;
         $this->container['priceClass'] = isset($data['priceClass']) ? $this->createData($data['priceClass'], 'priceClass')  : null;
@@ -255,6 +258,9 @@ class DomainPremium implements ModelInterface, ArrayAccess
         $this->container['provider'] = isset($data['provider']) ? $this->createData($data['provider'], 'provider')  : null;
         $this->container['configuration'] = isset($data['configuration']) ? $this->createData($data['configuration'], 'configuration')  : null;
         $this->container['metric'] = isset($data['metric']) ? $this->createData($data['metric'], 'metric')  : null;
+        $this->container['owner'] = isset($data['owner']) ? $this->createData($data['owner'], 'owner')  : null;
+        $this->container['updater'] = isset($data['updater']) ? $this->createData($data['updater'], 'updater')  : null;
+        $this->container['minPrice'] = isset($data['minPrice']) ? $this->createData($data['minPrice'], 'minPrice')  : null;
         $this->container['premiumStatus'] = isset($data['premiumStatus']) ? $this->createData($data['premiumStatus'], 'premiumStatus')  : null;
     }
 
@@ -267,11 +273,12 @@ class DomainPremium implements ModelInterface, ArrayAccess
      * @param string $property
      * @return mixed
      */
-    public function createData($data = null, $property = '')
+    public function createData($data = null, $property = null): mixed
     {
-        if ($data === null || $property === '') {
+        if ($data === null || $property === null) {
             return '';
         }
+        
         $swaggerType = self::$swaggerTypes[$property];
 
         preg_match("/([\\\\\w\d]+)(\[\])?/", $swaggerType, $matches);
@@ -318,7 +325,7 @@ class DomainPremium implements ModelInterface, ArrayAccess
      *
      * @return array invalid properties with reasons
      */
-    public function listInvalidProperties()
+    public function listInvalidProperties(): array
     {
         $invalidProperties = [];
 
@@ -340,7 +347,7 @@ class DomainPremium implements ModelInterface, ArrayAccess
      *
      * @return bool True if all properties are valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return count($this->listInvalidProperties()) === 0;
     }
@@ -395,6 +402,222 @@ class DomainPremium implements ModelInterface, ArrayAccess
     }
 
     /**
+     * Gets name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->container['name'];
+    }
+
+    /**
+     * Sets name
+     *
+     * @param string $name Domain name.
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->container['name'] = $name;
+
+        return $this;
+    }
+
+    /**
+     * Gets idn
+     *
+     * @return string
+     */
+    public function getIdn()
+    {
+        return $this->container['idn'];
+    }
+
+    /**
+     * Sets idn
+     *
+     * @param string $idn The domain name written in Punycode syntax(IDN).
+     *
+     * @return $this
+     */
+    public function setIdn($idn)
+    {
+        $this->container['idn'] = $idn;
+
+        return $this;
+    }
+
+    /**
+     * Gets priceClass
+     *
+     * @return string
+     */
+    public function getPriceClass()
+    {
+        return $this->container['priceClass'];
+    }
+
+    /**
+     * Sets priceClass
+     *
+     * @param string $priceClass The price class of the domain when registering.
+     *
+     * @return $this
+     */
+    public function setPriceClass($priceClass)
+    {
+        $this->container['priceClass'] = $priceClass;
+
+        return $this;
+    }
+
+    /**
+     * Gets priceClassRenew
+     *
+     * @return string
+     */
+    public function getPriceClassRenew()
+    {
+        return $this->container['priceClassRenew'];
+    }
+
+    /**
+     * Sets priceClassRenew
+     *
+     * @param string $priceClassRenew The price class of the domain at renew.
+     *
+     * @return $this
+     */
+    public function setPriceClassRenew($priceClassRenew)
+    {
+        $this->container['priceClassRenew'] = $priceClassRenew;
+
+        return $this;
+    }
+
+    /**
+     * Gets price
+     *
+     * @return double
+     */
+    public function getPrice()
+    {
+        return $this->container['price'];
+    }
+
+    /**
+     * Sets price
+     *
+     * @param double $price The current domain price.
+     *
+     * @return $this
+     */
+    public function setPrice($price)
+    {
+        $this->container['price'] = $price;
+
+        return $this;
+    }
+
+    /**
+     * Gets currency
+     *
+     * @return string
+     */
+    public function getCurrency()
+    {
+        return $this->container['currency'];
+    }
+
+    /**
+     * Sets currency
+     *
+     * @param string $currency A system of money in common use within a specific environment over time. Currency codes are used in the ISO 4217 format.
+     *
+     * @return $this
+     */
+    public function setCurrency($currency)
+    {
+        $this->container['currency'] = $currency;
+
+        return $this;
+    }
+
+    /**
+     * Gets provider
+     *
+     * @return string
+     */
+    public function getProvider()
+    {
+        return $this->container['provider'];
+    }
+
+    /**
+     * Sets provider
+     *
+     * @param string $provider Name of the provider who provides this domain.
+     *
+     * @return $this
+     */
+    public function setProvider($provider)
+    {
+        $this->container['provider'] = $provider;
+
+        return $this;
+    }
+
+    /**
+     * Gets configuration
+     *
+     * @return \Domainrobot\Model\Configuration
+     */
+    public function getConfiguration()
+    {
+        return $this->container['configuration'];
+    }
+
+    /**
+     * Sets configuration
+     *
+     * @param \Domainrobot\Model\Configuration $configuration Additional information.
+     *
+     * @return $this
+     */
+    public function setConfiguration($configuration)
+    {
+        $this->container['configuration'] = $configuration;
+
+        return $this;
+    }
+
+    /**
+     * Gets metric
+     *
+     * @return \Domainrobot\Model\Metric
+     */
+    public function getMetric()
+    {
+        return $this->container['metric'];
+    }
+
+    /**
+     * Sets metric
+     *
+     * @param \Domainrobot\Model\Metric $metric Metrics of the domain, e.g.
+     *
+     * @return $this
+     */
+    public function setMetric($metric)
+    {
+        $this->container['metric'] = $metric;
+
+        return $this;
+    }
+
+    /**
      * Gets owner
      *
      * @return \Domainrobot\Model\BasicUser
@@ -443,217 +666,25 @@ class DomainPremium implements ModelInterface, ArrayAccess
     }
 
     /**
-     * Gets name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->container['name'];
-    }
-
-    /**
-     * Sets name
-     *
-     * @param string $name The domain name
-     *
-     * @return $this
-     */
-    public function setName($name)
-    {
-        $this->container['name'] = $name;
-
-        return $this;
-    }
-
-    /**
-     * Gets idn
-     *
-     * @return string
-     */
-    public function getIdn()
-    {
-        return $this->container['idn'];
-    }
-
-    /**
-     * Sets idn
-     *
-     * @param string $idn The unicode domain name
-     *
-     * @return $this
-     */
-    public function setIdn($idn)
-    {
-        $this->container['idn'] = $idn;
-
-        return $this;
-    }
-
-    /**
-     * Gets priceClass
-     *
-     * @return string
-     */
-    public function getPriceClass()
-    {
-        return $this->container['priceClass'];
-    }
-
-    /**
-     * Sets priceClass
-     *
-     * @param string $priceClass The related price class
-     *
-     * @return $this
-     */
-    public function setPriceClass($priceClass)
-    {
-        $this->container['priceClass'] = $priceClass;
-
-        return $this;
-    }
-
-    /**
-     * Gets priceClassRenew
-     *
-     * @return string
-     */
-    public function getPriceClassRenew()
-    {
-        return $this->container['priceClassRenew'];
-    }
-
-    /**
-     * Sets priceClassRenew
-     *
-     * @param string $priceClassRenew The related price class for the domain renew
-     *
-     * @return $this
-     */
-    public function setPriceClassRenew($priceClassRenew)
-    {
-        $this->container['priceClassRenew'] = $priceClassRenew;
-
-        return $this;
-    }
-
-    /**
-     * Gets price
+     * Gets minPrice
      *
      * @return double
      */
-    public function getPrice()
+    public function getMinPrice()
     {
-        return $this->container['price'];
+        return $this->container['minPrice'];
     }
 
     /**
-     * Sets price
+     * Sets minPrice
      *
-     * @param double $price The current price amount
+     * @param double $minPrice Sedo Make-Offer minimum price.
      *
      * @return $this
      */
-    public function setPrice($price)
+    public function setMinPrice($minPrice)
     {
-        $this->container['price'] = $price;
-
-        return $this;
-    }
-
-    /**
-     * Gets currency
-     *
-     * @return string
-     */
-    public function getCurrency()
-    {
-        return $this->container['currency'];
-    }
-
-    /**
-     * Sets currency
-     *
-     * @param string $currency The current currency
-     *
-     * @return $this
-     */
-    public function setCurrency($currency)
-    {
-        $this->container['currency'] = $currency;
-
-        return $this;
-    }
-
-    /**
-     * Gets provider
-     *
-     * @return string
-     */
-    public function getProvider()
-    {
-        return $this->container['provider'];
-    }
-
-    /**
-     * Sets provider
-     *
-     * @param string $provider provider
-     *
-     * @return $this
-     */
-    public function setProvider($provider)
-    {
-        $this->container['provider'] = $provider;
-
-        return $this;
-    }
-
-    /**
-     * Gets configuration
-     *
-     * @return \Domainrobot\Model\Configuration
-     */
-    public function getConfiguration()
-    {
-        return $this->container['configuration'];
-    }
-
-    /**
-     * Sets configuration
-     *
-     * @param \Domainrobot\Model\Configuration $configuration Additional information
-     *
-     * @return $this
-     */
-    public function setConfiguration($configuration)
-    {
-        $this->container['configuration'] = $configuration;
-
-        return $this;
-    }
-
-    /**
-     * Gets metric
-     *
-     * @return \Domainrobot\Model\Metric
-     */
-    public function getMetric()
-    {
-        return $this->container['metric'];
-    }
-
-    /**
-     * Sets metric
-     *
-     * @param \Domainrobot\Model\Metric $metric Some domain metrics
-     *
-     * @return $this
-     */
-    public function setMetric($metric)
-    {
-        $this->container['metric'] = $metric;
+        $this->container['minPrice'] = $minPrice;
 
         return $this;
     }
@@ -671,7 +702,7 @@ class DomainPremium implements ModelInterface, ArrayAccess
     /**
      * Sets premiumStatus
      *
-     * @param \Domainrobot\Model\PremiumStatusConstants $premiumStatus The actual domain premium status
+     * @param \Domainrobot\Model\PremiumStatusConstants $premiumStatus The domain status.
      *
      * @return $this
      */
@@ -688,7 +719,7 @@ class DomainPremium implements ModelInterface, ArrayAccess
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -700,7 +731,7 @@ class DomainPremium implements ModelInterface, ArrayAccess
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
@@ -713,7 +744,7 @@ class DomainPremium implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -729,7 +760,7 @@ class DomainPremium implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -739,7 +770,7 @@ class DomainPremium implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
             return json_encode(
@@ -759,7 +790,8 @@ class DomainPremium implements ModelInterface, ArrayAccess
      * toArray() => returns only non empty values
      * toArray(true) => returns all values
      */
-    public function toArray($retrieveAllValues = false){
+    public function toArray($retrieveAllValues = false): array
+    {
         $container = $this->container;
 
         $cleanContainer = [];
@@ -787,6 +819,7 @@ class DomainPremium implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             if (is_array($value)) {
                 foreach ($value as &$v) {
                     if (gettype($v) === "object") {
@@ -794,8 +827,10 @@ class DomainPremium implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             $cleanContainer[self::$attributeMap[$key]] = $value;
         };
+
         return $cleanContainer;
     }
 }

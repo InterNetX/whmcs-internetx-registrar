@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -77,6 +77,24 @@ class AuEligibilityTypeConstants
     const PUBLIC_PRIVATE_ANCILLARY_FUND = 'PUBLIC_PRIVATE_ANCILLARY_FUND';
     const PEAK_STATE_TERRITORY_BODY = 'PEAK_STATE_TERRITORY_BODY';
     const NOT_FOR_PROFIT_COMMUNITY_GROUP = 'NOT_FOR_PROFIT_COMMUNITY_GROUP';
+    const FOREIGN_EMBASSY_OR_CONSULATE = 'FOREIGN_EMBASSY_OR_CONSULATE';
+    const UNION = 'UNION';
+    const BODY_SERVING_OVERSEAS_STUDENTS = 'BODY_SERVING_OVERSEAS_STUDENTS';
+    const CHILD_CARE_CENTER = 'CHILD_CARE_CENTER';
+    const EDUCATION_AND_CARE_SERVICES_CHILD_CARE = 'EDUCATION_AND_CARE_SERVICES_CHILD_CARE';
+    const GOVERNMENT_BODY = 'GOVERNMENT_BODY';
+    const GOVERNMENT_SCHOOL = 'GOVERNMENT_SCHOOL';
+    const HIGHER_EDUCATION_INSTITUTION = 'HIGHER_EDUCATION_INSTITUTION';
+    const NATIONAL_BODY = 'NATIONAL_BODY';
+    const NON_GOVERNMENT_SCHOOL = 'NON_GOVERNMENT_SCHOOL';
+    const PARENT_AND_PROFESSIONAL_ASSOCIATION_ORGANISATION = 'PARENT_AND_PROFESSIONAL_ASSOCIATION_ORGANISATION';
+    const PRE_SCHOOL = 'PRE_SCHOOL';
+    const PROVIDER_OF_NON_ACCREDITED_TRAINING = 'PROVIDER_OF_NON_ACCREDITED_TRAINING';
+    const RESEARCH_ORGANISATION = 'RESEARCH_ORGANISATION';
+    const TRAINING_ORGANISATION = 'TRAINING_ORGANISATION';
+    const INDUSTRY_ORGANISATION = 'INDUSTRY_ORGANISATION';
+    const CHARITY_TRADE = 'CHARITY_TRADE';
+    const STATUTORY_BODY_TRADING_COOPERATIVE = 'STATUTORY_BODY_TRADING_COOPERATIVE';
     
     /**
      * Gets allowable values of the enum
@@ -119,6 +137,24 @@ class AuEligibilityTypeConstants
             self::PUBLIC_PRIVATE_ANCILLARY_FUND,
             self::PEAK_STATE_TERRITORY_BODY,
             self::NOT_FOR_PROFIT_COMMUNITY_GROUP,
+            self::FOREIGN_EMBASSY_OR_CONSULATE,
+            self::UNION,
+            self::BODY_SERVING_OVERSEAS_STUDENTS,
+            self::CHILD_CARE_CENTER,
+            self::EDUCATION_AND_CARE_SERVICES_CHILD_CARE,
+            self::GOVERNMENT_BODY,
+            self::GOVERNMENT_SCHOOL,
+            self::HIGHER_EDUCATION_INSTITUTION,
+            self::NATIONAL_BODY,
+            self::NON_GOVERNMENT_SCHOOL,
+            self::PARENT_AND_PROFESSIONAL_ASSOCIATION_ORGANISATION,
+            self::PRE_SCHOOL,
+            self::PROVIDER_OF_NON_ACCREDITED_TRAINING,
+            self::RESEARCH_ORGANISATION,
+            self::TRAINING_ORGANISATION,
+            self::INDUSTRY_ORGANISATION,
+            self::CHARITY_TRADE,
+            self::STATUTORY_BODY_TRADING_COOPERATIVE,
         ];
     }
 }

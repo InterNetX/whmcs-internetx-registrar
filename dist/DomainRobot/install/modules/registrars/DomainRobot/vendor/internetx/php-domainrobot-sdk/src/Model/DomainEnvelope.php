@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -68,7 +68,8 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
         'forceDnsCheck' => 'bool',
         'whoisTimeout' => 'int',
         'onlyAvailable' => 'bool',
-        'isPrereg' => 'bool'
+        'isPrereg' => 'bool',
+        'notification' => '\Domainrobot\Model\Notification'
     ];
 
     /**
@@ -88,7 +89,8 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
         'forceDnsCheck' => null,
         'whoisTimeout' => 'int32',
         'onlyAvailable' => null,
-        'isPrereg' => null
+        'isPrereg' => null,
+        'notification' => null
     ];
 
     /**
@@ -96,7 +98,7 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerTypes()
+    public static function swaggerTypes(): array
     {
         return self::$swaggerTypes;
     }
@@ -106,7 +108,7 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerFormats()
+    public static function swaggerFormats(): array
     {
         return self::$swaggerFormats;
     }
@@ -129,7 +131,8 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
         'forceDnsCheck' => 'forceDnsCheck',
         'whoisTimeout' => 'whoisTimeout',
         'onlyAvailable' => 'onlyAvailable',
-        'isPrereg' => 'isPrereg'
+        'isPrereg' => 'isPrereg',
+        'notification' => 'notification'
     ];
 
     /**
@@ -149,7 +152,8 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
         'forceDnsCheck' => 'setForceDnsCheck',
         'whoisTimeout' => 'setWhoisTimeout',
         'onlyAvailable' => 'setOnlyAvailable',
-        'isPrereg' => 'setIsPrereg'
+        'isPrereg' => 'setIsPrereg',
+        'notification' => 'setNotification'
     ];
 
     /**
@@ -169,7 +173,8 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
         'forceDnsCheck' => 'getForceDnsCheck',
         'whoisTimeout' => 'getWhoisTimeout',
         'onlyAvailable' => 'getOnlyAvailable',
-        'isPrereg' => 'getIsPrereg'
+        'isPrereg' => 'getIsPrereg',
+        'notification' => 'getNotification'
     ];
 
     /**
@@ -178,7 +183,7 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function attributeMap()
+    public static function attributeMap(): array
     {
         return self::$attributeMap;
     }
@@ -188,7 +193,7 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function setters()
+    public static function setters(): array
     {
         return self::$setters;
     }
@@ -198,7 +203,7 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function getters()
+    public static function getters(): array
     {
         return self::$getters;
     }
@@ -208,7 +213,7 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function getModelName()
+    public function getModelName(): string
     {
         return self::$swaggerModelName;
     }
@@ -230,7 +235,7 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
      * @param mixed[] $data Associated array of property values
      *                      initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->container['domain'] = isset($data['domain']) ? $this->createData($data['domain'], 'domain')  : null;
         $this->container['idn'] = isset($data['idn']) ? $this->createData($data['idn'], 'idn')  : null;
@@ -244,6 +249,7 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
         $this->container['whoisTimeout'] = isset($data['whoisTimeout']) ? $this->createData($data['whoisTimeout'], 'whoisTimeout')  : null;
         $this->container['onlyAvailable'] = isset($data['onlyAvailable']) ? $this->createData($data['onlyAvailable'], 'onlyAvailable')  : null;
         $this->container['isPrereg'] = isset($data['isPrereg']) ? $this->createData($data['isPrereg'], 'isPrereg')  : null;
+        $this->container['notification'] = isset($data['notification']) ? $this->createData($data['notification'], 'notification')  : null;
     }
 
     /**
@@ -255,11 +261,12 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
      * @param string $property
      * @return mixed
      */
-    public function createData($data = null, $property = '')
+    public function createData($data = null, $property = null): mixed
     {
-        if ($data === null || $property === '') {
+        if ($data === null || $property === null) {
             return '';
         }
+        
         $swaggerType = self::$swaggerTypes[$property];
 
         preg_match("/([\\\\\w\d]+)(\[\])?/", $swaggerType, $matches);
@@ -306,7 +313,7 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
      *
      * @return array invalid properties with reasons
      */
-    public function listInvalidProperties()
+    public function listInvalidProperties(): array
     {
         $invalidProperties = [];
 
@@ -319,7 +326,7 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
      *
      * @return bool True if all properties are valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return count($this->listInvalidProperties()) === 0;
     }
@@ -612,6 +619,30 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Gets notification
+     *
+     * @return \Domainrobot\Model\Notification
+     */
+    public function getNotification()
+    {
+        return $this->container['notification'];
+    }
+
+    /**
+     * Sets notification
+     *
+     * @param \Domainrobot\Model\Notification $notification Notification
+     *
+     * @return $this
+     */
+    public function setNotification($notification)
+    {
+        $this->container['notification'] = $notification;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      *
@@ -619,7 +650,7 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -631,7 +662,7 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
@@ -644,7 +675,7 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -660,7 +691,7 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -670,7 +701,7 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
             return json_encode(
@@ -690,7 +721,8 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
      * toArray() => returns only non empty values
      * toArray(true) => returns all values
      */
-    public function toArray($retrieveAllValues = false){
+    public function toArray($retrieveAllValues = false): array
+    {
         $container = $this->container;
 
         $cleanContainer = [];
@@ -718,6 +750,7 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             if (is_array($value)) {
                 foreach ($value as &$v) {
                     if (gettype($v) === "object") {
@@ -725,8 +758,10 @@ class DomainEnvelope implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             $cleanContainer[self::$attributeMap[$key]] = $value;
         };
+
         return $cleanContainer;
     }
 }

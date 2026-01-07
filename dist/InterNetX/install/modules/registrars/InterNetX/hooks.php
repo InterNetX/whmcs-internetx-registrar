@@ -13,14 +13,14 @@ if (!defined("WHMCS")) {
     die("This file cannot be accessed directly");
 }
 
-add_hook('AdminAreaHeaderOutput', 1, 'clientDomainsCustomButtons');
-add_hook("ClientAreaHeadOutput", 1, "myFixDomainContacts");
-add_hook("ClientAreaHeadOutput", 1, "myAutoRenewHandler");
-add_hook('CancellationRequest', 1, "myCancellationRequest");
-add_hook("DomainEdit", 1, "myOnDomainEdit");
+add_hook('AdminAreaHeaderOutput', 1, 'internetXClientDomainsCustomButtons');
+add_hook("ClientAreaHeadOutput", 1, "internetXFixDomainContacts");
+add_hook("ClientAreaHeadOutput", 1, "internetXAutoRenewHandler");
+add_hook('CancellationRequest', 1, "internetXCancellationRequest");
+add_hook("DomainEdit", 1, "internetXOnDomainEdit");
 
 
-function myOnDomainEdit($vars)
+function internetXOnDomainEdit($vars)
 {
     $domainid = $vars['domainid'];
     $domain = (array) Capsule::table('tbldomains')->where('id', $domainid)->first();
@@ -41,7 +41,7 @@ function myOnDomainEdit($vars)
 }
 
 
-function myAutoRenewHandler($vars){
+function internetXAutoRenewHandler($vars){
     if ($vars['action'] != "domaindetails") return;
     if (!$_POST || !isset($_POST['autorenew'])) return;
 
@@ -69,7 +69,7 @@ function myAutoRenewHandler($vars){
 }
 
 // Module hooks
-function myFixDomainContacts($vars){
+function internetXFixDomainContacts($vars){
 
     if ($_GET['action'] == 'domaincontacts')
     {
@@ -136,7 +136,7 @@ function myFixDomainContacts($vars){
     }
 }
 
-function clientDomainsCustomButtons($vars)
+function internetXClientDomainsCustomButtons($vars)
 {
 
     if ($vars['filename'] == 'clientsdomains') {
@@ -198,7 +198,7 @@ function clientDomainsCustomButtons($vars)
     }
 }
 
-function myCancellationRequest($vars)
+function internetXCancellationRequest($vars)
 {
     // The Service ID to be cancelled will/should be passed (by WHMCS) as $vars['relid']
     if (!isset($vars['relid'])) {

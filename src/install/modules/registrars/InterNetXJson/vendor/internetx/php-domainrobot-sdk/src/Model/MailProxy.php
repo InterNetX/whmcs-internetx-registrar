@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -66,7 +66,7 @@ class MailProxy implements ModelInterface, ArrayAccess
         'target' => 'string',
         'admin' => 'string',
         'protection' => '\Domainrobot\Model\ProtectionConstants',
-        'greylisting' => 'bool',
+        'greylisting' => 'string',
         'virus' => 'string',
         'bannedFiles' => 'string',
         'header' => 'string',
@@ -106,7 +106,7 @@ class MailProxy implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerTypes()
+    public static function swaggerTypes(): array
     {
         return self::$swaggerTypes;
     }
@@ -116,7 +116,7 @@ class MailProxy implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function swaggerFormats()
+    public static function swaggerFormats(): array
     {
         return self::$swaggerFormats;
     }
@@ -203,7 +203,7 @@ class MailProxy implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function attributeMap()
+    public static function attributeMap(): array
     {
         return self::$attributeMap;
     }
@@ -213,7 +213,7 @@ class MailProxy implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function setters()
+    public static function setters(): array
     {
         return self::$setters;
     }
@@ -223,7 +223,7 @@ class MailProxy implements ModelInterface, ArrayAccess
      *
      * @return array
      */
-    public static function getters()
+    public static function getters(): array
     {
         return self::$getters;
     }
@@ -233,11 +233,13 @@ class MailProxy implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function getModelName()
+    public function getModelName(): string
     {
         return self::$swaggerModelName;
     }
 
+    const GREYLISTING_ENABLED = 'ENABLED';
+    const GREYLISTING_DISABLED = 'DISABLED';
     const VIRUS_DISABLED = 'DISABLED';
     const VIRUS_QUARANTINE = 'QUARANTINE';
     const VIRUS_DISCARD = 'DISCARD';
@@ -258,7 +260,20 @@ class MailProxy implements ModelInterface, ArrayAccess
      *
      * @return string[]
      */
-    public function getVirusAllowableValues()
+    public function getGreylistingAllowableValues(): array
+    {
+        return [
+            self::GREYLISTING_ENABLED,
+            self::GREYLISTING_DISABLED,
+        ];
+    }
+    
+    /**
+     * Gets allowable values of the enum
+     *
+     * @return string[]
+     */
+    public function getVirusAllowableValues(): array
     {
         return [
             self::VIRUS_DISABLED,
@@ -273,7 +288,7 @@ class MailProxy implements ModelInterface, ArrayAccess
      *
      * @return string[]
      */
-    public function getBannedFilesAllowableValues()
+    public function getBannedFilesAllowableValues(): array
     {
         return [
             self::BANNED_FILES_DISABLED,
@@ -288,7 +303,7 @@ class MailProxy implements ModelInterface, ArrayAccess
      *
      * @return string[]
      */
-    public function getHeaderAllowableValues()
+    public function getHeaderAllowableValues(): array
     {
         return [
             self::HEADER_DISABLED,
@@ -312,7 +327,7 @@ class MailProxy implements ModelInterface, ArrayAccess
      * @param mixed[] $data Associated array of property values
      *                      initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->container['domain'] = isset($data['domain']) ? $this->createData($data['domain'], 'domain')  : null;
         $this->container['idn'] = isset($data['idn']) ? $this->createData($data['idn'], 'idn')  : null;
@@ -342,11 +357,12 @@ class MailProxy implements ModelInterface, ArrayAccess
      * @param string $property
      * @return mixed
      */
-    public function createData($data = null, $property = '')
+    public function createData($data = null, $property = null): mixed
     {
-        if ($data === null || $property === '') {
+        if ($data === null || $property === null) {
             return '';
         }
+        
         $swaggerType = self::$swaggerTypes[$property];
 
         preg_match("/([\\\\\w\d]+)(\[\])?/", $swaggerType, $matches);
@@ -393,7 +409,7 @@ class MailProxy implements ModelInterface, ArrayAccess
      *
      * @return array invalid properties with reasons
      */
-    public function listInvalidProperties()
+    public function listInvalidProperties(): array
     {
         $invalidProperties = [];
 
@@ -403,6 +419,14 @@ class MailProxy implements ModelInterface, ArrayAccess
         if ($this->container['target'] === null) {
             $invalidProperties[] = "'target' can't be null";
         }
+        $allowedValues = $this->getGreylistingAllowableValues();
+        if (!is_null($this->container['greylisting']) && !in_array($this->container['greylisting'], $allowedValues, true)) {
+            $invalidProperties[] = sprintf(
+                "invalid value for 'greylisting', must be one of '%s'",
+                implode("', '", $allowedValues)
+            );
+        }
+
         $allowedValues = $this->getVirusAllowableValues();
         if (!is_null($this->container['virus']) && !in_array($this->container['virus'], $allowedValues, true)) {
             $invalidProperties[] = sprintf(
@@ -436,7 +460,7 @@ class MailProxy implements ModelInterface, ArrayAccess
      *
      * @return bool True if all properties are valid
      */
-    public function valid()
+    public function valid(): bool
     {
         return count($this->listInvalidProperties()) === 0;
     }
@@ -599,7 +623,7 @@ class MailProxy implements ModelInterface, ArrayAccess
     /**
      * Sets target
      *
-     * @param string $target The hostname of the target mailserver
+     * @param string $target Mail server to which the MailProxy should forward the emails. Note that the MX record of your mail server must be removed from the zone.
      *
      * @return $this
      */
@@ -623,7 +647,7 @@ class MailProxy implements ModelInterface, ArrayAccess
     /**
      * Sets admin
      *
-     * @param string $admin email address of the administrator
+     * @param string $admin Email address of the administrator to whom notifications are sent to.
      *
      * @return $this
      */
@@ -647,7 +671,7 @@ class MailProxy implements ModelInterface, ArrayAccess
     /**
      * Sets protection
      *
-     * @param \Domainrobot\Model\ProtectionConstants $protection The protection level
+     * @param \Domainrobot\Model\ProtectionConstants $protection Security settings for handling infected mails.
      *
      * @return $this
      */
@@ -661,7 +685,7 @@ class MailProxy implements ModelInterface, ArrayAccess
     /**
      * Gets greylisting
      *
-     * @return bool
+     * @return string
      */
     public function getGreylisting()
     {
@@ -671,12 +695,21 @@ class MailProxy implements ModelInterface, ArrayAccess
     /**
      * Sets greylisting
      *
-     * @param bool $greylisting The grey listing policy
+     * @param string $greylisting If greylisting is activated, the first email from an unknown sender is rejected at first. Mails from this sender will only be accepted after a further delayed delivery attempt.
      *
      * @return $this
      */
     public function setGreylisting($greylisting)
     {
+        $allowedValues = $this->getGreylistingAllowableValues();
+        if (!is_null($greylisting) && !in_array($greylisting, $allowedValues, true)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    "Invalid value for 'greylisting', must be one of '%s'",
+                    implode("', '", $allowedValues)
+                )
+            );
+        }
         $this->container['greylisting'] = $greylisting;
 
         return $this;
@@ -695,7 +728,7 @@ class MailProxy implements ModelInterface, ArrayAccess
     /**
      * Sets virus
      *
-     * @param string $virus The virus options to use
+     * @param string $virus Defines whether to check for viruses and how to deal with detected viruses.
      *
      * @return $this
      */
@@ -728,7 +761,7 @@ class MailProxy implements ModelInterface, ArrayAccess
     /**
      * Sets bannedFiles
      *
-     * @param string $bannedFiles The banned files options to use
+     * @param string $bannedFiles Defines whether files should be checked and how banned files should be avoided.
      *
      * @return $this
      */
@@ -761,7 +794,7 @@ class MailProxy implements ModelInterface, ArrayAccess
     /**
      * Sets header
      *
-     * @param string $header The mail header options to use
+     * @param string $header Defines whether headers are to be checked and how banned headers are to be handled.
      *
      * @return $this
      */
@@ -794,7 +827,7 @@ class MailProxy implements ModelInterface, ArrayAccess
     /**
      * Sets spam
      *
-     * @param \Domainrobot\Model\SpamPolicy $spam The spam policy options
+     * @param \Domainrobot\Model\SpamPolicy $spam The spam policy options.
      *
      * @return $this
      */
@@ -818,7 +851,7 @@ class MailProxy implements ModelInterface, ArrayAccess
     /**
      * Sets whitelist
      *
-     * @param \Domainrobot\Model\MailList $whitelist The white listed email addresses
+     * @param \Domainrobot\Model\MailList $whitelist Define email addresses whose mails should be trusted and never marked as spam.
      *
      * @return $this
      */
@@ -842,7 +875,7 @@ class MailProxy implements ModelInterface, ArrayAccess
     /**
      * Sets blacklist
      *
-     * @param \Domainrobot\Model\MailList $blacklist The black listed email addresses
+     * @param \Domainrobot\Model\MailList $blacklist Specification of email addresses whose mails are always to be marked as spam.
      *
      * @return $this
      */
@@ -866,7 +899,7 @@ class MailProxy implements ModelInterface, ArrayAccess
     /**
      * Sets excludelist
      *
-     * @param \Domainrobot\Model\MailList $excludelist The exculded listed email addresses
+     * @param \Domainrobot\Model\MailList $excludelist Definition of administrative addresses that should never be ignored by spam filters. An example of this is the \"Hostmaster\" addresses, e.g. hostmaster@example.com.
      *
      * @return $this
      */
@@ -883,7 +916,7 @@ class MailProxy implements ModelInterface, ArrayAccess
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -895,7 +928,7 @@ class MailProxy implements ModelInterface, ArrayAccess
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
@@ -908,7 +941,7 @@ class MailProxy implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -924,7 +957,7 @@ class MailProxy implements ModelInterface, ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -934,7 +967,7 @@ class MailProxy implements ModelInterface, ArrayAccess
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
             return json_encode(
@@ -954,7 +987,8 @@ class MailProxy implements ModelInterface, ArrayAccess
      * toArray() => returns only non empty values
      * toArray(true) => returns all values
      */
-    public function toArray($retrieveAllValues = false){
+    public function toArray($retrieveAllValues = false): array
+    {
         $container = $this->container;
 
         $cleanContainer = [];
@@ -982,6 +1016,7 @@ class MailProxy implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             if (is_array($value)) {
                 foreach ($value as &$v) {
                     if (gettype($v) === "object") {
@@ -989,8 +1024,10 @@ class MailProxy implements ModelInterface, ArrayAccess
                     }
                 }
             }
+
             $cleanContainer[self::$attributeMap[$key]] = $value;
         };
+
         return $cleanContainer;
     }
 }

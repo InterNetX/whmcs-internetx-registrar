@@ -13,7 +13,7 @@
 /**
  * Domainrobot JSON API
  *
- * Domainrobot JSON API for managing: Domains, SSL            Certificates, DNS and            much more.
+ * Domainrobot JSON API for managing: Domains, SSL                                             Certificates, DNS and                                             much more.
  *
  * OpenAPI spec version: v1
  * 
@@ -50,6 +50,7 @@ class ContactType
     const DOMAIN = 'DOMAIN';
     const SSL = 'SSL';
     const SERVER = 'SERVER';
+    const ABUSE = 'ABUSE';
     
     /**
      * Gets allowable values of the enum
@@ -65,6 +66,7 @@ class ContactType
             self::DOMAIN,
             self::SSL,
             self::SERVER,
+            self::ABUSE,
         ];
     }
 }
