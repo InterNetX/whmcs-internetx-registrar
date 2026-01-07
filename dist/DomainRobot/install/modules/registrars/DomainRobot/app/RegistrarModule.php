@@ -122,12 +122,12 @@ class RegistrarModule implements RegistrarModuleInterface
                     "password" => $params['sandboxServerPassword'],
                     "context"  => $params['sandboxServerContext']
                 ]),
-                "logRequestCallback" => function ($method, $url, $requestOptions, $headers){
-                    Logger::log("req_outbound: ".$method.":" . $url, $requestOptions, $headers);
-                },
-                "logResponseCallback" => function ($url, $response, $statusCode, $exectime){
-                    Logger::log("req_inbound:" . $url, $statusCode . " in " . $exectime, $response);
-                }
+//                "logRequestCallback" => function ($method, $url, $requestOptions, $headers){
+//                    Logger::log("req_outbound: ".$method.":" . $url, $requestOptions, $headers);
+//                },
+//                "logResponseCallback" => function ($url, $response, $statusCode, $exectime){
+//                    Logger::log("req_inbound:" . $url, $statusCode . " in " . $exectime, $response);
+//                }
             ]);
             // Live Mode
         } else {
@@ -141,14 +141,14 @@ class RegistrarModule implements RegistrarModuleInterface
                     "context"  => $params['serverContext']
                 ]),
                 "headers" => [
-                    "WHMCS-Plugin-Version" => Config::version(),
+                    "User-Agent" => Config::version(),
                 ],
-                "logRequestCallback" => function ($method, $url, $requestOptions, $headers){
-                    Logger::log("req_outbound:" . $url, $requestOptions, $headers);
-                },
-                "logResponseCallback" => function ($url, $response, $statusCode, $exectime){
-                    Logger::log("req_inbound:" . $url, $statusCode, $response);
-                }
+//                "logRequestCallback" => function ($method, $url, $requestOptions, $headers){
+//                    Logger::log("req_outbound:" . $url, $requestOptions, $headers);
+//                },
+//                "logResponseCallback" => function ($url, $response, $statusCode, $exectime){
+//                    Logger::log("req_inbound:" . $url, $statusCode, $response);
+//                }
             ]);
         }
 
@@ -371,7 +371,7 @@ class RegistrarModule implements RegistrarModuleInterface
         $domainrobot = self::getApi($params);
         $domain = self::prepareDomain($params, $domainrobot);
 
-        Logger::log("post", "" . $domain, "" . $domain["zone"]);
+        // Logger::log("post", "" . $domain, "" . $domain["zone"]);
         $objectJob = $domainrobot->domain->create($domain);
         return $objectJob;
     }
@@ -437,6 +437,7 @@ class RegistrarModule implements RegistrarModuleInterface
     {
         $domainrobot = self::getApi($params);
         $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
+        $domain->setConfirmOwnerConsent(true);
         $domain->setNameServers(WhmcsBridge::parseNameservers($params));
         $domainrobot->domain->update($domain);
     }

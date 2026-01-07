@@ -9,6 +9,9 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 use \WHMCS\Service\Service as Service;
 use \WHMCS\Config\Setting as Setting;
 
+use App\Providers\WhmcsModuleLogProvider as Logger;
+
+
 if (!defined("WHMCS")) {
     die("This file cannot be accessed directly");
 }
@@ -22,21 +25,29 @@ add_hook("DomainEdit", 1, "internetXOnDomainEdit");
 
 function internetXOnDomainEdit($vars)
 {
+    //Logger::log("begin_hook", $vars, "");
+
     $domainid = $vars['domainid'];
     $domain = (array) Capsule::table('tbldomains')->where('id', $domainid)->first();
+
     if ($domain['registrar'] != Config::moduleName()) return;
+
+    $shouldCancel = $domain['status'] === "Cancelled";
+
+    // Logger::log("check_hook", $domain, Config::moduleName());
 
     try {
         $domainName   = $domain['domain'];
 
-        if ($domain['donotrenew'] == 1) {
+        if ($shouldCancel || $domain['donotrenew'] == 1) {
             RegistrarModule::domainCancelationCreate($domainName);
-        }
-        if ($domain['donotrenew'] == 0) {
+        } else if ($domain['donotrenew'] == 0) {
             RegistrarModule::domainCancelationDelete($domainName);
         }
 
     } catch (Exception $ex) {
+        //Logger::log("except_hook", $ex, "");
+
     }
 }
 

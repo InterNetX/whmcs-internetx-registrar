@@ -180,4 +180,6 @@ $additionaldomainfields[".swiss"][] = array("Name" => ".swiss Intended Use", "Ty
 
 // .dk
 $additionaldomainfields[".dk"] = array();
+$additionaldomainfields[".dk"][] = array("Name" => "Organization Type", "Remove" => true);
+$additionaldomainfields[".dk"][] = array("Name" => "Organization ID Number", "Remove" => true);
 $additionaldomainfields[".dk"][] = array("DisplayName" => "VAT Number", "Name" => "vatnumber", "Type" => "text", "Size" => "30", "Default" => "");
