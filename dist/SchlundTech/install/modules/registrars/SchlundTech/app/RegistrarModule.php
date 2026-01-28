@@ -3,6 +3,7 @@
 namespace App;
 
 use DateTime;
+use Domainrobot\Service\DomainrobotService;
 use Exception;
 use App\Helpers\Config;
 
@@ -25,6 +26,7 @@ use Domainrobot\Model\ContactItExtensions;
 use App\Contracts\RegistrarModuleInterface;
 use Domainrobot\Model\ContactTypeConstants;
 
+use GuzzleHttp\Psr7\Request;
 use WHMCS\Domains\DomainLookup\ResultsList;
 use App\Exceptions\RegistrarModuleException;
 use Domainrobot\Model\RedirectModeConstants;
@@ -37,20 +39,25 @@ use Domainrobot\Model\CancelationTypeConstants;
 use App\Providers\WhmcsModuleLogProvider as Logger;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
+use WHMCS\Domain\TopLevel\ImportItem;
+use WHMCS\Results\ResultsList as ImportResultsList;
+
+use GuzzleHttp\Client;
+
 class RegistrarModule implements RegistrarModuleInterface
 {
     const LOGGERREPLACEVARS = ['sandboxServerContext', 'sandboxServerPassword', 'sandboxServerUsername', 'serverPassword', 'serverUsername', 'Username'];
     const LOGTHESEFUNCTIONCALLS = ['RegisterDomain', 'TransferDomain', 'RenewDomain', 'GetNameservers', 'SaveNameservers', 'GetDNS', 'SaveDNS', 'GetContactDetails', 'SaveContactDetails', 'GetEPPCode', 'Sync', 'TransferSync', 'IDProtectToggle', 'GetEmailForwarding', 'SaveEmailForwarding', 'CheckAvailability', 'GetDomainSuggestions', 'TransferOutNack', 'TransferOutAck', 'DomainForwarding', 'ChangeOwner'];
 
 
-
-    private static function logWithParams($action, $params, $responseData, $processedData = '', $replaceVars = []){
+    private static function logWithParams($action, $params, $responseData, $processedData = '', $replaceVars = [])
+    {
         $fullReplaceVars = $replaceVars;
 
         foreach (self::LOGGERREPLACEVARS as $replaceKey) {
             // Get the Param Values for ReplaceKey and add to String that should not show up
             // added strlen > 1 to make sure other boolean values dont get replaced
-            if ($params[$replaceKey] && strlen((string) $params[$replaceKey]) > 1){
+            if ($params[$replaceKey] && strlen((string)$params[$replaceKey]) > 1) {
                 $fullReplaceVars[] = $params[$replaceKey];
             }
 
@@ -77,7 +84,7 @@ class RegistrarModule implements RegistrarModuleInterface
             $response = call_user_func('self::' . $functionName, $params);
 
             // In Debug mode + Extended Debug Mode log all function calls that are in the List self::LOGTHESEFUNCTIONCALLS
-            if (isset($params['debug']) && $params['debug'] && isset($params['debugallcalls']) && $params['debugallcalls'] && in_array($functionName, self::LOGTHESEFUNCTIONCALLS)){
+            if (isset($params['debug']) && $params['debug'] && isset($params['debugallcalls']) && $params['debugallcalls'] && in_array($functionName, self::LOGTHESEFUNCTIONCALLS)) {
                 self::logWithParams($functionName, $params, $response);
             }
             return $response;
@@ -107,7 +114,7 @@ class RegistrarModule implements RegistrarModuleInterface
     private static function getApi($params)
     {
         // Custom Headers to use with all API Requests
-        $headers =  [
+        $headers = [
             DomainrobotHeaders::DOMAINROBOT_USER_AGENT => Config::userAgent(),
         ];
 
@@ -118,9 +125,9 @@ class RegistrarModule implements RegistrarModuleInterface
             $domainrobot = new Domainrobot([
                 "url" => "https://api.demo.autodns.com/v1",
                 "auth" => new DomainrobotAuth([
-                    "user"     => $params['sandboxServerUsername'],
+                    "user" => $params['sandboxServerUsername'],
                     "password" => $params['sandboxServerPassword'],
-                    "context"  => $params['sandboxServerContext']
+                    "context" => $params['sandboxServerContext']
                 ]),
 //                "logRequestCallback" => function ($method, $url, $requestOptions, $headers){
 //                    Logger::log("req_outbound: ".$method.":" . $url, $requestOptions, $headers);
@@ -136,9 +143,9 @@ class RegistrarModule implements RegistrarModuleInterface
                 // server Host can be manually set but default to the production Endpoint
                 "url" => $params['serverHost'] ? $params['serverHost'] : "https://api.autodns.com/v1",
                 "auth" => new DomainrobotAuth([
-                    "user"     => $params['serverUsername'],
+                    "user" => $params['serverUsername'],
                     "password" => $params['serverPassword'],
-                    "context"  => $params['serverContext']
+                    "context" => $params['serverContext']
                 ]),
                 "headers" => [
                     "User-Agent" => Config::version(),
@@ -150,6 +157,16 @@ class RegistrarModule implements RegistrarModuleInterface
 //                    Logger::log("req_inbound:" . $url, $statusCode, $response);
 //                }
             ]);
+        }
+
+        if(getenv("DOMAINROBOT_INSECURE") === "true") {
+            foreach (get_object_vars($domainrobot) as $key => $value) {
+                if($value instanceof DomainrobotService) {
+                    $value->addGuzzleClientConfig([
+                        "verify" => false,
+                    ]);
+                }
+            }
         }
 
         return $domainrobot;
@@ -304,10 +321,10 @@ class RegistrarModule implements RegistrarModuleInterface
         $contacts = WhmcsBridge::parseContacts($params);
 
         //Create Registrant and AdminContact
-        $contacts['admin']      = $domainrobot->contact->create($contacts['admin']);
+        $contacts['admin'] = $domainrobot->contact->create($contacts['admin']);
         $contacts['registrant'] = $domainrobot->contact->create($contacts['registrant']);
         // Keep only the 'id' everything else is not needed for the requests
-        $contacts['admin']      = ['id' => $contacts['admin']['id']];
+        $contacts['admin'] = ['id' => $contacts['admin']['id']];
         $contacts['registrant'] = ['id' => $contacts['registrant']['id']];
 
         $nameservers = WhmcsBridge::parseNameservers($params);
@@ -457,16 +474,16 @@ class RegistrarModule implements RegistrarModuleInterface
             if ($mainIP = $main->getAddress()) {
                 $hostRecords[] = array(
                     "hostname" => '',    // eg. www
-                    "type"     => 'A',    // eg. A
-                    "address"  => $mainIP,   // eg. 10.0.0.1
+                    "type" => 'A',    // eg. A
+                    "address" => $mainIP,   // eg. 10.0.0.1
                     "priority" => 'N/A',    // eg. 10 (N/A for non-MX records)
                 );
                 // Also add www-Entry if wwwInclude is set
                 if ($zone->getWwwInclude()) {
                     $hostRecords[] = array(
                         "hostname" => 'www',    // eg. www
-                        "type"     => 'A',    // eg. A
-                        "address"  => $mainIP,   // eg. 10.0.0.1
+                        "type" => 'A',    // eg. A
+                        "address" => $mainIP,   // eg. 10.0.0.1
                         "priority" => 'N/A',    // eg. 10 (N/A for non-MX records)
                     );
                 }
@@ -477,8 +494,8 @@ class RegistrarModule implements RegistrarModuleInterface
         foreach ($zone['resourceRecords'] as $record) {
             $hostRecords[] = array(
                 "hostname" => $record['name'],    // eg. www
-                "type"     => $record['type'],    // eg. A
-                "address"  => $record['value'],   // eg. 10.0.0.1
+                "type" => $record['type'],    // eg. A
+                "address" => $record['value'],   // eg. 10.0.0.1
                 "priority" => $record['pref'],    // eg. 10 (N/A for non-MX records)
             );
         }
@@ -511,7 +528,7 @@ class RegistrarModule implements RegistrarModuleInterface
         // If our custom form was used to use www_include use it
         // Else set wwwInclude to False
         if (isset($_REQUEST['zone']['www_include'])) {
-            $www_include = (int) $_REQUEST['zone']['www_include'];
+            $www_include = (int)$_REQUEST['zone']['www_include'];
             $zone->setWwwInclude($www_include);
         } else {
             $zone->setWwwInclude(false);
@@ -528,9 +545,9 @@ class RegistrarModule implements RegistrarModuleInterface
         // Extract the Contacts
         $contacts = array(
             'Registrant' => $domain["ownerc"],
-            'Admin'      => $domain["adminc"],
-            'Tech'       => $domain["techc"],
-            'Zone'       => $domain["zonec"],
+            'Admin' => $domain["adminc"],
+            'Tech' => $domain["techc"],
+            'Zone' => $domain["zonec"],
         );
         // Remove Doubles
         $contacts = array_unique($contacts);
@@ -551,17 +568,17 @@ class RegistrarModule implements RegistrarModuleInterface
                 ];
             }
 
-            $whmcsContacts[$key]['First Name']   = $contactDetails["fname"];
-            $whmcsContacts[$key]['Last Name']    = $contactDetails["lname"];
+            $whmcsContacts[$key]['First Name'] = $contactDetails["fname"];
+            $whmcsContacts[$key]['Last Name'] = $contactDetails["lname"];
             $whmcsContacts[$key]['Company Name'] = $contactDetails["organization"];
-            $whmcsContacts[$key]['City']         = $contactDetails["city"];
-            $whmcsContacts[$key]['Address 1']    = $contactDetails["address"][0];
-            $whmcsContacts[$key]['Address 2']    = $contactDetails["address"][1];
-            $whmcsContacts[$key]['State']        = $contactDetails["state"];
-            $whmcsContacts[$key]['Postcode']     = $contactDetails["pcode"];
-            $whmcsContacts[$key]['Country']      = $contactDetails["country"];
+            $whmcsContacts[$key]['City'] = $contactDetails["city"];
+            $whmcsContacts[$key]['Address 1'] = $contactDetails["address"][0];
+            $whmcsContacts[$key]['Address 2'] = $contactDetails["address"][1];
+            $whmcsContacts[$key]['State'] = $contactDetails["state"];
+            $whmcsContacts[$key]['Postcode'] = $contactDetails["pcode"];
+            $whmcsContacts[$key]['Country'] = $contactDetails["country"];
             $whmcsContacts[$key]['Phone Number'] = $contactDetails["phone"];
-            $whmcsContacts[$key]['Email']        = $contactDetails["email"];
+            $whmcsContacts[$key]['Email'] = $contactDetails["email"];
         }
         return $whmcsContacts;
     }
@@ -577,9 +594,9 @@ class RegistrarModule implements RegistrarModuleInterface
         // Extract the Contacts
         $contacts = array(
             'Registrant' => $domain["ownerc"],
-            'Admin'      => $domain["adminc"],
-            'Tech'       => $domain["techc"],
-            'Zone'       => $domain["zonec"],
+            'Admin' => $domain["adminc"],
+            'Tech' => $domain["techc"],
+            'Zone' => $domain["zonec"],
         );
 
         $whmcsContacts = $params['contactdetails'];
@@ -603,7 +620,7 @@ class RegistrarModule implements RegistrarModuleInterface
             if ($whmcsContacts[$key]['Address 2']) {
                 $addresses[] = $whmcsContacts[$key]['Address 2'];
             }
-            $liveContact["address"] =  $addresses;
+            $liveContact["address"] = $addresses;
             $liveContact["state"] = ($whmcsContacts[$key]['State']);
             $liveContact["pcode"] = ($whmcsContacts[$key]['Postcode']);
             $liveContact["country"] = ($whmcsContacts[$key]['Country']);
@@ -625,7 +642,7 @@ class RegistrarModule implements RegistrarModuleInterface
         // .de & .eu & .cz -> authinfo1Create
         if (strpos($params['tld'], 'de') !== false || strpos($params['tld'], 'eu') !== false || strpos($params['tld'], 'cz') !== false) {
             // If no AuthInfo Exists
-            if (!$domain->getAuthinfo()){
+            if (!$domain->getAuthinfo()) {
                 $domainrobot->domain->createAuthinfo1(WhmcsBridge::parseDomain($params));
             }
         } else {
@@ -650,8 +667,8 @@ class RegistrarModule implements RegistrarModuleInterface
         // Get Domaininfo
         try {
             $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
-            $expiryDate =  new DateTime($domain->getPayable());
-            $returnData =  [
+            $expiryDate = new DateTime($domain->getPayable());
+            $returnData = [
                 // Expiry = Payable
                 'expirydate' => $expiryDate->format('Y-m-d')
             ];
@@ -712,9 +729,9 @@ class RegistrarModule implements RegistrarModuleInterface
         // Get Domaininfo
         try {
             $domain = $domainrobot->domain->info(WhmcsBridge::parseDomain($params));
-            $expiryDate =  new DateTime($domain->getPayable());
+            $expiryDate = new DateTime($domain->getPayable());
 
-            $returnData =  [
+            $returnData = [
                 // Expiry = Payable
                 'completed' => true,
                 'expirydate' => $expiryDate->format('Y-m-d')
@@ -750,9 +767,9 @@ class RegistrarModule implements RegistrarModuleInterface
         $domain = WhmcsBridge::parseDomain($params);
         // Get All E-Mail Redirects for domain from Server
         $query = new Query([
-            'filters' => [ new QueryFilter([
+            'filters' => [new QueryFilter([
                 'key' => 'source',
-                'value' => '*'.$domain,
+                'value' => '*' . $domain,
                 'operator' => 'LIKE'
             ])]
         ]);
@@ -764,11 +781,11 @@ class RegistrarModule implements RegistrarModuleInterface
             $mode = $rd['mode'];
             if ($rd['mode'] != RedirectModeConstants::SINGLE)
                 continue;
-            $source = current(explode("@", (string) $rd["source"]));
+            $source = current(explode("@", (string)$rd["source"]));
             $values[] = array(
                 "recid" => $key,
                 "prefix" => $source,
-                "forwardto" => (string) $rd["target"],
+                "forwardto" => (string)$rd["target"],
             );
         }
 
@@ -799,14 +816,14 @@ class RegistrarModule implements RegistrarModuleInterface
             }
         }
 
-        foreach($new as $key => $redirect){
+        foreach ($new as $key => $redirect) {
 
             // We can neither add or delete existing redirects if the prefix is not set
-            if (!$redirect['prefix']){
+            if (!$redirect['prefix']) {
                 continue;
             }
 
-            $source = $redirect['prefix']."@$domain";
+            $source = $redirect['prefix'] . "@$domain";
             $target = $redirect['forwardto'];
             // Try to Delete Redirect
             // Throws error for new redirects so catch
@@ -816,7 +833,7 @@ class RegistrarModule implements RegistrarModuleInterface
                 //throw $th;
             }
 
-            if ($redirect['prefix'] && $redirect['forwardto']){
+            if ($redirect['prefix'] && $redirect['forwardto']) {
                 $response = self::redirectCreate(
                     $domainrobot,
                     $source,
@@ -994,13 +1011,14 @@ class RegistrarModule implements RegistrarModuleInterface
         return $customButtons;
     }
 
-    private static function redirectCreate($domainrobot, $source, $target, $mode, $type, $title = null){
+    private static function redirectCreate($domainrobot, $source, $target, $mode, $type, $title = null)
+    {
         $redirect = new Redirect();
         $redirect->setSource($source);
         $redirect->setTarget($target);
         $redirect->setMode($mode);
         $redirect->setType($type);
-        if ($title){
+        if ($title) {
             $redirect->setTitle($title);
         }
         $response = $domainrobot->redirect->create($redirect);
@@ -1036,10 +1054,10 @@ class RegistrarModule implements RegistrarModuleInterface
                 if (empty($source) || empty($target)) {
                     $response = $domainrobot->redirect->delete($oldSource);
 
-                // Else Delete && create new
-                // Deleted Update Step that included oldSource to trigger an update
-                // if ->update function works it could be used again
-                // } else if ($source == $oldSource) {
+                    // Else Delete && create new
+                    // Deleted Update Step that included oldSource to trigger an update
+                    // if ->update function works it could be used again
+                    // } else if ($source == $oldSource) {
                 } else {
                     $response = $domainrobot->redirect->delete($oldSource);
                     $response = self::redirectCreate(
@@ -1053,19 +1071,19 @@ class RegistrarModule implements RegistrarModuleInterface
             $newDomainForwarding = $_POST['newDomainForwarding'];
             if (!empty($newDomainForwarding['source']) && !empty($newDomainForwarding['target'])) {
                 $response = self::redirectCreate(
-                                        $domainrobot,
-                                        $newDomainForwarding['source'],
-                                        $newDomainForwarding['target'],
-                                        $newDomainForwarding['mode'],
-                                        "DOMAIN",
-                                        $newDomainForwarding['title']
-                                    );
+                    $domainrobot,
+                    $newDomainForwarding['source'],
+                    $newDomainForwarding['target'],
+                    $newDomainForwarding['mode'],
+                    "DOMAIN",
+                    $newDomainForwarding['title']
+                );
             }
         }
 
         // Get All Redirects for domain from Server
         $query = new Query([
-            'filters' => [ new QueryFilter([
+            'filters' => [new QueryFilter([
                 'key' => 'domain',
                 'value' => $domain,
                 'operator' => 'EQUAL'
@@ -1081,10 +1099,10 @@ class RegistrarModule implements RegistrarModuleInterface
                 continue;
 
             $redirects[] = array(
-                "source" => (string) $rd['source'],
-                "target" => (string) $rd['target'],
-                "mode" => (string) $rd['mode'],
-                "title" => (string) $rd['title'],
+                "source" => (string)$rd['source'],
+                "target" => (string)$rd['target'],
+                "mode" => (string)$rd['mode'],
+                "title" => (string)$rd['title'],
             );
         }
 
@@ -1113,11 +1131,11 @@ class RegistrarModule implements RegistrarModuleInterface
         $domainrobot = self::getApi($params);
         $domain = WhmcsBridge::parseDomain($params);
 
-        if (!empty($_POST) && !empty($_POST['domainContacts']['ownerc']) ) {
+        if (!empty($_POST) && !empty($_POST['domainContacts']['ownerc'])) {
             $contactId = $_POST['domainContacts']['ownerc'];
 
             // Get Details for Selected WHMCS Contact
-            $whmcsContact = (array) Capsule::table('tblcontacts')->where('id', '=', $contactId)->where('userid', '=', (int) $_SESSION['uid'])->first();
+            $whmcsContact = (array)Capsule::table('tblcontacts')->where('id', '=', $contactId)->where('userid', '=', (int)$_SESSION['uid'])->first();
 
             // Compile Params required to use whmcs2domainrobotContact($prefix, $params)
             $asWhmcsParams = [
@@ -1138,7 +1156,7 @@ class RegistrarModule implements RegistrarModuleInterface
 
             // Get Additioanl Fields already saved for the Domain
             // And Add to params
-            $fields = (array) Capsule::table('tbldomainsadditionalfields')->join('tbldomains', 'tbldomains.id', '=', 'tbldomainsadditionalfields.domainid')
+            $fields = (array)Capsule::table('tbldomainsadditionalfields')->join('tbldomains', 'tbldomains.id', '=', 'tbldomainsadditionalfields.domainid')
                 ->select('tbldomainsadditionalfields.*')->where('tbldomains.domain', '=', $domain)->orderBy('id', 'asc')->get();
 
             foreach ($fields as $field) {
@@ -1152,12 +1170,12 @@ class RegistrarModule implements RegistrarModuleInterface
             $liveDomain->setConfirmOwnerConsent(true);
             $liveDomain->setOwnerc($ownerc);
 
-            if ($params['adminContact'] == 'on'){
+            if ($params['adminContact'] == 'on') {
                 $liveDomain->setAdminc($ownerc);
             }
 
             $response = $domainrobot->domain->ownerChange($liveDomain);
-            if ($response){
+            if ($response) {
                 $infoMsg = 'Owner Change Started';
             }
         }
@@ -1170,7 +1188,7 @@ class RegistrarModule implements RegistrarModuleInterface
 
         $call['domain'] = $domain;
         $call['contacts2'] = "<option value=''>Do not change Contact</option>";
-        $query = Capsule::table('tblcontacts')->where('userid', '=', (int) $_SESSION['uid'])->get();
+        $query = Capsule::table('tblcontacts')->where('userid', '=', (int)$_SESSION['uid'])->get();
         foreach ($query as $row) {
             $call['contacts2'] .= "<option value='" . $row->id . "'>" . $row->firstname . ' ' . $row->lastname . '</option>';
         }
@@ -1182,7 +1200,8 @@ class RegistrarModule implements RegistrarModuleInterface
         );
     }
 
-    public static function deleteDomain($domain, $execDate){
+    public static function deleteDomain($domain, $execDate)
+    {
         // beim Delete Button in der Admin Area müsste eine Cancelation geschickt werden mit type "DELETE" und execution mit "DATE, EXPIRE, NOW" wobei nur das DATE mit dem date-picker gesetzt werden muss.
         // Ist wie ein Delete in AutoDNS den man auch zu Sofort(now), zu einem festen Datum(date) oder zum Ablauf(expire) setzen kann.
         $params = WhmcsBridge::getRegistarConfig();
@@ -1190,7 +1209,6 @@ class RegistrarModule implements RegistrarModuleInterface
         $dc = new DomainCancelation();
         $dc->setDomain($domain);
         $dc->setType(CancelationTypeConstants::DELETE);
-
 
 
         $domainCancelation = $domainrobot->domainCancelation->create($dc);
@@ -1214,7 +1232,8 @@ class RegistrarModule implements RegistrarModuleInterface
         $domainCancelation = $domainrobot->domainCancelation->create($dc);
     }
 
-    public static function domainCancelationCreate($domain){
+    public static function domainCancelationCreate($domain)
+    {
         // beim Abschalten der Auto-Renew in der Client Area wird eine Cancelation mit Type "DELETE" und execution "EXPIRE" angelegt. Damit wird die Domain automatisch zur Fälligkeit gelöscht.
         // Sobald der Client den Auto-Renew wieder aktiviert muss diese Cancelation gelöscht werden damit die Domain bestehen bleibt.
         $params = WhmcsBridge::getRegistarConfig();
@@ -1226,10 +1245,69 @@ class RegistrarModule implements RegistrarModuleInterface
         $domainCancelation = $domainrobot->domainCancelation->create($dc);
     }
 
-    public static function domainCancelationDelete($domain){
+    public static function domainCancelationDelete($domain)
+    {
         $params = WhmcsBridge::getRegistarConfig();
         $domainrobot = self::getApi($params);
         $domainrobot->domainCancelation->delete($domain);
+    }
+
+    public static function GetTldPricing(array $params)
+    {
+
+        Logger::log("pricing", $params, "");
+
+        $clientOpts = [];
+
+        if(getenv("DOMAINROBOT_INSECURE") === "true") {
+            $clientOpts["verify"] = false;
+        }
+
+        $client = new Client($clientOpts);
+
+        $url = $params['serverHost'] ?? "https://api.autodns.com/v1";
+        $user = $params['serverUsername'];
+        $password = $params['serverPassword'];
+        $context = $params['serverContext'];
+
+        $request = (new Request("GET", "$url/document/price_list.xml"))
+            ->withHeader("Authorization", "Basic " . base64_encode("$user:$password"))
+            ->withHeader("X-Domainrobot-Context", $context);
+        $response = $client->sendRequest($request);
+
+
+        if ($response->getStatusCode() != 200) {
+            Logger::log("GetTLDPricing cURL error", $response->getStatusCode(), $response->getBody()->getContents());
+            return;
+        }
+
+        $xml = simplexml_load_string($response->getBody(), 'SimpleXMLElement', LIBXML_NOCDATA);
+
+        $results = new ImportResultsList;
+
+
+        foreach ($xml->prices->domain as $domain) {
+            $tld = (string)$domain["label"];
+
+            $item = (new ImportItem)
+                ->setExtension($tld)
+                //->setMinYears($extension['minPeriod'])
+                //->setMaxYears($extension['maxPeriod'])
+                ->setRegisterPrice((float)$domain->businessCase[0]->price["amount"])
+                ->setRenewPrice((float)$domain->businessCase[1]->price["amount"])
+                ->setTransferPrice((float)$domain->businessCase[2]->price["amount"])
+                //->setRedemptionFeeDays($extension['redemptionDays'])
+                ->setRedemptionFeePrice((float)$domain->businessCase[3]->price["amount"])
+                ->setCurrency((string)$domain->businessCase[0]->price["currency"]);
+                //->setEppRequired($extension['transferSecretRequired']);
+
+
+            $results[] = $item;
+        }
+
+
+
+        return $results;
     }
 
 }

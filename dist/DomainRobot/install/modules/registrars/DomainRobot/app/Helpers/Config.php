@@ -4,7 +4,7 @@ namespace App\Helpers;
 
 class Config {
     private static $moduleName          = 'DomainRobot';
-    private static $userAgent          = 'WHMCS Module';
+    private static $userAgent           = 'WHMCS Module';
     private static $premiumAddonName    = 'DomainRobot';
     private static $registrarNameserver = 'ns14.net';
     private static $templateDir         = __DIR__ .'/../templates/';
@@ -20,7 +20,7 @@ class Config {
     }
 
     public static function registrarNameserver(){
-        return self::$registrarNameserver;
+        return getenv("DNS_NS_ROOT") ?? self::$registrarNameserver;
     }
 
     public static function templateDir(){

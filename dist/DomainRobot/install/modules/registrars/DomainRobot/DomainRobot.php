@@ -114,3 +114,8 @@ function DomainRobot_ChangeOwner($params)
     return RegistrarModule::call('ChangeOwner', $params);
 }
 
+function DomainRobot_GetTldPricing(array $params)
+{
+    return RegistrarModule::call('GetTldPricing', $params);
+}
+

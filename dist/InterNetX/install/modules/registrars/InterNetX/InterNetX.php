@@ -114,3 +114,8 @@ function InterNetX_ChangeOwner($params)
     return RegistrarModule::call('ChangeOwner', $params);
 }
 
+function InterNetX_GetTldPricing(array $params)
+{
+    return RegistrarModule::call('GetTldPricing', $params);
+}
+

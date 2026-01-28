@@ -114,3 +114,8 @@ function SchlundTech_ChangeOwner($params)
     return RegistrarModule::call('ChangeOwner', $params);
 }
 
+function SchlundTech_GetTldPricing(array $params)
+{
+    return RegistrarModule::call('GetTldPricing', $params);
+}
+

@@ -4,11 +4,11 @@ namespace App\Helpers;
 
 class Config {
     private static $moduleName          = 'SchlundTech';
-    private static $userAgent          = 'WHMCS Module';
+    private static $userAgent           = 'WHMCS Module';
     private static $premiumAddonName    = 'SchlundTech';
     private static $registrarNameserver = 'schlundtech.de';
     private static $templateDir         = __DIR__ .'/../templates/';
-    private static $version             = "1.0.0-pre";
+    private static $version             = "1.0.0-preview";
 
 
     public static function moduleName(){
@@ -20,7 +20,7 @@ class Config {
     }
 
     public static function registrarNameserver(){
-        return self::$registrarNameserver;
+        return getenv("DNS_NS_ROOT") ?? self::$registrarNameserver;
     }
 
     public static function templateDir(){
