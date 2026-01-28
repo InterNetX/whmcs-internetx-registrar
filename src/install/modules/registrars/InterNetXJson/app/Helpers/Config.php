@@ -20,7 +20,7 @@ class Config {
     }
 
     public static function registrarNameserver(){
-        return self::$registrarNameserver;
+        return getenv("DNS_NS_ROOT") ?? self::$registrarNameserver;
     }
 
     public static function templateDir(){

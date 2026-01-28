@@ -114,3 +114,8 @@ function InterNetXJson_ChangeOwner($params)
     return RegistrarModule::call('ChangeOwner', $params);
 }
 
+function InterNetXJson_GetTldPricing(array $params)
+{
+    return RegistrarModule::call('GetTldPricing', $params);
+}
+
