@@ -11,10 +11,12 @@ declare -a registrarns=("ns14.net" "ns14.net" "schlundtech.de")
 # get length of an array
 arraylength=${#registrars[@]}
 
+echo "Op. count: ${arraylength}"
+
 # use for loop to read all values and indexes
-for (( i=0; i<${arraylength}; i++ ));
+for (( i=0; i < ${arraylength}; i++ ));
 do
-  echo $i " / " ${arraylength} " : " ${registrars[$i]}
+   echo $(($i + 1)) " / " ${arraylength} " : " ${registrars[$i]}
    echo "################### Registrar: ${registrars[$i]} – Url: ${registrarurls[$i]} - NS: ${registrarns[$i]} ################################### "
    ./makeModule.sh ${registrars[$i]} ${registrarurls[$i]} ${registrarns[$i]}
    echo ""

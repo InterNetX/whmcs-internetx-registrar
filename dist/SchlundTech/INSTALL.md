@@ -41,3 +41,6 @@ Activate it in the Addon Modules settings of WHMCS and enable premium domains on
 ### Virtual Nameservers
 If you are using virtual nameservers from InterNetX please update /modules/registrars/InterNetX/app/Helpers/Config.php and change the "ns14.net" entries to your own virtual nameserver domain.
 
+### TLD Domain Sync
+To allow WHMCS domain sync activate XML-Pricelist feature:
+https://en.help.internetx.com/display/APIADDITIONALEN/XML+price+list+guide

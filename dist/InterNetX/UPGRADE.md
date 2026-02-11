@@ -10,6 +10,11 @@ Please update the API server in your WHMCS registrar configuration to show the n
 https://api.autodns.com/v1
 
 ## New Features
+
+### TLD Domain Sync
+To allow WHMCS domain sync activate XML-Pricelist feature:
+https://en.help.internetx.com/display/APIADDITIONALEN/XML+price+list+guide
+
 ### Zone Template
 You can now define Templates for the Zones created for new domains, by editing the file "app/templates/zone.json"
 The Format is json and our documentation can be found here: https://help.internetx.com/display/APIXMLDE/Zone+Create
