@@ -46,7 +46,7 @@ use GuzzleHttp\Client;
 
 class RegistrarModule implements RegistrarModuleInterface
 {
-    const LOGGERREPLACEVARS = ['sandboxServerContext', 'sandboxServerPassword', 'sandboxServerUsername', 'serverPassword', 'serverUsername', 'Username'];
+    const LOGGERREPLACEVARS = ['sandboxServerContext', 'sandboxServerPassword', 'sandboxServerUsername', 'serverPassword', 'serverUsername', 'serverPricePassword', 'serverPriceUsername', 'Username'];
     const LOGTHESEFUNCTIONCALLS = ['RegisterDomain', 'TransferDomain', 'RenewDomain', 'GetNameservers', 'SaveNameservers', 'GetDNS', 'SaveDNS', 'GetContactDetails', 'SaveContactDetails', 'GetEPPCode', 'Sync', 'TransferSync', 'IDProtectToggle', 'GetEmailForwarding', 'SaveEmailForwarding', 'CheckAvailability', 'GetDomainSuggestions', 'TransferOutNack', 'TransferOutAck', 'DomainForwarding', 'ChangeOwner'];
 
 
@@ -196,6 +196,18 @@ class RegistrarModule implements RegistrarModuleInterface
                 "Type" => "password",
                 "Size" => "20",
                 "Description" => "Enter your password here.",
+            ),
+            "serverPriceUsername" => array(
+                'FriendlyName' => 'Price API Username',
+                "Type" => "text",
+                "Size" => "20",
+                "Description" => "Username for automatic TLD Price sync. See Installation guide!",
+            ),
+            "serverPricePassword" => array(
+                'FriendlyName' => 'Price API Password',
+                "Type" => "password",
+                "Size" => "20",
+                "Description" => "Password for automatic TLD Price sync. See Installation guide!",
             ),
             "serverContext" => array(
                 'FriendlyName' => 'Context',
@@ -1254,6 +1266,7 @@ class RegistrarModule implements RegistrarModuleInterface
 
     public static function GetTldPricing(array $params)
     {
+        WhmcsBridge::checkRequiredParametersOrFail(['serverPriceUsername', 'serverPricePassword', 'serverContext'], $params);
 
         Logger::log("pricing", $params, "");
 
@@ -1266,8 +1279,8 @@ class RegistrarModule implements RegistrarModuleInterface
         $client = new Client($clientOpts);
 
         $url = $params['serverHost'] ?? "https://api.autodns.com/v1";
-        $user = $params['serverUsername'];
-        $password = $params['serverPassword'];
+        $user = $params['serverPriceUsername'];
+        $password = $params['serverPricePassword'];
         $context = $params['serverContext'];
 
         $request = (new Request("GET", "$url/document/price_list.xml"))
