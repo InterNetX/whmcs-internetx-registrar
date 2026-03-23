@@ -18,7 +18,7 @@ use Domainrobot\Model\NameserverActionConstants;
 use Domainrobot\Model\ContactIdentificationExtensions;
 use Domainrobot\Model\ResourceRecord;
 use App\Providers\WhmcsModuleLogProvider as Logger;
-
+use WHMCS\Database\Capsule;
 
 class WhmcsBridge
 {
@@ -300,7 +300,19 @@ class WhmcsBridge
     }
 
     public static function getRegistarConfig(){
-        return getRegistrarConfigOptions(Config::moduleName());
+
+        // Fetch all settings for registrar
+        $output = Capsule::table('tblregistrars')
+            ->where('registrar', Config::moduleName())
+            ->pluck('value', 'setting')
+            ->all();
+
+        // Ally values appear to be encrypted so decrypt them
+        foreach ($output as  $key => $value) {
+            $output[$key] = decrypt($value);
+        }
+
+        return $output;
     }
 
 }
