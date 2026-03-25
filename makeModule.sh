@@ -74,6 +74,8 @@ ${SED_CMD} -i "s/demo.autodns2.de/$REGISTRARNS/" install/modules/registrars/Inte
 echo "Replacing version with $VERSION"
 ${SED_CMD} -i "s/DEVELOPMENT-VERSION/$VERSION/" install/modules/registrars/InterNetXJson/app/Helpers/Config.php
 
+cp ../../VERSION VERSION
+
 ## Change into module install files folder
 cd install
 
