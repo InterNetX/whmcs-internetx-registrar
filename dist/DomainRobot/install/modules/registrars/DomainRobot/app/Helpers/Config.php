@@ -8,7 +8,7 @@ class Config {
     private static $premiumAddonName    = 'DomainRobot';
     private static $registrarNameserver = 'ns14.net';
     private static $templateDir         = __DIR__ .'/../templates/';
-    private static $version             = "1.0.0-preview";
+    private static $version             = "1.1.0-preview";
 
 
     public static function moduleName(){
