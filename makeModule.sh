@@ -85,9 +85,14 @@ rm -rf modules/registrars/InterNetXJson/tests
 ## Removing Monkey-Debug Logs
 rm -rf modules/registrars/InterNetXJson/app/Helpers/log
 
-#rm -rf modules/registrars/InterNetXJson/vendor/phpunit
-#rm -rf modules/registrars/InterNetXJson/vendor/nikic
-#rm -rf modules/registrars/InterNetXJson/vendor/bin
+rm -rf modules/registrars/InterNetXJson/vendor/phpunit
+rm -rf modules/registrars/InterNetXJson/vendor/nikic
+rm -rf modules/registrars/InterNetXJson/vendor/bin
+rm -rf modules/registrars/InterNetXJson/vendor/sebastian
+rm -rf modules/registrars/InterNetXJson/vendor/phar-io
+rm -rf modules/registrars/InterNetXJson/vendor/doctrine
+rm -rf modules/registrars/InterNetXJson/vendor/myclabs
+rm -rf modules/registrars/InterNetXJson/vendor/theseer
 rm modules/registrars/InterNetXJson/composer.json
 rm modules/registrars/InterNetXJson/composer.lock
 rm modules/registrars/InterNetXJson/vendor/internetx/php-domainrobot-sdk/swagger-codegen-cli.jar

@@ -3,7 +3,7 @@
         'name' => 'internetx/whmcs-internetx-registrar',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '34d245c20fa772a9b815a71ccc8a33e929427c04',
+        'reference' => 'f9e77fa147acc73aca7de1177d0b5974449e9aaf',
         'type' => 'script',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -58,7 +58,7 @@
         'internetx/whmcs-internetx-registrar' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '34d245c20fa772a9b815a71ccc8a33e929427c04',
+            'reference' => 'f9e77fa147acc73aca7de1177d0b5974449e9aaf',
             'type' => 'script',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
