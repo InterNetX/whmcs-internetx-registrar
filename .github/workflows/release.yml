@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stamp version with commit hash
+        run: |
+          BASE_VERSION=$(cat VERSION)
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          echo "${BASE_VERSION}-${SHORT_SHA}" > VERSION
+
+      - name: Build all modules
+        run: ./makeAllModules.sh
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/InterNetX_whmcs.zip
+            dist/DomainRobot_whmcs.zip
+            dist/SchlundTech_whmcs.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
