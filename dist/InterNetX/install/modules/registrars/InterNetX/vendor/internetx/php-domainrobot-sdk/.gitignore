@@ -1,6 +1,0 @@
-.DS_Store
-*.code-workspace
-vendor
-/node_modules/*
-.vscode
-composer.lock
