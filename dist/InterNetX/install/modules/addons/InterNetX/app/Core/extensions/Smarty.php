@@ -1,42 +1,17 @@
 <?php
-/*
- *  * ******************************************************************
- * 
- *    CREATED BY MODULESGARDEN       ->        http://modulesgarden.com
- *    AUTHOR                         ->        Dariusz Bijoś <dariusz.bi@modulesgarden.com>
- *    CONTACT                        ->        contact@modulesgarden.com
- * 
- *   This software is furnished under a license and may be used and copied
- *   only  in  accordance  with  the  terms  of such  license and with the
- *   inclusion of the above copyright notice.  This software  or any other
- *   copies thereof may not be provided or otherwise made available to any
- *   other person.  No title to and  ownership of the  software is  hereby
- *   transferred.
- * 
- *  * ******************************************************************
- */
 
 namespace MGModule\InterNetX\Addon\Core\extensions;
 
 use MGModule\InterNetX\Addon\Core\exceptions\System;
 
-/**
- * Extension for WHMCS Smarty
- * @author Michal Czech <michael@modulesgarden.com>
- * @edited Dariusz Bijoś <dariusz.bi@modulesgarden.com>
- */
+
 class Smarty
 {
     static private $_instance;
     private $_smarty;
     private $_templateDIR;
 
-    /**
-     * Get Single-top Instance
-     * @author Michal Czech <michael@modulesgarden.com>
-     * @since 1.0.0
-     * @return smarty
-     */
+    
     public static function I()
     {
         if (empty(self::$_instance)) {
@@ -56,12 +31,7 @@ class Smarty
         return self::$_instance;
     }
 
-    /**
-     * Set Tempalte Dir
-     * @author Michal Czech <michael@modulesgarden.com>
-     * @since 1.0.0
-     * @param string $dir
-     */
+    
     public function setTemplateDir($dir)
     {
         if (is_array($dir)) {
@@ -70,17 +40,7 @@ class Smarty
         self::I()->_templateDIR = $dir;
     }
 
-    /**
-     * Parse Template File
-     * @author Michal Czech <michael@modulesgarden.com>
-     * @since 1.0.0
-     * @global string $templates_compiledir
-     * @param string $template
-     * @param array $vars
-     * @param string $customDir
-     * @return string
-     * @throws exceptions\System
-     */
+    
     function view($template, $vars = array(), $customDir = false)
     {
         if (is_array($customDir)) {
@@ -117,11 +77,7 @@ class Smarty
         return self::I()->_smarty->fetch($template.'.tpl', uniqid());
     }
 
-    /**
-     * Clear Assigned Vars
-     * @author Michal Czech <michael@modulesgarden.com>
-     * @since 1.0.0
-     */
+    
     protected function clear()
     {
         if (method_exists(self::I()->_smarty, 'clearAllAssign')) {
