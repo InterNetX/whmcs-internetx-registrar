@@ -4,8 +4,8 @@
     "type": "script",
     "authors": [
         {
-            "name": "Paul Porzky-Leibold",
-            "email": "paulporzky@gmail.com"
+            "name": "InterNetX GmbH",
+            "homepage": "https://www.internetx.com"
         }
     ],
     "require": {
