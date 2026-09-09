@@ -1,20 +1,4 @@
 <?php
-/*
- *  * ******************************************************************
- * 
- *    CREATED BY MODULESGARDEN       ->        http://modulesgarden.com
- *    AUTHOR                         ->        Dariusz Bijoś <dariusz.bi@modulesgarden.com>
- *    CONTACT                        ->        contact@modulesgarden.com
- * 
- *   This software is furnished under a license and may be used and copied
- *   only  in  accordance  with  the  terms  of such  license and with the
- *   inclusion of the above copyright notice.  This software  or any other
- *   copies thereof may not be provided or otherwise made available to any
- *   other person.  No title to and  ownership of the  software is  hereby
- *   transferred.
- * 
- *  * ******************************************************************
- */
 
 namespace MGModule\InterNetX\Addon\Core;
 
@@ -22,11 +6,7 @@ use MGModule\InterNetX as main;
 use MGModule\InterNetX\Addon\Core\process\AbstractMainDriver;
 use MGModule\InterNetX\Addon\Core\extensions\Smarty;
 
-/**
- * Application Core
- *
- * @author Dariusz Bijoś <dariusz.bi@modulesgarden.com>
- */
+
 class App extends AbstractMainDriver
 {
 
@@ -35,24 +15,13 @@ class App extends AbstractMainDriver
         parent::__construct("Addon");
     }
 
-    /**
-     * Application Root directorey
-     * @author Dariusz Bijoś <dariusz.bi@modulesgarden.com>
-     * @since 1.0.0
-     * @return string
-     */
+    
     public static function getMainDIR()
     {
         return dirname(__DIR__);
     }
 
-    /**
-     * Tempalates Path
-     * @author Dariusz Bijoś <dariusz.bi@modulesgarden.com>
-     * @since 1.0.0
-     * @param boolean $relative
-     * @return string
-     */
+    
     static function getModuleTemplatesDir($relative = false)
     {
 
@@ -71,12 +40,7 @@ class App extends AbstractMainDriver
         }
     }
 
-    /**
-     * Application Assets Url
-     * @author Dariusz Bijoś <dariusz.bi@modulesgarden.com>
-     * @since 1.0.0
-     * @return string
-     */
+    
     public function getAssetsURL()
     {
         if ($this->isAdmin()) {
@@ -107,12 +71,7 @@ class App extends AbstractMainDriver
         return $url;
     }
 
-    /**
-     * Application JSON request Url
-     * @author Dariusz Bijoś <dariusz.bi@modulesgarden.com>
-     * @since 1.0.0
-     * @return string
-     */
+    
     public static function genJSONUrl($page)
     {
         if (self::I()->isAdmin()) {
@@ -122,12 +81,7 @@ class App extends AbstractMainDriver
         }
     }
 
-    /**
-     * Application request Url
-     * @author Dariusz Bijoś <dariusz.bi@modulesgarden.com>
-     * @since 1.0.0
-     * @return string
-     */
+    
     public static function genAppUrl($page)
     {
         if (self::I()->isAdmin()) {
@@ -137,12 +91,7 @@ class App extends AbstractMainDriver
         }
     }
 
-    /**
-     * Application Configuration
-     * @author Dariusz Bijoś <dariusz.bi@modulesgarden.com>
-     * @since 1.0.0
-     * @return array
-     */
+    
     public static function config()
     {
         return [
@@ -155,12 +104,7 @@ class App extends AbstractMainDriver
         ];
     }
 
-    /**
-     * Application Activation
-     * @author Dariusz Bijoś <dariusz.bi@modulesgarden.com>
-     * @since 1.0.0
-     * @return array
-     */
+    
     public static function activate()
     {
         try {
@@ -173,12 +117,7 @@ class App extends AbstractMainDriver
         }
     }
 
-    /**
-     * Application Deactivation
-     * @author Dariusz Bijoś <dariusz.bi@modulesgarden.com>
-     * @since 1.0.0
-     * @return array
-     */
+    
     public static function deactivate()
     {
         try {
@@ -191,12 +130,7 @@ class App extends AbstractMainDriver
         }
     }
 
-    /**
-     * Application Upgrade
-     * @author Dariusz Bijoś <dariusz.bi@modulesgarden.com>
-     * @since 1.0.0
-     * @return array
-     */
+    
     public static function upgrade($vars)
     {
         try {
@@ -206,13 +140,7 @@ class App extends AbstractMainDriver
         }
     }
 
-    /**
-     * Application Admin Area HTML Page
-     * @author Dariusz Bijoś <dariusz.bi@modulesgarden.com>
-     * @since 1.0.0
-     * @param array $input
-     * @return HTML
-     */
+    
     public static function getHTMLAdminPage($input, $vars = array())
     {
         global $_LANG;
@@ -320,15 +248,7 @@ class App extends AbstractMainDriver
         }
     }
 
-    /**
-     * Method Description
-     * @author Dariusz Bijoś <dariusz.bi@modulesgarden.com>
-     * @since 1.0.0
-     * @param string $username  user name
-     * @return Example
-     * @throws Exception - fatal error
-     * @throws UserException - username or password is not set
-     */
+    
     public static function getJSONAdminPage($input, $vars = array())
     {
         $page = 'Home';
@@ -358,13 +278,7 @@ class App extends AbstractMainDriver
         return '<JSONRESPONSE#'.json_encode($content).'#ENDJSONRESPONSE>';
     }
 
-    /**
-     * Application Clietn Area HTML Page
-     * @author Dariusz Bijoś <dariusz.bi@modulesgarden.com>
-     * @since 1.0.0
-     * @param array $input
-     * @return HTML
-     */
+    
     public static function getHTMLClientAreaPage($input, $vars = array())
     {
         global $_LANG;
