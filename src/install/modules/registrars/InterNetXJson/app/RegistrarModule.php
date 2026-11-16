@@ -1214,34 +1214,47 @@ class RegistrarModule implements RegistrarModuleInterface
 
     public static function deleteDomain($domain, $execDate)
     {
-        // beim Delete Button in der Admin Area müsste eine Cancelation geschickt werden mit type "DELETE" und execution mit "DATE, EXPIRE, NOW" wobei nur das DATE mit dem date-picker gesetzt werden muss.
-        // Ist wie ein Delete in AutoDNS den man auch zu Sofort(now), zu einem festen Datum(date) oder zum Ablauf(expire) setzen kann.
-        $params = WhmcsBridge::getRegistarConfig();
-        $domainrobot = self::getApi($params);
-        $dc = new DomainCancelation();
-        $dc->setDomain($domain);
-        $dc->setType(CancelationTypeConstants::DELETE);
+        // WHMCS only logs registrar commands it dispatches itself; this one is triggered by a custom admin button
+        $request = ['domain' => $domain, 'type' => CancelationTypeConstants::DELETE, 'execution' => $execDate];
+
+        try {
+            // beim Delete Button in der Admin Area müsste eine Cancelation geschickt werden mit type "DELETE" und execution mit "DATE, EXPIRE, NOW" wobei nur das DATE mit dem date-picker gesetzt werden muss.
+            // Ist wie ein Delete in AutoDNS den man auch zu Sofort(now), zu einem festen Datum(date) oder zum Ablauf(expire) setzen kann.
+            $params = WhmcsBridge::getRegistarConfig();
+            $domainrobot = self::getApi($params);
+            $dc = new DomainCancelation();
+            $dc->setDomain($domain);
+            $dc->setType(CancelationTypeConstants::DELETE);
 
 
-        $domainCancelation = $domainrobot->domainCancelation->create($dc);
-        switch ($execDate) {
-            case 'NOW':
-                $dc->setExecution(ExecutionTypeConstants::NOW);
-                break;
+            $domainCancelation = $domainrobot->domainCancelation->create($dc);
+            switch ($execDate) {
+                case 'NOW':
+                    $dc->setExecution(ExecutionTypeConstants::NOW);
+                    break;
 
-            case 'EXPIRE':
-                $dc->setExecution(ExecutionTypeConstants::EXPIRE);
-                break;
+                case 'EXPIRE':
+                    $dc->setExecution(ExecutionTypeConstants::EXPIRE);
+                    break;
 
-            // Handling a posted Expiration Date
-            default:
-                $dc->setExecution(ExecutionTypeConstants::DATE);
-                $dc->setRegistryWhen(new DateTime($execDate));
-                break;
+                // Handling a posted Expiration Date
+                default:
+                    $dc->setExecution(ExecutionTypeConstants::DATE);
+                    $dc->setRegistryWhen(new DateTime($execDate));
+                    break;
+            }
+            // Delete Existing Cancelation request just in Case
+            $domainrobot->domainCancelation->delete($domain);
+            $domainCancelation = $domainrobot->domainCancelation->create($dc);
+
+            Logger::log('deletedomain', $dc->toArray(), $domainCancelation->toArray());
+        } catch (DomainrobotException $th) {
+            Logger::log('deletedomain', $request, "[" . $th->getStatusCode() . "] " . json_encode($th->getError(), JSON_PRETTY_PRINT));
+            throw $th;
+        } catch (\Throwable $th) {
+            Logger::log('deletedomain', $request, $th->getMessage());
+            throw $th;
         }
-        // Delete Existing Cancelation request just in Case
-        $domainrobot->domainCancelation->delete($domain);
-        $domainCancelation = $domainrobot->domainCancelation->create($dc);
     }
 
     public static function domainCancelationCreate($domain)
