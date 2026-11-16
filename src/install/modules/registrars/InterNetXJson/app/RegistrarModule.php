@@ -929,7 +929,7 @@ class RegistrarModule implements RegistrarModuleInterface
                 if ($isPremiumClassExists && WhmcsBridge::isPremiumDomainSetupOk($params)) {
                     $className = $details['premiumClass'];
                     $premiumclassID = Capsule::table('mod_InterNetXtblpremiumclasses')->select('id')->where('class_name', '=', $className)->first();
-                    $domainPricing = Capsule::select('SELECT * FROM mod_InterNetXtblpremiumpricing WHERE relid=' . $premiumclassID->id . ' AND currency=1');
+                    $domainPricing = Capsule::table('mod_InterNetXtblpremiumpricing')->where('relid', '=', $premiumclassID->id)->where('currency', '=', 1)->get();
                     $searchResult->setPremiumDomain(true);
 
                     foreach ($domainPricing as $pricing) {

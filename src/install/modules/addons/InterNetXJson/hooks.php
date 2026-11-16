@@ -38,12 +38,11 @@ add_hook('AdminAreaHeadOutput', 1, function($vars) {
                     try {
                         if ($premiumClass['value'] != '')
                         {
-                            $classExist = Capsule::select('SELECT class_name FROM mod_InterNetXtblpremiumclasses WHERE class_name="'.$premiumClass['value'].'"');
+                            $classExist = Capsule::table('mod_InterNetXtblpremiumclasses')->where('class_name', '=', $premiumClass['value'])->exists();
 
-                            if (empty($classExist))
+                            if (!$classExist)
                             {
                                 Capsule::table('mod_InterNetXtblpremiumclasses')->insert(array('class_name' => $premiumClass['value']));
-                                $classExist = [];
                             }
                         }
                     } catch (Exception $ex) {
@@ -53,7 +52,7 @@ add_hook('AdminAreaHeadOutput', 1, function($vars) {
             }
             //geting data from database
             try {
-                $premiumDomiansClassesData = Capsule::select("SELECT * FROM mod_InterNetXtblpremiumclasses");
+                $premiumDomiansClassesData = Capsule::table('mod_InterNetXtblpremiumclasses')->get();
                 foreach ($premiumDomiansClassesData as $key => $value) {
                     $adds['premiumClasses'][] = (array) $value;
                 }
@@ -69,28 +68,33 @@ add_hook('AdminAreaHeadOutput', 1, function($vars) {
 
         if (isset($_REQUEST['replaceModalWithPricingForm']) && $_REQUEST['replaceModalWithPricingForm'] == 'yes')
         {
-            $relID = $_REQUEST['pricingID'];
+            $relID = (int) $_REQUEST['pricingID'];
             try {
                 // check if pricing save button was clicked
                 if (isset($_REQUEST['savePremiumDomiansPrices']) && $_REQUEST['savePremiumDomiansPrices'] == 'yes')
                 {
                     if (isset($_REQUEST['relID']))
                     {
-                        $relID = $_REQUEST['relID'];
+                        $relID = (int) $_REQUEST['relID'];
                     }
                     $premiumPricingData = $_REQUEST['premiumPricingData'];
 
                     foreach ($premiumPricingData as $key => $pricingValue) {
                         $insertDetails = explode(',', str_replace(['[',']'], ',', $pricingValue['name']));
-                        if ($insertDetails[0] == 'register' || $insertDetails[0] == 'renew' || $insertDetails[0] == 'transfer'){
+                        // The year becomes a column name ("<n>years"), so only 1-10 is accepted
+                        $years = isset($insertDetails[3]) && ctype_digit($insertDetails[3]) ? (int) $insertDetails[3] : 0;
+                        $isValidCurrency = isset($insertDetails[1]) && ctype_digit($insertDetails[1]);
+                        if (($insertDetails[0] == 'register' || $insertDetails[0] == 'renew' || $insertDetails[0] == 'transfer') && $isValidCurrency && $years >= 1 && $years <= 10){
                             try {
+                                $type = 'domain'.$insertDetails[0];
+                                $currency = (int) $insertDetails[1];
                                 //check if row already exists and update it
-                                $relIDExists = Capsule::select('SELECT * FROM mod_InterNetXtblpremiumpricing WHERE relid='.$relID.' AND type="'.'domain'.$insertDetails[0].'" AND currency='.$insertDetails[1]);
-                                if (!empty($relIDExists))
+                                $pricingRow = Capsule::table('mod_InterNetXtblpremiumpricing')->where('type', '=', $type)->where('currency', '=', $currency)->where('relid', '=', $relID);
+                                if ($pricingRow->exists())
                                 {
-                                    Capsule::table('mod_InterNetXtblpremiumpricing')->where('type', 'domain'.$insertDetails[0])->where('currency',$insertDetails[1])->where('relid',$relID)->update(array($insertDetails[3].'years' => $pricingValue['value']));
+                                    $pricingRow->update(array($years.'years' => $pricingValue['value']));
                                 }else{
-                                    Capsule::table('mod_InterNetXtblpremiumpricing')->insert(array('relid' => $relID, 'type' => 'domain'.$insertDetails[0], 'currency' => $insertDetails[1], $insertDetails[3].'years' => $pricingValue['value']));
+                                    Capsule::table('mod_InterNetXtblpremiumpricing')->insert(array('relid' => $relID, 'type' => $type, 'currency' => $currency, $years.'years' => $pricingValue['value']));
                                 }
                             } catch (Exception $ex) {
                                 throw new Exception($ex->getMessage());
@@ -101,7 +105,7 @@ add_hook('AdminAreaHeadOutput', 1, function($vars) {
                 $currencyInfo = Capsule::table('tblcurrencies')->select('code')->where('id', '=', '1')->first();
                 $adds['currencies'] = $currencyInfo->code;
                 $adds['relid'] = $relID;
-                $premuimPricingData = Capsule::select("SELECT * FROM mod_InterNetXtblpremiumpricing WHERE relid=".$relID);
+                $premuimPricingData = Capsule::table('mod_InterNetXtblpremiumpricing')->where('relid', '=', $relID)->get();
                 foreach ($premuimPricingData as $key => $value) {
                     $premuimPricingData[$key] = (array) $value;
                 }
