@@ -5,14 +5,11 @@
     <link rel="stylesheet" type="text/css" href="{$assetsURL}/css/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{$assetsURL}/css/uniform.default.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{$assetsURL}/css/components-rounded.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{$assetsURL}/css/jquery.dataTables.css" />
     <link rel="stylesheet" type="text/css" href="{$assetsURL}/css/select2.min.css" />
     <link rel="stylesheet" type="text/css" href="{$assetsURL}/css/onoffswitch.css" />
     <link rel="stylesheet" type="text/css" href="{$assetsURL}/css/jquery-ui.min.css" />
     <link rel="stylesheet" type="text/css" href="{$assetsURL}/css/mg-style.css" rel="stylesheet">    
     <script type="text/javascript" src="{$assetsURL}/js/mgLibs.js"></script>
-    <script type="text/javascript" src="{$assetsURL}/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" src="{$assetsURL}/js/dataTables.bootstrap.js"></script>
     <script type="text/javascript" src="{$assetsURL}/js/select2.full.min.js"></script>
     <script type="text/javascript" src="{$assetsURL}/js/bootstrap-hover-dropdown.min.js"></script>
     <script type="text/javascript" src="{$assetsURL}/js/jquery-ui.min.js"></script>

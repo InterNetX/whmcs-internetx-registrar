@@ -1344,10 +1344,6 @@
       color: #888888
 }
 
-.mg-wrapper .dataTables_empty{
-    text-align:center;
-}
-
 .mg-wrapper .with-errors li{
     color: #a94442 !important;
 }
