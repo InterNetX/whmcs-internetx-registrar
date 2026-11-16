@@ -1347,8 +1347,3 @@
 .mg-wrapper .with-errors li{
     color: #a94442 !important;
 }
-
-
-.mg-wrapper .select2-container {
-    width:  100% !important;
-}
