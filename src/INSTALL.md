@@ -38,6 +38,9 @@ To sell premium domains, you need to install our premium domains addon alongside
 `install/modules/addons/InterNetX` needs to be copied to `{your-whmcs-folder}/modules/addons/InterNetX`
 Activate it in the Addon Modules settings of WHMCS and enable premium domains on the Domainpricing page.
 
+### jQuery
+Neither the registrar module nor the premium domains addon bundles or loads its own copy of jQuery. All scripts (e.g. the Delete Domain dialog in `registrars/InterNetXJson/hooks.php` and the addon's `mgLibs.js`, `validator.js` and `whmcsProdConfSupp.js`) use the global `jQuery` that WHMCS provides on its admin pages. The jQuery version you see in your browser is therefore the one shipped with your WHMCS version, not one installed by this module.
+
 ### Virtual Nameservers
 If you are using virtual nameservers from InterNetX please update /modules/registrars/InterNetX/app/Helpers/Config.php and change the "ns14.net" entries to your own virtual nameserver domain.
 
