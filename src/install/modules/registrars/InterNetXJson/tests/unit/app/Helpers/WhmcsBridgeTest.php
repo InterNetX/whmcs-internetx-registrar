@@ -240,9 +240,40 @@ final class WhmcsBridgeTest extends TestCase
         $this->assertEquals(1, $result['extensions']['it']['entityType']);
     }
 
+    public function testFilterSharedContactsDropsTechAndZoneThatDifferFromOwner(): void
+    {
+        $contacts = [
+            'Registrant' => ['id' => 1],
+            'Admin' => ['id' => 2],
+            'Tech' => ['id' => 3],
+            'Zone' => ['id' => 3],
+        ];
+        $submitted = ['Registrant' => ['City' => 'a'], 'Admin' => ['City' => 'b'], 'Tech' => ['City' => 'c'], 'Zone' => ['City' => 'd']];
 
+        $result = WhmcsBridge::filterSharedContacts($submitted, $contacts);
 
+        $this->assertSame(['Registrant', 'Admin'], array_keys($result));
+    }
 
+    public function testFilterSharedContactsKeepsTechAndZoneThatEqualOwner(): void
+    {
+        $contacts = [
+            'Registrant' => ['id' => 1],
+            'Admin' => ['id' => 1],
+            'Tech' => ['id' => 1],
+            'Zone' => ['id' => 1],
+        ];
+        $submitted = ['Registrant' => [], 'Tech' => [], 'Zone' => []];
+
+        $this->assertSame(['Registrant', 'Tech', 'Zone'], array_keys(WhmcsBridge::filterSharedContacts($submitted, $contacts)));
+    }
+
+    public function testFilterSharedContactsDropsRolesWithoutHandle(): void
+    {
+        $result = WhmcsBridge::filterSharedContacts(['Registrant' => [], 'Tech' => []], ['Registrant' => ['id' => 1], 'Tech' => null]);
+
+        $this->assertSame(['Registrant'], array_keys($result));
+    }
 
 }
 

@@ -85,6 +85,18 @@ function internetXFixDomainContacts($vars){
     if ($_GET['action'] == 'domaincontacts')
     {
         $script = '<script type="text/javascript">
+                // Tech/Zone handles may be shared by many domains, so they are read-only (also enforced server side)
+                function lockSharedContact(role) {
+                    var fields = document.querySelectorAll("[name^=\\"contactdetails[" + role + "]\\"]");
+                    for (var i = 0; i < fields.length; i++) {
+                        if (fields[i].tagName === "SELECT") {
+                            fields[i].style.pointerEvents = "none";
+                            fields[i].tabIndex = -1;
+                        } else {
+                            fields[i].readOnly = true;
+                        }
+                    }
+                }
                 window.onload = function() {
                 $(".radio").hide();
                 console.log(document.getElementById("Registrant3"));
@@ -101,15 +113,7 @@ function internetXFixDomainContacts($vars){
                     document.getElementById("Tech3").parentElement.style.display = "none";
                     document.getElementsByName("contactdetails[Tech][First Name]")[0].disabled = true;
                     document.getElementsByName("contactdetails[Tech][Last Name]")[0].disabled = true;
-                    // document.getElementsByName("contactdetails[Tech][Handle ID]")[0].disabled = true;
-                    // document.getElementsByName("contactdetails[Tech][Company Name]")[0].readOnly = true;
-                    // document.getElementsByName("contactdetails[Tech][City]")[0].readOnly = true;
-                    // document.getElementsByName("contactdetails[Tech][Address]")[0].readOnly = true;
-                    // document.getElementsByName("contactdetails[Tech][State]")[0].readOnly = true;
-                    // document.getElementsByName("contactdetails[Tech][Postcode]")[0].readOnly = true;
-                    // document.getElementsByName("contactdetails[Tech][Country]")[0].readOnly = true;
-                    // document.getElementsByName("contactdetails[Tech][Phone Number]")[0].readOnly = true;
-                    // document.getElementsByName("contactdetails[Tech][Email]")[0].readOnly = true;
+                    lockSharedContact("Tech");
                 }
                 if(document.getElementById("Admin3") !== null)
                 {
@@ -131,15 +135,7 @@ function internetXFixDomainContacts($vars){
                     document.getElementById("Zone3").parentElement.style.display = "none";
                     document.getElementsByName("contactdetails[Zone][First Name]")[0].disabled = true;
                     document.getElementsByName("contactdetails[Zone][Last Name]")[0].disabled = true;
-                    // document.getElementsByName("contactdetails[Zone][Handle ID]")[0].disabled = true;
-                    // document.getElementsByName("contactdetails[Zone][Company Name]")[0].readOnly = true;
-                    // document.getElementsByName("contactdetails[Zone][City]")[0].readOnly = true;
-                    // document.getElementsByName("contactdetails[Zone][Address]")[0].readOnly = true;
-                    // document.getElementsByName("contactdetails[Zone][State]")[0].readOnly = true;
-                    // document.getElementsByName("contactdetails[Zone][Postcode]")[0].readOnly = true;
-                    // document.getElementsByName("contactdetails[Zone][Country]")[0].readOnly = true;
-                    // document.getElementsByName("contactdetails[Zone][Phone Number]")[0].readOnly = true;
-                    // document.getElementsByName("contactdetails[Zone][Email]")[0].readOnly = true;
+                    lockSharedContact("Zone");
                 }
                 };
                 </script>';

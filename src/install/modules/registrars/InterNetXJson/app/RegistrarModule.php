@@ -613,6 +613,15 @@ class RegistrarModule implements RegistrarModuleInterface
 
         $whmcsContacts = $params['contactdetails'];
 
+        // Admins may still edit every contact; customers must not change shared Tech/Zone handles
+        if (!defined('ADMINAREA')) {
+            $allowed = WhmcsBridge::filterSharedContacts($whmcsContacts, $contacts);
+            $skipped = array_keys(array_diff_key($whmcsContacts, $allowed));
+            if ($skipped) {
+                Logger::log('savecontactdetails', ['domain' => WhmcsBridge::parseDomain($params), 'skipped' => $skipped], 'Tech/Zone contacts that differ from the owner contact cannot be changed from the client area');
+            }
+            $whmcsContacts = $allowed;
+        }
 
         foreach ($whmcsContacts as $key => $contact) {
             // Only Update if it exists

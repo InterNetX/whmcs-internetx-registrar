@@ -241,6 +241,29 @@ class WhmcsBridge
         return $contacts;
     }
 
+    /**
+     * Tech and Zone handles are often shared by many domains (e.g. a reseller's company contact),
+     * so a customer must not overwrite them unless they are the owner's own handle.
+     *
+     * @param array $submitted contactdetails as posted by WHMCS, keyed by role
+     * @param array $contacts  live domain contacts keyed by role (Registrant, Admin, Tech, Zone)
+     * @return array the submitted roles that may be saved
+     */
+    public static function filterSharedContacts($submitted, $contacts){
+        $ownerId = isset($contacts['Registrant']['id']) ? $contacts['Registrant']['id'] : null;
+
+        foreach (['Tech', 'Zone'] as $role) {
+            if (!isset($submitted[$role])) {
+                continue;
+            }
+            $roleId = isset($contacts[$role]['id']) ? $contacts[$role]['id'] : null;
+            if ($roleId === null || $roleId !== $ownerId) {
+                unset($submitted[$role]);
+            }
+        }
+        return $submitted;
+    }
+
     public static function parseNameservers($params){
 
         // WHMCS Params include up to 6 Nameservers in Domain related Requests. $params['ns1'..'ns6']
