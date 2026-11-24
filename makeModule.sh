@@ -21,6 +21,12 @@ else
   SED_CMD=sed
 fi
 
+## Composer is needed to regenerate the autoloader without dev packages
+if ! [ -x "$(command -v composer)" ]; then
+  echo "Error: 'composer' is not installed (needed to regenerate the autoloader)." >&2
+  exit 1
+fi
+
 # THE NAME OF THE TARGET REGISTRAR TO BUILD
 REGISTRARNAME=$1
 REGISTRARURL=$2
@@ -93,6 +99,19 @@ rm -rf modules/registrars/InterNetXJson/vendor/phar-io
 rm -rf modules/registrars/InterNetXJson/vendor/doctrine
 rm -rf modules/registrars/InterNetXJson/vendor/myclabs
 rm -rf modules/registrars/InterNetXJson/vendor/theseer
+
+## The packages removed above are still referenced by Composer's generated autoloader
+## (e.g. autoload_files.php requires myclabs/deep-copy and phpunit), which would fatal as soon
+## as the module is loaded. Regenerate it without dev packages while composer.json still exists.
+echo "Regenerating Composer autoloader without dev packages"
+(cd modules/registrars/InterNetXJson && composer dump-autoload --no-dev --no-scripts --no-interaction)
+
+## Fail the build if the autoloader still points at anything we removed
+if grep -rqE "myclabs|phpunit|sebastian|nikic|phar-io|theseer|doctrine" modules/registrars/InterNetXJson/vendor/composer/autoload_*.php; then
+  echo "Error: the generated autoloader still references removed dev packages." >&2
+  exit 1
+fi
+
 rm modules/registrars/InterNetXJson/composer.json
 rm modules/registrars/InterNetXJson/composer.lock
 rm modules/registrars/InterNetXJson/vendor/internetx/php-domainrobot-sdk/swagger-codegen-cli.jar

@@ -81,7 +81,7 @@ class RegistrarModule implements RegistrarModuleInterface
     {
         try {
             // WhmcsBridge::saveParamsLog($functionName, $params);
-            $response = call_user_func('self::' . $functionName, $params);
+            $response = call_user_func([self::class, $functionName], $params);
 
             // In Debug mode + Extended Debug Mode log all function calls that are in the List self::LOGTHESEFUNCTIONCALLS
             if (isset($params['debug']) && $params['debug'] && isset($params['debugallcalls']) && $params['debugallcalls'] && in_array($functionName, self::LOGTHESEFUNCTIONCALLS)) {
@@ -613,6 +613,15 @@ class RegistrarModule implements RegistrarModuleInterface
 
         $whmcsContacts = $params['contactdetails'];
 
+        // Admins may still edit every contact; customers must not change shared Tech/Zone handles
+        if (!defined('ADMINAREA')) {
+            $allowed = WhmcsBridge::filterSharedContacts($whmcsContacts, $contacts);
+            $skipped = array_keys(array_diff_key($whmcsContacts, $allowed));
+            if ($skipped) {
+                Logger::log('savecontactdetails', ['domain' => WhmcsBridge::parseDomain($params), 'skipped' => $skipped], 'Tech/Zone contacts that differ from the owner contact cannot be changed from the client area');
+            }
+            $whmcsContacts = $allowed;
+        }
 
         foreach ($whmcsContacts as $key => $contact) {
             // Only Update if it exists
@@ -929,7 +938,7 @@ class RegistrarModule implements RegistrarModuleInterface
                 if ($isPremiumClassExists && WhmcsBridge::isPremiumDomainSetupOk($params)) {
                     $className = $details['premiumClass'];
                     $premiumclassID = Capsule::table('mod_InterNetXtblpremiumclasses')->select('id')->where('class_name', '=', $className)->first();
-                    $domainPricing = Capsule::select('SELECT * FROM mod_InterNetXtblpremiumpricing WHERE relid=' . $premiumclassID->id . ' AND currency=1');
+                    $domainPricing = Capsule::table('mod_InterNetXtblpremiumpricing')->where('relid', '=', $premiumclassID->id)->where('currency', '=', 1)->get();
                     $searchResult->setPremiumDomain(true);
 
                     foreach ($domainPricing as $pricing) {
@@ -1214,34 +1223,47 @@ class RegistrarModule implements RegistrarModuleInterface
 
     public static function deleteDomain($domain, $execDate)
     {
-        // beim Delete Button in der Admin Area müsste eine Cancelation geschickt werden mit type "DELETE" und execution mit "DATE, EXPIRE, NOW" wobei nur das DATE mit dem date-picker gesetzt werden muss.
-        // Ist wie ein Delete in AutoDNS den man auch zu Sofort(now), zu einem festen Datum(date) oder zum Ablauf(expire) setzen kann.
-        $params = WhmcsBridge::getRegistarConfig();
-        $domainrobot = self::getApi($params);
-        $dc = new DomainCancelation();
-        $dc->setDomain($domain);
-        $dc->setType(CancelationTypeConstants::DELETE);
+        // WHMCS only logs registrar commands it dispatches itself; this one is triggered by a custom admin button
+        $request = ['domain' => $domain, 'type' => CancelationTypeConstants::DELETE, 'execution' => $execDate];
+
+        try {
+            // beim Delete Button in der Admin Area müsste eine Cancelation geschickt werden mit type "DELETE" und execution mit "DATE, EXPIRE, NOW" wobei nur das DATE mit dem date-picker gesetzt werden muss.
+            // Ist wie ein Delete in AutoDNS den man auch zu Sofort(now), zu einem festen Datum(date) oder zum Ablauf(expire) setzen kann.
+            $params = WhmcsBridge::getRegistarConfig();
+            $domainrobot = self::getApi($params);
+            $dc = new DomainCancelation();
+            $dc->setDomain($domain);
+            $dc->setType(CancelationTypeConstants::DELETE);
 
 
-        $domainCancelation = $domainrobot->domainCancelation->create($dc);
-        switch ($execDate) {
-            case 'NOW':
-                $dc->setExecution(ExecutionTypeConstants::NOW);
-                break;
+            $domainCancelation = $domainrobot->domainCancelation->create($dc);
+            switch ($execDate) {
+                case 'NOW':
+                    $dc->setExecution(ExecutionTypeConstants::NOW);
+                    break;
 
-            case 'EXPIRE':
-                $dc->setExecution(ExecutionTypeConstants::EXPIRE);
-                break;
+                case 'EXPIRE':
+                    $dc->setExecution(ExecutionTypeConstants::EXPIRE);
+                    break;
 
-            // Handling a posted Expiration Date
-            default:
-                $dc->setExecution(ExecutionTypeConstants::DATE);
-                $dc->setRegistryWhen(new DateTime($execDate));
-                break;
+                // Handling a posted Expiration Date
+                default:
+                    $dc->setExecution(ExecutionTypeConstants::DATE);
+                    $dc->setRegistryWhen(new DateTime($execDate));
+                    break;
+            }
+            // Delete Existing Cancelation request just in Case
+            $domainrobot->domainCancelation->delete($domain);
+            $domainCancelation = $domainrobot->domainCancelation->create($dc);
+
+            Logger::log('deletedomain', $dc->toArray(), $domainCancelation->toArray());
+        } catch (DomainrobotException $th) {
+            Logger::log('deletedomain', $request, "[" . $th->getStatusCode() . "] " . json_encode($th->getError(), JSON_PRETTY_PRINT));
+            throw $th;
+        } catch (\Throwable $th) {
+            Logger::log('deletedomain', $request, $th->getMessage());
+            throw $th;
         }
-        // Delete Existing Cancelation request just in Case
-        $domainrobot->domainCancelation->delete($domain);
-        $domainCancelation = $domainrobot->domainCancelation->create($dc);
     }
 
     public static function domainCancelationCreate($domain)
