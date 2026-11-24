@@ -39,7 +39,7 @@ if (!class_exists("InterNetX_SSL_API")) {
          * @param string $debug
          * @param string $testMode
          */
-        public function __construct($serverUrl = 'https://demo.sslmanager.de/gateway/', $username, $password, $context,
+        public function __construct($serverUrl, $username, $password, $context,
                                      $debug = true) {
 
                 self::$testMode   = false;
@@ -47,7 +47,7 @@ if (!class_exists("InterNetX_SSL_API")) {
                 self::$username   = $username;
                 self::$password   = htmlspecialchars_decode($password);
                 self::$context    = $context;
-                self::$debug      = (boolean) $debug;
+                self::$debug      = (bool) $debug;
         }
 
         /**

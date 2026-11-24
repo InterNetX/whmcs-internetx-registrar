@@ -20,7 +20,7 @@ class DomainRobotExtension
     public static function assign($searchTld, $domainFiels)
     {
         if (in_array($searchTld, self::$tlds)){
-            return call_user_func('self::' . $searchTld, $domainFiels);
+            return call_user_func([self::class, $searchTld], $domainFiels);
         }
         return false;
     }

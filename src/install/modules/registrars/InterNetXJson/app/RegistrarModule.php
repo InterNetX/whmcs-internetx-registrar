@@ -81,7 +81,7 @@ class RegistrarModule implements RegistrarModuleInterface
     {
         try {
             // WhmcsBridge::saveParamsLog($functionName, $params);
-            $response = call_user_func('self::' . $functionName, $params);
+            $response = call_user_func([self::class, $functionName], $params);
 
             // In Debug mode + Extended Debug Mode log all function calls that are in the List self::LOGTHESEFUNCTIONCALLS
             if (isset($params['debug']) && $params['debug'] && isset($params['debugallcalls']) && $params['debugallcalls'] && in_array($functionName, self::LOGTHESEFUNCTIONCALLS)) {

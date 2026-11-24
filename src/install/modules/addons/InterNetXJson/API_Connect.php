@@ -26,7 +26,7 @@ if (!class_exists("API_Connect")) {
          * @param string $debug
          * @param string $testMode
          */
-        public function __construct($serverUrl = 'https://gateway.autodns.com', $username, $password, $context, $sanboxUsername, $sanboxPassword, $sanboxContext, $debug = false, $testMode = false)
+        public function __construct($serverUrl, $username, $password, $context, $sanboxUsername, $sanboxPassword, $sanboxContext, $debug = false, $testMode = false)
         {
 
             if ($testMode) {
@@ -42,7 +42,7 @@ if (!class_exists("API_Connect")) {
                 self::$password  = $password;
                 self::$context   = $context;
             }
-            self::$debug = (boolean) $debug;
+            self::$debug = (bool) $debug;
         }
 
         /**
